@@ -1,0 +1,24 @@
+{
+    "api_endpoint": "http://localhost:9984/api/v1",
+    "consensus_plugin": "default",
+    "database": {
+        "host": "localhost",
+        "name": "bigchain",
+        "port": 28015
+    },
+    "keypair": {
+        "private": "3WEBRUtwMnHQbWZNiV6Wab5rqbqK54foL8t51jmC8MYn",
+        "public": "AW99uUoyfgTvospRkQJQDLxc22c9PuhjKx9D5ao1ALe3"
+    },
+    "keyring": [],
+    "server": {
+        "bind": "localhost:9984",
+        "threads": null,
+        "workers": null
+    },
+    "statsd": {
+        "host": "localhost",
+        "port": 8125,
+        "rate": 0.01
+    }
+}
