@@ -35,7 +35,7 @@ setup(
     version='0.0.1',
     description='Example usages for BigchainDB',
     long_description=__doc__,
-    url='https://github.com/BigchainDB/examples/',
+    url='https://github.com/BigchainDB/bigchaindb-examples/',
     author='BigchainDB Contributors',
     author_email='dev@bigchaindb.com',
     license='AGPLv3',
@@ -59,6 +59,14 @@ setup(
     packages=find_packages(exclude=['tests*']),
 
     install_requires=[
+        "dj-database-url==0.3.0",
+        "dj-static==0.0.6",
+        "Django==1.9",
+        "django-cors-headers==1.1.0",
+        "django-filter==0.11.0",
+        "djangorestframework==3.3.2",
+        "gunicorn==19.4.1",
+        "whitenoise==2.0.6"
     ],
 
     setup_requires=['pytest-runner'],

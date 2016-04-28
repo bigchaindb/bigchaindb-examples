@@ -21,9 +21,17 @@ def take_at_least_seconds(amount_in_seconds):
         t_expired = datetime.now() - t_issued
 
 
-def create_asset(bigchain, to, payload, token_id):
-    payload.update({'token_id': token_id})
+def get_owned_assets(bigchain, vk):
+    asset_ids = bigchain.get_owned_ids(vk)
+    assets = []
+    for asset_id in asset_ids:
+        result = bigchain.get_transaction(asset_id['txid'])
+        if result:
+            assets.append(result)
+    return assets
 
+
+def create_asset(bigchain, to, payload):
     # a create transaction uses the operation `CREATE` and has no inputs
     tx = bigchain.create_transaction(bigchain.me, to, None, 'CREATE', payload=payload)
 

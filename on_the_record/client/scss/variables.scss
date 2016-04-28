@@ -1,0 +1,44 @@
+
+/**
+ * Colors and backgrounds
+ */
+
+/*79589F*/
+$ascribe-black: #222;
+$ascribe-dark-blue: #003C69;
+$ascribe-blue: #65CFE9;
+$ascribe-light-blue: #D3DEE4;
+$ascribe-pink: #D10074;
+$ascribe-white: white;
+
+$color--brand: #c90000;
+$color--background: #FAFAFA;
+$color--background-secondary: #FAFAFA;
+
+$bg-color: #FAFAFA;
+$fg-color: black;
+$bg-color--hover: lighten($fg-color, 20%);
+
+/**
+ * Sizes
+ */
+
+$ascribe--spinner-color: $ascribe-blue;
+
+$ascribe--spinner-size-lg: 50px;
+$ascribe--spinner-size-md: 30px;
+$ascribe--spinner-size-sm: 15px;
+
+$navbar-height: 51px;
+$header-height: 70px;
+
+$row: 700px;
+$row--wide: 900px;
+$gutter: 20px;
+$small: 12px;
+
+$content--max-width: 1100px;
+$sidebar--wide: 250px;
+
+
+
