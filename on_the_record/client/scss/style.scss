@@ -22,7 +22,7 @@ body {
 
 .App {
   margin: auto;
-  max-width: $content--max-width;
+  //max-width: $content--max-width + $sidebar--wide;
   height: 100%;
 }
 
@@ -30,8 +30,21 @@ a {
   color: $fg-color;
 }
 
-.page-analytics {
-  margin-top: $navbar-height + 20px;
+#page-content-wrapper {
+  width: 100%;
+}
+
+.page-content {
+  padding: 1em 1em 5em
+}
+.content-text{
+  margin-top: 2em;
+  text-align: center;
+}
+
+.hero,
+.page--result {
+  background-color: $color--background-secondary;
 }
 
 .logo-brand {
@@ -40,25 +53,15 @@ a {
   }
 }
 
-.powered-by {
-  font-size: .7em;
-  line-height: .7em;
+.navbar-fixed-bottom {
+  margin-left: $sidebar--wide;
 }
 
-.rc-tooltip {
-  z-index: 2300;
+@media (max-width: 930px) {
+  .navbar-fixed-bottom {
+    margin-left: 0;
+  }
 }
-
-#wrapper {
-  transition: all 0.4s ease 0s;
-  margin: $navbar-height 2em 0;
-}
-
-.hero,
-.page--result {
-  background-color: $color--background-secondary;
-}
-
 /**
  * Layout
  */
@@ -73,7 +76,7 @@ a {
 .list-item {
   font-size: .9em;
   text-transform: uppercase;
-  padding: .5em;
+  padding: 1em;
   background-color: $bg-color;
   border-bottom: 1px solid lighten($fg-color, 80%);
   color: lighten($fg-color, 30%);
@@ -91,7 +94,10 @@ a {
 }
 
 .list-row.active {
-  color: $bg-color;
+  color: $bg-color !important;
+  .list-row-detail {
+    color: $bg-color !important;
+  }
   background-color: $bg-color--hover;
 }
 
@@ -103,6 +109,12 @@ a {
   font-size: 0.8em;
   font-style: italic;
   color: lighten($fg-color, 50%);
+}
+
+.list-row-name,
+.list-row-detail {
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .asset-container {
@@ -131,24 +143,12 @@ a {
 
 input {
     width: 100%;
-    font-size: 30px;
+    font-size: 20px;
     line-height: 130%;
-    border: none;
-    padding: 0 10px;
+    border: 1px solid #BBB;
+    padding: 1em;
 }
 
-.hero {
-  padding: 30px 10px 100px;
-  margin-bottom: 50px;
-}
-
-.hero h1 {
-  margin-bottom: 10px;
-}
-
-.hero h2 {
-  margin-bottom: 40px;
-}
 
 .searchbar {
   margin: 0 auto;
@@ -175,11 +175,6 @@ input {
   }
 }
 
-#page-content-wrapper {
-  width: 100%;
-  min-height: 100vh;
-  background-color: $color--background-secondary;
-}
 
 #app-container {
   margin-top: 50vh;

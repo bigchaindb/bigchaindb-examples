@@ -2,7 +2,7 @@
 
 import React from 'react/';
 
-import { Row } from 'react-bootstrap/lib/';
+import {Navbar, Row } from 'react-bootstrap/lib/';
 
 import AccountList from './accounts';
 import Assets from './assets';
@@ -23,53 +23,42 @@ const OnTheRecord = React.createClass({
 
     render() {
         const { activeAccount } = this.state;
-        let activeAccountElement = (
-            <div>
-                Select account from list:
+
+        let content = (
+            <div className='content-text'>
+                Select account from the list...
             </div>
         );
 
         if ( activeAccount ) {
-            activeAccountElement = (
-                <div
-                    className='list-item'
-                    onClick={this.handleClick}>
-                    <Row>
-                        <div className='list-row-name'>
-                            {activeAccount.name}
-                        </div>
-                        <div className='list-row-detail'>
-                            {activeAccount.vk}
-                        </div>
-                    </Row>
-                </div>
-            );
-        }
-
-        let content = null;
-
-        if ( activeAccount ) {
-
             content = (
                 <Assets
                     activeAccount={activeAccount}/>
             );
         }
-        else {
-            content = (
-                <AccountList
-                    activeAccount={activeAccount}
-                    handleAccountClick={this.setActiveAccount}/>
-            );
-        }
 
         return (
-            <div id="wrapper">
-                <h1>"On the Record"</h1>
-                <br />
-                { activeAccountElement }
-                <br />
-                { content }
+            <div>
+                <Navbar
+                    inverse
+                    fixedTop={true}>
+                    <h1 style={{ textAlign: 'center', color: 'white'}}>"On the Record"</h1>
+                </Navbar>
+                <div id="wrapper">
+                    <br />
+                    <div id="sidebar-wrapper">
+                        <div className="sidebar-nav">
+                            <AccountList
+                                activeAccount={activeAccount}
+                                handleAccountClick={this.setActiveAccount}/>
+                        </div>
+                    </div>
+                    <div id="page-content-wrapper">
+                        <div className="page-content">
+                            {content}
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

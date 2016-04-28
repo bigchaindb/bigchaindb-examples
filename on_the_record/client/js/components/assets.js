@@ -2,15 +2,22 @@
 
 import React from 'react/';
 
-import { History } from 'react-router/';
-
 import { Row, Col, Button, Glyphicon } from 'react-bootstrap/lib/';
+
+import Scroll from 'react-scroll';
 
 import AssetActions from '../actions/asset_actions';
 import AssetStore from '../stores/asset_store';
 
 import AscribeSpinner from '../spinner';
 
+
+var currentPositionY = function() {
+  var supportPageOffset = window.pageXOffset !== undefined;
+  var isCSS1Compat = ((document.compatMode || '') === 'CSS1Compat');
+  return supportPageOffset ? window.pageYOffset : isCSS1Compat ?
+         document.documentElement.scrollTop : document.body.scrollTop;
+};
 
 const Assets = React.createClass({
 
@@ -36,6 +43,7 @@ const Assets = React.createClass({
         };
         this.postAsset(payload)
         this.setState({value: null});
+        Scroll.animateScroll.scrollToBottom();
     },
 
     handleInputChange(event) {
@@ -73,7 +81,9 @@ const AssetHistory = React.createClass({
 
     componentDidMount() {
         AssetStore.listen(this.onChange);
+
         this.fetchAssetList();
+        Scroll.animateScroll.scrollToBottom();
     },
 
     componentWillUnmount() {
@@ -83,11 +93,15 @@ const AssetHistory = React.createClass({
     fetchAssetList(){
         AssetActions.flushAssetList();
         const { activeAccount } = this.props;
-
+        const maxScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         if ( activeAccount ) {
             AssetActions.fetchAssetList(activeAccount.vk);
+
+            if (maxScroll - currentPositionY() < 40) {
+               Scroll.animateScroll.scrollToBottom();
+            }
         }
-        setTimeout(this.fetchAssetList, 5000);
+        setTimeout(this.fetchAssetList, 1000);
     },
 
     onChange(state) {
@@ -114,6 +128,14 @@ const AssetHistory = React.createClass({
                 </div>
             );
         }
+        else if ( assetList && assetList.length == 0 ) {
+
+            return (
+                <div className='content-text'>
+                    No messages found on BigchainDB. Start typing...
+                </div>
+            );
+        }
 
         return (
             <div style={{margin: '2em'}}>
@@ -129,6 +151,7 @@ const AssetRow = React.createClass({
     propTypes: {
         asset: React.PropTypes.object
     },
+
 
     render() {
         const { asset } = this.props;
