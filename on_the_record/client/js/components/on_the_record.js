@@ -2,21 +2,13 @@
 
 import React from 'react/';
 
-import { History } from 'react-router/';
-
-import { Row, Col, Button, Glyphicon } from 'react-bootstrap/lib/';
+import { Row } from 'react-bootstrap/lib/';
 
 import AccountList from './accounts';
 import Assets from './assets';
 
 const OnTheRecord = React.createClass({
 
-    propTypes: {
-        params: React.PropTypes.object
-    },
-
-    mixins: [History],
-    
     getInitialState() {
         return {
             activeAccount: null
@@ -73,7 +65,7 @@ const OnTheRecord = React.createClass({
 
         return (
             <div id="wrapper">
-                <h1>On the record</h1>
+                <h1>"On the Record"</h1>
                 <br />
                 { activeAccountElement }
                 <br />

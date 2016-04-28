@@ -10,9 +10,6 @@ import ReactDOM from 'react-dom/';
 
 import { Router, Route, IndexRoute } from 'react-router/';
 
-import history from './history';
-
-// import Navigation from './components/navbar';
 import OnTheRecord from './components/on_the_record';
 
 
@@ -41,7 +38,7 @@ let routes = (
 );
 
 ReactDOM.render((
-    <Router history={history}>
+    <Router>
         {routes}
     </Router>
 ), document.getElementById('container'));

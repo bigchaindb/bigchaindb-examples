@@ -134,8 +134,8 @@ const AssetRow = React.createClass({
         const { asset } = this.props;
 
         return (
-            <div className='asset-container pull-right'>
-                <Row>
+            <Row>
+                <div className='asset-container pull-right'>
                     <div className='asset-container-id'>
                         id: {asset.id}
                     </div>
@@ -148,8 +148,8 @@ const AssetRow = React.createClass({
                     <div className='asset-container-timestamp pull-right'>
                         timestamp: {asset.transaction.timestamp}
                     </div>
-                </Row>
-            </div>
+                </div>
+            </Row>
         );
     }
 });
