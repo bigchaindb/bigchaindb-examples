@@ -13,7 +13,10 @@ Warning: These examples are for demonstration purpose and should not be used for
 - Immutable logging of data
 - Notarization of data, text, emails
 
-![On the Record](./img/on_the_record_v0.0.1.png)
+<p align="center">
+  <img width="80%" height="80%" src ="./img/on_the_record_v0.0.1.png" />
+</p>
+
 
 ### Structure
 
