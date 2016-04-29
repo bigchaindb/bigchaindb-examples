@@ -70,6 +70,8 @@ $ python3 -m on_the_record.server.server
 
 Now you should see the app running on [http://localhost:8000/](http://localhost:8000/)
 
+__Warning__: do not use `127.0.0.1` opposed to `localhost` as this may cause CORS problems.
+
 ### Functionality
 
 #### Create assets
