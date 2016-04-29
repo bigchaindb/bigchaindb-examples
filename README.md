@@ -66,7 +66,7 @@ In another terminal launch the gunicorn server (from the repository root dir)
 $ python3 -m on_the_record.server.server
 ```
 
-Now you should see the app running on http://localhost:8000/
+Now you should see the app running on [http://localhost:8000/](http://localhost:8000/)
 
 ### Functionality
 
