@@ -61,9 +61,9 @@ Launch BigchainDB
 $ bigchaindb start 
 ```
 
-
+In another terminal launch the gunicorn server (from the repository root dir)
 ```bash
-$ python3 -m on_the_record.server.server.py
+$ python3 -m on_the_record.server.server
 ```
 
 Now you should see the app running on http://localhost:8000/
