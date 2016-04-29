@@ -5,10 +5,9 @@ For more information please refer to the documentation in Apiary:
 """
 
 import flask
-from flask import current_app, request, Blueprint, render_template
+from flask import request, Blueprint, render_template
 
 import bigchaindb
-from bigchaindb import util
 
 from bigchaindb_common.python import assets, accounts
 
@@ -41,7 +40,15 @@ def post_account():
 
 @api_views.route('/accounts/<account_vk>/assets/')
 def get_assets_for_account(account_vk):
-    result = assets.get_owned_assets(bigchain, account_vk)
+    search = request.args.get('search')
+    result = assets.get_owned_assets(bigchain, account_vk, search)
+    return flask.jsonify({'assets': result})
+
+
+@api_views.route('/assets/')
+def get_assets():
+    search = request.args.get('search')
+    result = assets.get_asset_by_payload_search(bigchain, search)
     return flask.jsonify({'assets': result})
 
 

@@ -15,7 +15,8 @@ class AssetStore {
             err: null,
             payloadToPost: null,
             idToFetch: null,
-            accountToFetch: null
+            accountToFetch: null,
+            search: null
         };
         this.bindActions(AssetActions);
         this.registerAsync(AssetSource);
@@ -31,13 +32,15 @@ class AssetStore {
             this.asset = asset;
             this.assetMeta.err = null;
             this.assetMeta.idToFetch = null;
+            this.assetMeta.search = null;
         } else {
             this.assetMeta.err = new Error('Problem fetching the asset');
         }
     }
     
-    onFetchAssetList(accountToFetch) {
+    onFetchAssetList({ accountToFetch, search }) {
         this.assetMeta.accountToFetch = accountToFetch;
+        this.assetMeta.search = search;
         this.getInstance().lookupAssetList();
     }
 
@@ -46,6 +49,7 @@ class AssetStore {
             this.assetList = assetList['assets'];
             this.assetMeta.err = null;
             this.assetMeta.accountToFetch = null;
+            this.assetMeta.search = null;
         } else {
             this.assetMeta.err = new Error('Problem fetching the asset list');
         }
@@ -71,6 +75,7 @@ class AssetStore {
         this.assetMeta.err = null;
         this.assetMeta.payloadToPost = null;
         this.assetMeta.idToFetch = null;
+        this.assetMeta.search = null;
     }
 
     onErrorAsset(err) {

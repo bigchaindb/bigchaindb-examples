@@ -2,6 +2,8 @@ import json
 from time import sleep
 from datetime import datetime
 
+import rethinkdb as r
+
 import cryptoconditions as cc
 from decorator import contextmanager
 
@@ -21,14 +23,29 @@ def take_at_least_seconds(amount_in_seconds):
         t_expired = datetime.now() - t_issued
 
 
-def get_owned_assets(bigchain, vk):
+def get_owned_assets(bigchain, vk, query):
     asset_ids = bigchain.get_owned_ids(vk)
     assets = []
+    if not query:
+        query = ""
     for asset_id in asset_ids:
         result = bigchain.get_transaction(asset_id['txid'] if isinstance(asset_id, dict) else asset_id)
-        if result:
+        if result and query in result["transaction"]["data"]["payload"]["content"]:
             assets.append(result)
     return assets
+
+
+def get_assets(bigchain, search):
+    if search:
+        cursor = r.db('bigchain')\
+            .table('bigchain')\
+            .concat_map(lambda doc: doc["block"]["transactions"]\
+            .filter(lambda transaction: transaction["transaction"]["data"]["payload"]["content"].match(search))).run(bigchain.conn)
+    else:
+        cursor = r.db('bigchain') \
+            .table('bigchain') \
+            .concat_map(lambda doc: doc["block"]["transactions"]).run(bigchain.conn)
+    return list(cursor)
 
 
 def create_asset(bigchain, to, payload):

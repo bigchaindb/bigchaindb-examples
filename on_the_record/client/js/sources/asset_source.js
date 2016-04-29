@@ -20,8 +20,11 @@ const AssetSource = {
     
     lookupAssetList: {
         remote(state) {
+            let queryParams = {
+                search: state.assetMeta.search
+            };
             return requests.get('asset_list',
-            {account_id: state.assetMeta.accountToFetch});
+            { account_id: state.assetMeta.accountToFetch, search: state.assetMeta.search});
         },
 
         success: AssetActions.successFetchAssetList,
