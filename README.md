@@ -31,7 +31,7 @@ With the guidelines above, you can check whether you can launch bigchaindb and l
 
 #### Examples Installation
 
-- Dependencies: python3, npm>=3.3, node>=5.3
+- Dependencies: python3, [node>=5.3](https://nodejs.org/en/download/), [npm>=3.3](https://docs.npmjs.com/getting-started/installing-node), [webpack>=1.13.0](https://webpack.github.io/docs/installation.html)
 
 ```bash
 # Clone the repository and install:
@@ -40,23 +40,30 @@ $ cd bigchaindb-examples
 
 # (optional) Run a virtualenv
 $ virtualenv venv -p python3
-(optional)$ source venv/bin/activate
+$ source venv/bin/activate
 
 # Install server
 $ python3 setup.py install
 
+# Make sure RethinkDB is running!
 # Load initial data
 $ cd on_the_record
 $ python3 load_users.py
 
-# Install client
-$ webpack -b
+# Install client (still in the same directory, on_the_record) 
+$ npm install
 ```
 
 #### Launch the App server and BigchainDB
 
+Launch BigchainDB
 ```bash
-$ bigchaindb start & python3 on_the_record/server.py
+$ bigchaindb start 
+```
+
+
+```bash
+$ python3 -m on_the_record.server.server.py
 ```
 
 Now you should see the app running on http://localhost:8000/

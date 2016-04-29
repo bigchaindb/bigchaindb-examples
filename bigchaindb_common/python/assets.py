@@ -25,7 +25,7 @@ def get_owned_assets(bigchain, vk):
     asset_ids = bigchain.get_owned_ids(vk)
     assets = []
     for asset_id in asset_ids:
-        result = bigchain.get_transaction(asset_id['txid'])
+        result = bigchain.get_transaction(asset_id['txid'] if isinstance(asset_id, dict) else asset_id)
         if result:
             assets.append(result)
     return assets

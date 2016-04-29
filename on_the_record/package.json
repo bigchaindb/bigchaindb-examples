@@ -1,6 +1,6 @@
 {
-  "name": "on the record",
-  "version": "1.0.0",
+  "name": "on-the-record",
+  "version": "0.0.1",
   "description": "Put your messages on the record",
   "main": "gulpfile.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "react"
   ],
   "author": "Dimitri De Jonghe",
-  "license": "ISC",
+  "license": "AGPL2",
   "dependencies": {
     "alt": "^0.16.5",
     "babel": "^5.8.23",
