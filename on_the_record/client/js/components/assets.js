@@ -14,7 +14,7 @@ import AscribeSpinner from '../spinner';
 const Assets = React.createClass({
 
     propTypes: {
-        assetList: React.PropTypes.array,
+        assetList: React.PropTypes.object,
         activeAccount: React.PropTypes.object
     },
 
@@ -65,11 +65,12 @@ const Assets = React.createClass({
 
 const AssetHistory = React.createClass({
     propTypes: {
-        assetList: React.PropTypes.array
+        assetList: React.PropTypes.object
     },
 
     render() {
-        const { assetList } = this.props;
+        let { assetList } = this.props;
+        assetList = assetList ? assetList.bigchain.concat(assetList.backlog) : assetList;
 
         if ( assetList && assetList.length > 0 ) {
 
@@ -116,11 +117,14 @@ const AssetRow = React.createClass({
     render() {
         const { asset } = this.props;
 
+        const inBacklog = 'assignee' in asset;
+
+        let validGlyph = inBacklog ? <Glyphicon glyph="cog"/> : <Glyphicon glyph="ok"/>;
         return (
             <Row>
                 <div className='asset-container pull-right'>
                     <div className='asset-container-id'>
-                        id: { asset.id }
+                        { asset.id }
                     </div>
                     <div className='asset-container-detail'>
                         { asset.transaction.data ?
@@ -129,7 +133,8 @@ const AssetRow = React.createClass({
                         }
                     </div>
                     <div className='asset-container-timestamp pull-right'>
-                        timestamp: { asset.transaction.timestamp }
+                        { new Date(parseInt(asset.transaction.timestamp, 10)*1000).toGMTString() + '   ' }
+                        { validGlyph }
                     </div>
                 </div>
             </Row>

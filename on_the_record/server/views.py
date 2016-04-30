@@ -40,15 +40,19 @@ def post_account():
 
 @api_views.route('/accounts/<account_vk>/assets/')
 def get_assets_for_account(account_vk):
-    search = request.args.get('search')
-    result = assets.get_owned_assets(bigchain, account_vk, search)
+    query = request.args.get('search')
+
+    result = {
+        'bigchain': assets.get_owned_assets(bigchain, vk=account_vk, query=query),
+        'backlog': assets.get_owned_assets(bigchain, vk=account_vk, query=query, table='backlog')
+    }
     return flask.jsonify({'assets': result})
 
 
 @api_views.route('/assets/')
 def get_assets():
     search = request.args.get('search')
-    result = assets.get_asset_by_payload_search(bigchain, search)
+    result = assets.get_assets(bigchain, search)
     return flask.jsonify({'assets': result})
 
 

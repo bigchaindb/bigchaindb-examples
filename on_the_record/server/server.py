@@ -25,6 +25,6 @@ def create_app(debug):
 
 
 if __name__ == '__main__':
-    app = create_app(debug=False)
+    app = create_app(debug=True)
     app.run(port=8000)
     app.run()

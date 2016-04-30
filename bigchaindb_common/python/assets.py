@@ -23,15 +23,34 @@ def take_at_least_seconds(amount_in_seconds):
         t_expired = datetime.now() - t_issued
 
 
-def get_owned_assets(bigchain, vk, query):
-    asset_ids = bigchain.get_owned_ids(vk)
+def get_owned_assets(bigchain, vk, query, table='bigchain'):
     assets = []
-    if not query:
-        query = ""
+    query = query if query else ""
+
+    asset_ids = bigchain.get_owned_ids(vk)
+
+    try:
+        if table == 'backlog':
+            response = r.table(table).filter(lambda transaction: transaction['transaction']['new_owner'] == vk).run(bigchain.conn)
+            result = list(response)
+            if result:
+                if len(result) and query in result[0]["transaction"]["data"]["payload"]["content"]:
+                    assets.append(result[0])
+    except:
+        pass
+
     for asset_id in asset_ids:
-        result = bigchain.get_transaction(asset_id['txid'] if isinstance(asset_id, dict) else asset_id)
-        if result and query in result["transaction"]["data"]["payload"]["content"]:
-            assets.append(result)
+        txid = asset_id['txid'] if isinstance(asset_id, dict) else asset_id
+
+        if table == 'bigchain':
+            response = r.table(table).concat_map(lambda doc: doc['block']['transactions']) \
+                .filter(lambda transaction: transaction['id'] == txid).run(bigchain.conn)
+
+        # transaction ids should be unique
+        result = list(response)
+        if result:
+            if len(result) and query in result[0]["transaction"]["data"]["payload"]["content"]:
+                assets.append(result[0])
     return assets
 
 
