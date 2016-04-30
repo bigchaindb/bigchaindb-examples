@@ -32,7 +32,7 @@ docs_require = [
 
 setup(
     name='BigchainDB-Examples',
-    version='0.0.1',
+    version='0.0.2',
     description='Example usages for BigchainDB',
     long_description=__doc__,
     url='https://github.com/BigchainDB/bigchaindb-examples/',
