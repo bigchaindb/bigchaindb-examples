@@ -15,6 +15,7 @@ dist/
 downloads/
 eggs/
 .eggs/
+node_modules
 lib/
 lib64/
 parts/

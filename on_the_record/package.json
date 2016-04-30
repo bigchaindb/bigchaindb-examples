@@ -1,6 +1,6 @@
 {
   "name": "on-the-record",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Put your messages on the record",
   "main": "gulpfile.js",
   "scripts": {

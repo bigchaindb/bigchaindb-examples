@@ -7,26 +7,19 @@ import { Row, Col, Button, Glyphicon } from 'react-bootstrap/lib/';
 import Scroll from 'react-scroll';
 
 import AssetActions from '../actions/asset_actions';
-import AssetStore from '../stores/asset_store';
 
 import AscribeSpinner from '../spinner';
 
 
-var currentPositionY = function() {
-  var supportPageOffset = window.pageXOffset !== undefined;
-  var isCSS1Compat = ((document.compatMode || '') === 'CSS1Compat');
-  return supportPageOffset ? window.pageYOffset : isCSS1Compat ?
-         document.documentElement.scrollTop : document.body.scrollTop;
-};
-
 const Assets = React.createClass({
 
     propTypes: {
+        assetList: React.PropTypes.object,
         activeAccount: React.PropTypes.object
     },
 
     getInitialState: function() {
-        return {value: null};
+        return { value: null };
     },
 
     postAsset(payload) {
@@ -41,28 +34,28 @@ const Assets = React.createClass({
             to: activeAccount.vk,
             content: value
         };
-        this.postAsset(payload)
-        this.setState({value: null});
+        this.postAsset(payload);
+        this.setState({ value: null });
         Scroll.animateScroll.scrollToBottom();
     },
 
     handleInputChange(event) {
-        this.setState({value: event.target.value});
+        this.setState({ value: event.target.value });
     },
 
     render() {
-        const { activeAccount } = this.props;
+        const { assetList } = this.props;
         const { value } = this.state;
 
         return (
             <div>
-                <AssetHistory activeAccount={activeAccount}/>
-                <form onSubmit={this.handleInputSubmit}>
+                <AssetHistory assetList={ assetList }/>
+                <form onSubmit={ this.handleInputSubmit }>
                     <input
                         className="navbar-fixed-bottom"
-                        autoFocus placeholder="Type your reaction/emoji"
-                        value={value}
-                        onChange={this.handleInputChange}/>
+                        autoFocus placeholder="Type what you want to share on the blockchain"
+                        value={ value }
+                        onChange={ this.handleInputChange }/>
                 </form>
             </div>
         );
@@ -72,44 +65,12 @@ const Assets = React.createClass({
 
 const AssetHistory = React.createClass({
     propTypes: {
-        activeAccount: React.PropTypes.object
-    },
-
-    getInitialState() {
-        return AssetStore.getState();
-    },
-
-    componentDidMount() {
-        AssetStore.listen(this.onChange);
-
-        this.fetchAssetList();
-        Scroll.animateScroll.scrollToBottom();
-    },
-
-    componentWillUnmount() {
-        AssetStore.unlisten(this.onChange);
-    },
-
-    fetchAssetList(){
-        AssetActions.flushAssetList();
-        const { activeAccount } = this.props;
-        const maxScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        if ( activeAccount ) {
-            AssetActions.fetchAssetList(activeAccount.vk);
-
-            if (maxScroll - currentPositionY() < 40) {
-               Scroll.animateScroll.scrollToBottom();
-            }
-        }
-        setTimeout(this.fetchAssetList, 1000);
-    },
-
-    onChange(state) {
-        this.setState(state);
+        assetList: React.PropTypes.object
     },
 
     render() {
-        const { assetList } = this.state;
+        let { assetList } = this.props;
+        assetList = assetList ? assetList.bigchain.concat(assetList.backlog) : assetList;
 
         if ( assetList && assetList.length > 0 ) {
 
@@ -156,20 +117,24 @@ const AssetRow = React.createClass({
     render() {
         const { asset } = this.props;
 
+        const inBacklog = 'assignee' in asset;
+
+        let validGlyph = inBacklog ? <Glyphicon glyph="cog"/> : <Glyphicon glyph="ok"/>;
         return (
             <Row>
                 <div className='asset-container pull-right'>
                     <div className='asset-container-id'>
-                        id: {asset.id}
+                        { asset.id }
                     </div>
                     <div className='asset-container-detail'>
-                        {asset.transaction.data ?
+                        { asset.transaction.data ?
                             asset.transaction.data.payload.content :
                             '-'
                         }
                     </div>
                     <div className='asset-container-timestamp pull-right'>
-                        timestamp: {asset.transaction.timestamp}
+                        { new Date(parseInt(asset.transaction.timestamp, 10)*1000).toGMTString() + '   ' }
+                        { validGlyph }
                     </div>
                 </div>
             </Row>

@@ -13,7 +13,7 @@ import AccountStore from '../stores/account_store';
 
 import AscribeSpinner from '../spinner';
 
-const AccountList = React.createClass({
+const Accounts = React.createClass({
     propTypes: {
         activeAccount: React.PropTypes.object,
         handleAccountClick: React.PropTypes.func
@@ -109,4 +109,4 @@ const AccountRow = React.createClass({
     }
 });
 
-export default AccountList;
+export default Accounts;

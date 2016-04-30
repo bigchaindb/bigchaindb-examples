@@ -2,6 +2,8 @@ import json
 from time import sleep
 from datetime import datetime
 
+import rethinkdb as r
+
 import cryptoconditions as cc
 from decorator import contextmanager
 
@@ -21,14 +23,54 @@ def take_at_least_seconds(amount_in_seconds):
         t_expired = datetime.now() - t_issued
 
 
-def get_owned_assets(bigchain, vk):
-    asset_ids = bigchain.get_owned_ids(vk)
+def query_reql_response(response, query):
+    result = list(response)
+
+    if result and len(result):
+        content = result[0]["transaction"]["data"]["payload"]["content"]
+        if content and query in content:
+            return result
+    return None
+
+
+def get_owned_assets(bigchain, vk, query, table='bigchain'):
     assets = []
-    for asset_id in asset_ids:
-        result = bigchain.get_transaction(asset_id['txid'] if isinstance(asset_id, dict) else asset_id)
-        if result:
-            assets.append(result)
+    query = query if query else ""
+
+    asset_ids = bigchain.get_owned_ids(vk)
+
+    if table == 'backlog':
+        reql_query = r.table(table).filter(lambda transaction: transaction['transaction']['new_owner'] == vk)
+
+        response = query_reql_response(reql_query.run(bigchain.conn), query)
+        if response:
+            assets += response
+
+    elif table == 'bigchain':
+        for asset_id in asset_ids:
+            txid = asset_id['txid'] if isinstance(asset_id, dict) else asset_id
+
+            reql_query = r.table(table)\
+                .concat_map(lambda doc: doc['block']['transactions']) \
+                .filter(lambda transaction: transaction['id'] == txid)
+            response = query_reql_response(reql_query.run(bigchain.conn), query)
+            if response:
+                assets += response
+
     return assets
+
+
+def get_assets(bigchain, search):
+    if search:
+        cursor = r.db('bigchain')\
+            .table('bigchain')\
+            .concat_map(lambda doc: doc["block"]["transactions"]\
+            .filter(lambda transaction: transaction["transaction"]["data"]["payload"]["content"].match(search))).run(bigchain.conn)
+    else:
+        cursor = r.db('bigchain') \
+            .table('bigchain') \
+            .concat_map(lambda doc: doc["block"]["transactions"]).run(bigchain.conn)
+    return list(cursor)
 
 
 def create_asset(bigchain, to, payload):
