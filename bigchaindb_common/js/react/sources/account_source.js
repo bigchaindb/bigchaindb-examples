@@ -1,6 +1,6 @@
 'use strict';
 
-import requests from '../utils/requests';
+import requests from '../../utils/requests';
 
 import AccountActions from '../actions/account_actions';
 

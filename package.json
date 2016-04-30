@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:ascribe/diamondexplorer.git"
+    "url": "git@github.com:bigchaindb/bigchaindb-examples.git"
   },
   "keywords": [
-    "ascribe",
-    "diamonds",
+    "bigchaindb",
+    "examples",
     "react"
   ],
   "author": "Dimitri De Jonghe",
-  "license": "AGPL2",
+  "license": "Apache-2.0",
   "dependencies": {
     "alt": "^0.16.5",
     "babel": "^5.8.23",
@@ -38,7 +38,6 @@
     "extract-text-webpack-plugin": "^0.9.1",
     "file-loader": "^0.8.5",
     "history": "^1.13.1",
-    "inline-environment-variables-webpack-plugin": "0.0.2",
     "isomorphic-fetch": "^2.2.0",
     "lodash": "^3.10.1",
     "moment": "^2.10.6",
@@ -56,7 +55,7 @@
     "shallow-equals": "0.0.0",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
-    "webpack": "^1.12.6"
+    "webpack": "^1.12.12"
   },
   "devDependencies": {
     "eslint": "^2.4.0",

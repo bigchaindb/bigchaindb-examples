@@ -6,9 +6,9 @@ import { Row, Col, Button, Glyphicon } from 'react-bootstrap/lib/';
 
 import Scroll from 'react-scroll';
 
-import AssetActions from '../actions/asset_actions';
+import AssetActions from '../../../../bigchaindb_common/js/react/actions/asset_actions';
 
-import AscribeSpinner from '../spinner';
+import AscribeSpinner from '../../../../bigchaindb_common/js/react/components/spinner';
 
 
 const Assets = React.createClass({

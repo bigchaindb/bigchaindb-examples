@@ -1,7 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var InlineEnviromentVariablesPlugin = require('inline-environment-variables-webpack-plugin');
 
 
 module.exports = {
@@ -9,10 +8,10 @@ module.exports = {
 
     devtool: 'source-map',
 
-    entry:  './client/js/App.js',
+    entry:  './on_the_record/client/js/App.js',
 
     output: {
-        path: path.resolve('./server/static/'),
+        path: path.resolve('./on_the_record/server/static/'),
         filename: "app.js"
     },
 
@@ -33,13 +32,16 @@ module.exports = {
     plugins: [
         new ExtractTextPlugin('style.css', {
             allChunks: true
-        }),
-        new InlineEnviromentVariablesPlugin('NODE_ENV')
+        })
     ],
 
     resolve: {
         modulesDirectories: ['node_modules', 'bower_components'],
         extensions: ['', '.js', '.jsx']
+    },
+
+    resolveLoader: {
+        root: path.join(__dirname, 'node_modules')
     }
 
 };

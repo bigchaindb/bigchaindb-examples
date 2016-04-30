@@ -4,12 +4,49 @@ This repo contains examples and tutorials for BigchainDB.
 
 Warning: These examples are for demonstration purpose and should not be used for production
 
+## Installation
+
+Dependencies:
+ - LINUX dependencies: see [setup BigchainDB & RethinkDB](https://bigchaindb.readthedocs.io/en/latest/installing-server.html#install-and-run-rethinkdb-server)
+ - python>=3.4
+ - [node>=5.3](https://nodejs.org/en/download/) 
+ - [npm>=3.3](https://docs.npmjs.com/getting-started/installing-node) 
+ - [webpack>=1.13.0](https://webpack.github.io/docs/installation.html)
+
+```bash
+# Clone the repository and install:
+$ git clone git@github.com:bigchaindb/bigchaindb-examples.git
+$ cd bigchaindb-examples
+
+# (optional) Run a virtualenv
+$ virtualenv venv -p python3
+$ source venv/bin/activate
+
+# Install server
+$ python3 setup.py install
+
+# Load initial data (Make sure RethinkDB is running!)
+$ python3 init_db_.py
+
+# Install client
+$ npm install
+```
+
+### Launch BigchainDB
+
+Launch BigchainDB in a separate terminal
+
+```bash
+# Note: first time requires configuration: bigchaindb configure
+$ bigchaindb start 
+```
+
 ## Example: "On the Record"
 
 "On the Record" is a simple logging app, wrapped as a messaging board.
 
 <p align="center">
-  <img width="70%" height="70%" src ="./img/on_the_record_v0.0.1.png" />
+  <img width="70%" height="70%" src ="./docs/img/on_the_record_v0.0.1.png" />
 </p>
 
 ### Use cases
@@ -26,44 +63,7 @@ The app is structured as follows:
 
 All messages are JSON based.
 
-### How to install and run
-
-#### BigchainDB Installation
-See how to [setup BigchainDB (& RethinkDB)](https://bigchaindb.readthedocs.io/en/latest/installing-server.html#install-and-run-rethinkdb-server)
-
-With the guidelines above, you can check whether you can launch bigchaindb and load some benchmarks
-
-#### Examples Installation
-
-- Dependencies: python3, [node>=5.3](https://nodejs.org/en/download/), [npm>=3.3](https://docs.npmjs.com/getting-started/installing-node), [webpack>=1.13.0](https://webpack.github.io/docs/installation.html)
-
-```bash
-# Clone the repository and install:
-$ git clone git@github.com:bigchaindb/bigchaindb-examples.git
-$ cd bigchaindb-examples
-
-# (optional) Run a virtualenv
-$ virtualenv venv -p python3
-$ source venv/bin/activate
-
-# Install server
-$ python3 setup.py install
-
-# Make sure RethinkDB is running!
-# Load initial data
-$ cd on_the_record
-$ python3 load_users.py
-
-# Install client (still in the same directory, on_the_record) 
-$ npm install
-```
-
-#### Launch the App server and BigchainDB
-
-Launch BigchainDB
-```bash
-$ bigchaindb start 
-```
+### How to launch the App server
 
 In another terminal launch the gunicorn server (from the repository root dir)
 ```bash

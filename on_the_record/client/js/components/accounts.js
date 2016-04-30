@@ -8,10 +8,10 @@ import { Row, Col, Button, Glyphicon } from 'react-bootstrap/lib/';
 
 import classnames from 'classnames/';
 
-import AccountActions from '../actions/account_actions';
-import AccountStore from '../stores/account_store';
+import AccountActions from '../../../../bigchaindb_common/js/react/actions/account_actions';
+import AccountStore from '../../../../bigchaindb_common/js/react/stores/account_store';
 
-import AscribeSpinner from '../spinner';
+import AscribeSpinner from '../../../../bigchaindb_common/js/react/components/spinner';
 
 const Accounts = React.createClass({
     propTypes: {

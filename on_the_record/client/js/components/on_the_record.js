@@ -8,12 +8,12 @@ import Scroll from 'react-scroll';
 
 import Accounts from './accounts';
 import Assets from './assets';
-import Search from './search';
+import Search from '../../../../bigchaindb_common/js/react/components/search';
 
-import AssetActions from '../actions/asset_actions';
-import AssetStore from '../stores/asset_store';
+import AssetActions from '../../../../bigchaindb_common/js/react/actions/asset_actions';
+import AssetStore from '../../../../bigchaindb_common/js/react/stores/asset_store';
 
-import { mergeOptions } from '../utils/general_utils';
+import { mergeOptions } from '../../../../bigchaindb_common/js/utils/general_utils';
 
 var currentPositionY = function() {
   var supportPageOffset = window.pageXOffset !== undefined;

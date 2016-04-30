@@ -4,12 +4,12 @@ For more information please refer to the documentation in Apiary:
  - http://docs.bigchaindb.apiary.io/
 """
 
+import bigchaindb
 import flask
 from flask import request, Blueprint, render_template
 
-import bigchaindb
-
-from bigchaindb_common.python import assets, accounts
+from bigchaindb_common.python.models import accounts
+from bigchaindb_common.python.models import assets
 
 app_name = __name__.split('.')[0]
 bigchain = bigchaindb.Bigchain()
@@ -25,7 +25,7 @@ def index():
 
 @api_views.route('/accounts/')
 def get_accounts():
-    result = accounts.retrieve_accounts(app_name, bigchain)
+    result = accounts.retrieve_accounts(bigchain)
     return flask.jsonify({'accounts': result})
 
 

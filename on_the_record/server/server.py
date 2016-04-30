@@ -4,7 +4,7 @@ The application is implemented in Flask and runs using Gunicorn.
 """
 from flask import Flask
 
-from on_the_record.server import views
+from bigchaindb_common.python.api import views
 
 
 def create_app(debug):

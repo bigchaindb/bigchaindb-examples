@@ -7,13 +7,13 @@ import {Input, Glyphicon} from 'react-bootstrap/lib/';
 const Search = React.createClass({
     propTypes: {
         handleSearch: React.PropTypes.func,
-        assetMeta: React.PropTypes.object
+        initialQuery: React.PropTypes.object
     },
 
     getInitialState() {
         return {
             timer: null,
-            searchQuery: this.props.assetMeta.search,
+            searchQuery: this.props.initalQuery,
             loading: false
         };
     },
