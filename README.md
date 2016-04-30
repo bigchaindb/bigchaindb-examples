@@ -8,15 +8,14 @@ Warning: These examples are for demonstration purpose and should not be used for
 
 "On the Record" is a simple logging app, wrapped as a messaging board.
 
+<p align="center">
+  <img width="70%" height="70%" src ="./img/on_the_record_v0.0.1.png" />
+</p>
+
 ### Use cases
 
 - Immutable logging of data
 - Notarization of data, text, emails
-
-<p align="center">
-  <img width="80%" height="80%" src ="./img/on_the_record_v0.0.1.png" />
-</p>
-
 
 ### Structure
 
