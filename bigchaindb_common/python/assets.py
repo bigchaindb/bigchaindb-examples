@@ -23,34 +23,40 @@ def take_at_least_seconds(amount_in_seconds):
         t_expired = datetime.now() - t_issued
 
 
+def query_reql_response(response, query):
+    result = list(response)
+
+    if result and len(result):
+        content = result[0]["transaction"]["data"]["payload"]["content"]
+        if content and query in content:
+            return result
+    return None
+
+
 def get_owned_assets(bigchain, vk, query, table='bigchain'):
     assets = []
     query = query if query else ""
 
     asset_ids = bigchain.get_owned_ids(vk)
 
-    try:
-        if table == 'backlog':
-            response = r.table(table).filter(lambda transaction: transaction['transaction']['new_owner'] == vk).run(bigchain.conn)
-            result = list(response)
-            if result:
-                if len(result) and query in result[0]["transaction"]["data"]["payload"]["content"]:
-                    assets.append(result[0])
-    except:
-        pass
+    if table == 'backlog':
+        reql_query = r.table(table).filter(lambda transaction: transaction['transaction']['new_owner'] == vk)
 
-    for asset_id in asset_ids:
-        txid = asset_id['txid'] if isinstance(asset_id, dict) else asset_id
+        response = query_reql_response(reql_query.run(bigchain.conn), query)
+        if response:
+            assets += response
 
-        if table == 'bigchain':
-            response = r.table(table).concat_map(lambda doc: doc['block']['transactions']) \
-                .filter(lambda transaction: transaction['id'] == txid).run(bigchain.conn)
+    elif table == 'bigchain':
+        for asset_id in asset_ids:
+            txid = asset_id['txid'] if isinstance(asset_id, dict) else asset_id
 
-        # transaction ids should be unique
-        result = list(response)
-        if result:
-            if len(result) and query in result[0]["transaction"]["data"]["payload"]["content"]:
-                assets.append(result[0])
+            reql_query = r.table(table)\
+                .concat_map(lambda doc: doc['block']['transactions']) \
+                .filter(lambda transaction: transaction['id'] == txid)
+            response = query_reql_response(reql_query.run(bigchain.conn), query)
+            if response:
+                assets += response
+
     return assets
 
 
