@@ -84,37 +84,43 @@ const ShareTrade = React.createClass({
         if ( activeAccount ) {
             content = (
                 <Assets
-                    assetList={assetList}
-                    activeAccount={activeAccount}/>
+                    assetList={ assetList }
+                    activeAccount={ activeAccount }/>
             );
         }
 
         return (
             <div>
                 <Navbar inverse fixedTop>
-                    <h1 style={{ textAlign: 'center', color: 'white'}}>"Share Trade"</h1>
+                    <h1 style={{ textAlign: 'center', color: 'white' }}>"Share Trade"</h1>
                 </Navbar>
                 <div id="wrapper">
-                    <br />
                     <div id="sidebar-wrapper">
                         <div className="sidebar-nav">
-                            <Search assetMeta={assetMeta} handleSearch={this.handleSearch}/>
+                            <Search
+                                initialQuery={ assetMeta.search }
+                                handleSearch={ this.handleSearch }/>
                             <Accounts
-                                activeAccount={activeAccount}
-                                handleAccountClick={this.setActiveAccount}/>
+                                activeAccount={ activeAccount }
+                                handleAccountClick={ this.setActiveAccount }/>
                         </div>
                     </div>
                     <div id="page-content-wrapper">
                         <div className="page-content">
                             <Row>
-                                <Col sm={6} md={8} className="asset-matrix">
-                                    <AssetMatrix
-                                        rows={10} cols={4}
-                                        assetList={assetList}
-                                        activeAccount={activeAccount}/>
+                                <Col xs={ 6 } md={ 8 } className="asset-matrix">
+                                    <div className="vertical-align-outer">
+                                        <div className="vertical-align-inner">
+                                            <AssetMatrix
+                                                rows={ 8 }
+                                                cols={ 8 }
+                                                assetList={ assetList }
+                                                activeAccount={ activeAccount }/>
+                                        </div>
+                                    </div>
                                 </Col>
-                                <Col sm={6} md={4} className="asset-history">
-                                    {content}
+                                <Col xs={ 6 } md={ 4 } className="asset-history">
+                                    { content }
                                 </Col>
                             </Row>
                         </div>

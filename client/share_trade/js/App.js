@@ -3,7 +3,7 @@
 import 'babel/polyfill';
 import fetch from 'isomorphic-fetch/';
 
-import '../scss/main.scss';
+import '../../lib/css/scss/main.scss';
 
 import React from 'react/';
 import ReactDOM from 'react-dom/';
@@ -24,7 +24,7 @@ let App = React.createClass({
 
     render() {
         return (
-            <div className="App">
+            <div className="App share-trade">
                 {this.props.children}
             </div>
         );

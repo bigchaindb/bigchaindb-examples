@@ -1,0 +1,33 @@
+
+.on-the-record {
+  .page-content {
+    padding-bottom: 5em;
+    padding-top: 1em;
+  }
+
+  .asset-container {
+    border: 1px solid lighten($fg-color, 50%);
+    background: lighten($fg-color, 95%);
+    padding: 1em;
+    border-radius: .7em;
+    margin-bottom: .5em;
+  }
+
+  .asset-container-id,
+  .asset-container-timestamp {
+    font-size: 0.8em;
+    color: lighten($fg-color, 50%);
+    text-transform: uppercase;
+  }
+
+  .asset-container-id {
+    font-style: italic;
+    margin-bottom: 1em;
+    font-size: 0.75em;
+  }
+
+  .asset-container-timestamp {
+    margin-bottom: -.6em;
+  }
+
+}

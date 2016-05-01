@@ -25,38 +25,13 @@ const Assets = React.createClass({
     postAsset(payload) {
         AssetActions.postAsset(payload);
     },
-
-    handleInputSubmit(event){
-        event.preventDefault();
-        const { activeAccount } = this.props;
-        const { value } = this.state;
-        const payload = {
-            to: activeAccount.vk,
-            content: value
-        };
-        this.postAsset(payload);
-        this.setState({ value: null });
-        Scroll.animateScroll.scrollToBottom();
-    },
-
-    handleInputChange(event) {
-        this.setState({ value: event.target.value });
-    },
-
+    
     render() {
         const { assetList } = this.props;
-        const { value } = this.state;
 
         return (
             <div>
                 <AssetHistory assetList={ assetList }/>
-                <form onSubmit={ this.handleInputSubmit }>
-                    <input
-                        className="navbar-fixed-bottom"
-                        autoFocus placeholder="Type what you want to share on the blockchain"
-                        value={ value }
-                        onChange={ this.handleInputChange }/>
-                </form>
             </div>
         );
     }
@@ -122,7 +97,7 @@ const AssetRow = React.createClass({
         let validGlyph = inBacklog ? <Glyphicon glyph="cog"/> : <Glyphicon glyph="ok"/>;
         return (
             <Row>
-                <div className='asset-container pull-right'>
+                <div className='asset-container'>
                     <div className='asset-container-id'>
                         { asset.id }
                     </div>
@@ -132,7 +107,7 @@ const AssetRow = React.createClass({
                             '-'
                         }
                     </div>
-                    <div className='asset-container-timestamp pull-right'>
+                    <div className='asset-container-timestamp'>
                         { new Date(parseInt(asset.transaction.timestamp, 10)*1000).toGMTString() + '   ' }
                         { validGlyph }
                     </div>
