@@ -8,11 +8,14 @@ module.exports = {
 
     devtool: 'source-map',
 
-    entry:  './on_the_record/client/js/App.js',
+    entry:  {
+        on_the_record: "./client/on_the_record/js/App.js",
+        share_trade: "./client/share_trade/js/App.js"
+    },
 
     output: {
-        path: path.resolve('./on_the_record/server/static/'),
-        filename: "app.js"
+        path: path.resolve(path.join(__dirname, '/server/static/')),
+        filename: "[name].js"
     },
 
     module: {

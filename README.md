@@ -41,9 +41,21 @@ Launch BigchainDB in a separate terminal
 $ bigchaindb start 
 ```
 
+### Launch the App server
+
+In another terminal launch the gunicorn server (from the repository root dir)
+```bash
+$ python3 -m server.server
+```
+
 ## Example: "On the Record"
 
 "On the Record" is a simple logging app, wrapped as a messaging board.
+
+You should see the app running on [http://localhost:8000/ontherecord/](http://localhost:8000/)
+
+__Warning__: do not use `127.0.0.1` opposed to `localhost` as this may cause CORS problems.
+
 
 <p align="center">
   <img width="70%" height="70%" src ="./docs/img/on_the_record_v0.0.1.png" />
@@ -63,16 +75,6 @@ The app is structured as follows:
 
 All messages are JSON based.
 
-### How to launch the App server
-
-In another terminal launch the gunicorn server (from the repository root dir)
-```bash
-$ python3 -m on_the_record.server.server
-```
-
-Now you should see the app running on [http://localhost:8000/](http://localhost:8000/)
-
-__Warning__: do not use `127.0.0.1` opposed to `localhost` as this may cause CORS problems.
 
 ### Functionality
 

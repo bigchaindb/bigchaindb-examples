@@ -1,6 +1,6 @@
 import bigchaindb
 
-from bigchaindb_common.python.models.accounts import Account
+from server.lib.models.accounts import Account
 
 app_name = 'on_the_record'
 bigchain = bigchaindb.Bigchain()

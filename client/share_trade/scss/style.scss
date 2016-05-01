@@ -1,0 +1,36 @@
+$colorGrid:#BDC3C7;
+$colorAvailable:#ECF0F1;
+$colorPath:#3498DB;
+$colorBarrier:#E74C3C;
+$colorPipette:#34495E;
+$colorComponent:#1ABC9C;
+
+$colorList: (
+  ("available", $colorAvailable),
+  ("barrier", $colorBarrier),
+  ("path", $colorPath),
+  ("pipette", $colorPipette),
+  ("component", $colorComponent)
+);
+
+.Matrix {
+  .Grid {
+    stroke: $colorGrid;
+  }
+
+  .Cell {
+    @each $colorMap in $colorList {
+      $state: nth($colorMap, 1);
+      $color: nth($colorMap, 2);
+
+      &.#{$state} {
+        fill: $color;
+      }
+    }
+  }
+
+  .available {
+    stroke: black;
+    stroke-width: 0.1;
+  }
+}
