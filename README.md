@@ -24,6 +24,8 @@ $ source venv/bin/activate
 
 # Install server
 $ python3 setup.py install
+# or
+$ pip install -e .
 
 # Load initial data (Make sure RethinkDB is running!)
 $ python3 init_db_.py
@@ -45,7 +47,7 @@ $ bigchaindb start
 
 In another terminal launch the gunicorn server (from the repository root dir)
 ```bash
-$ python3 -m server.server
+$ python3 -m server.app
 ```
 
 ## Example: "On the Record"
