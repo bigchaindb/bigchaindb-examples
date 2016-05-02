@@ -1,0 +1,92 @@
+@import "variables";
+
+.pagination {
+  margin-right: 2em;
+}
+.pagination > li > a,
+.pagination > li > span {
+  color: lighten($fg-color, 60%);
+}
+
+.pagination > li > a:hover,
+.pagination > li > span:hover {
+  color: lighten($fg-color, 30%);
+  border-color: lighten($fg-color, 40%);
+}
+
+.pagination > .active > a,
+.pagination > .active > a:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span,
+.pagination > .active > span:hover,
+.pagination > .active > span:focus {
+  background-color: $bg-color;
+  border-color: lighten($fg-color, 30%);
+  color: $fg-color;
+}
+
+.btn-default {
+  border-radius: 0;
+  border: 1px solid lighten($fg-color, 20%);
+  margin: .2em;
+  background: $bg-color;
+  color: lighten($fg-color, 20%);
+}
+
+.btn-default:focus,
+.btn-default.focus,
+.btn-default:active,
+.btn-default.active,
+.btn-default.active:focus,
+.btn-default.active:hover,
+.btn-default:hover {
+  background: lighten($fg-color, 20%);
+  color: $bg-color;
+  border: 1px solid $bg-color;
+}
+
+.btn-secondary{
+  border-radius: 0;
+  border: 1px solid $bg-color;
+  margin: .2em;
+  background: lighten($fg-color, 20%);
+  color: $bg-color;
+}
+
+.label-primary {
+  background-color: lighten($fg-color, 40%);
+  color: $bg-color !important;
+  border: 1px solid lighten($fg-color, 10%);
+  margin-right: .3em;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  padding: .5em 0.8em .4em 0.5em
+}
+
+.dropdown-menu {
+  > li > a {
+    color: $fg-color;
+  }
+  background-color: $bg-color;
+}
+
+.dropdown-menu > li > a:hover {
+  color: $bg-color;
+  background-color: $bg-color--hover;
+  cursor: pointer;
+}
+
+.btn-group.open .dropdown-toggle {
+  box-shadow: none;
+}
+
+.open > .btn-default.dropdown-toggle:hover,
+.open > .btn-default.dropdown-toggle:focus,
+.open > .btn-default.dropdown-toggle.focus{
+  color: $fg-color;
+  background-color: lighten($bg-color, 7%);
+  border: 1px solid $fg-color;
+}
