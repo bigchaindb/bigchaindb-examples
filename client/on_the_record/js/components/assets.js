@@ -32,6 +32,7 @@ const Assets = React.createClass({
         const { value } = this.state;
         const payload = {
             to: activeAccount.vk,
+            app: 'ontherecord',
             content: value
         };
         this.postAsset(payload);
