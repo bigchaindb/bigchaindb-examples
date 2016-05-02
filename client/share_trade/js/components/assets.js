@@ -18,8 +18,13 @@ const Assets = React.createClass({
         activeAccount: React.PropTypes.object
     },
 
-    getInitialState: function() {
+    getInitialState() {
         return { value: null };
+    },
+
+    componentDidUpdate() {
+        let objDiv = this.getDOMNode()
+        objDiv.scrollTop = objDiv.scrollHeight;
     },
 
     postAsset(payload) {
@@ -93,6 +98,7 @@ const AssetRow = React.createClass({
         const { asset } = this.props;
 
         const inBacklog = 'assignee' in asset;
+        const data = asset.transaction.data;
 
         let validGlyph = inBacklog ? <Glyphicon glyph="cog"/> : <Glyphicon glyph="ok"/>;
         return (
@@ -102,8 +108,7 @@ const AssetRow = React.createClass({
                         { asset.id }
                     </div>
                     <div className='asset-container-detail'>
-                        { asset.transaction.data ?
-                            asset.transaction.data.payload.content :
+                        {  data ? data.payload.content.x + ',' + data.payload.content.y :
                             '-'
                         }
                     </div>

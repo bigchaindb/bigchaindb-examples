@@ -18,12 +18,8 @@ const Assets = React.createClass({
         activeAccount: React.PropTypes.object
     },
 
-    getInitialState: function() {
+    getInitialState() {
         return { value: null };
-    },
-
-    postAsset(payload) {
-        AssetActions.postAsset(payload);
     },
 
     handleInputSubmit(event){
@@ -32,10 +28,9 @@ const Assets = React.createClass({
         const { value } = this.state;
         const payload = {
             to: activeAccount.vk,
-            app: 'ontherecord',
             content: value
         };
-        this.postAsset(payload);
+        AssetActions.postAsset(payload);
         this.setState({ value: null });
         Scroll.animateScroll.scrollToBottom();
     },
