@@ -108,7 +108,8 @@ const AssetRow = React.createClass({
                         { asset.id }
                     </div>
                     <div className='asset-container-detail'>
-                        {  data ? data.payload.content.x + ',' + data.payload.content.y :
+                        {  data ?
+                            'Row: ' + (data.payload.content.y + 1) + ', Col: ' + (data.payload.content.x + 1) :
                             '-'
                         }
                     </div>

@@ -14,7 +14,7 @@ import AssetMatrix from './asset_matrix';
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 import AssetStore from '../../../lib/js/react/stores/asset_store';
 
-import { mergeOptions, currentPositionY } from '../../../lib/js/utils/general_utils';
+import { mergeOptions } from '../../../lib/js/utils/general_utils';
 
 
 const ShareTrade = React.createClass({
@@ -50,41 +50,6 @@ const ShareTrade = React.createClass({
         }
         setTimeout(this.fetchAssetList, 1000);
     },
-
-    initializeMatrix(rows, cols) {
-        let matrix = new Array(cols);
-        for (let i = 0; i < rows; i++) {
-          matrix[i] = new Array(cols);
-            for (let j = 0; j < cols; j++) {
-                matrix[i][j] = '0';
-            }
-        }
-        return matrix
-    },
-
-    mapAssetsOnMatrix(assetList) {
-        console.log('start mapping')
-        let matrix = this.initializeMatrix(8, 8);
-        let assetListContent = this.getAssetListContent(assetList);
-        for (let content of assetListContent) {
-            matrix[content.y][content.x] = '1';
-        }
-        console.log('stop mapping')
-        return matrix
-    },
-
-
-    getAssetListContent(assetList) {
-        if (!assetList) {
-            return [];
-        }
-        assetList = assetList.bigchain.concat(assetList.backlog);
-
-        return assetList.map(( asset ) => {
-            return asset.transaction.data.payload.content;
-        });
-    },
-
 
     onChange(state) {
         this.setState(state);
@@ -143,8 +108,7 @@ const ShareTrade = React.createClass({
                                         <div className="vertical-align-inner">
                                             <AssetMatrix
                                                 rows={ 8 }
-                                                cols={ 8 }
-                                                matrix={ this.mapAssetsOnMatrix(assetList) }/>
+                                                cols={ 8 } />
                                         </div>
                                     </div>
                                 </Col>

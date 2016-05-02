@@ -4,7 +4,10 @@ import React from 'react/';
 
 import Matrix from 'react-matrix';
 
-import AssetActions from '../../../lib/js/react/actions/asset_actions';
+import AssetStore from '../../../lib/js/react/stores/asset_store';
+import AccountStore from '../../../lib/js/react/stores/account_store';
+
+import { mergeOptions } from '../../../lib/js/utils/general_utils';
 
 
 const AssetMatrix = React.createClass({
@@ -12,9 +15,7 @@ const AssetMatrix = React.createClass({
     propTypes: {
         rows: React.PropTypes.number,
         cols: React.PropTypes.number,
-        squareSize: React.PropTypes.number,
-        states: React.PropTypes.object,
-        matrix: React.PropTypes.array.isRequired
+        squareSize: React.PropTypes.number
     },
 
     getDefaultProps() {
@@ -24,23 +25,97 @@ const AssetMatrix = React.createClass({
             squareSize: 50,
             states: {
                 '0': 'available',
-                '1': 'barrier'
+                '1': 'state1',
+                '2': 'state2',
+                '3': 'state3',
+                '4': 'state4'
             }
         }
     },
 
+    getInitialState() {
+        const assetStore = AssetStore.getState();
+        const accountStore = AccountStore.getState();
+
+        return mergeOptions(
+            accountStore,
+            assetStore
+        );
+    },
+
+    componentDidMount() {
+        AssetStore.listen(this.onChange);
+        AccountStore.listen(this.onChange);
+    },
+
+    componentWillUnmount() {
+        AssetStore.unlisten(this.onChange);
+        AccountStore.unlisten(this.onChange);
+    },
+
+    onChange(state) {
+        this.setState(state);
+    },
+
+    initializeMatrix(rows, cols) {
+        let matrix = new Array(cols);
+        for (let i = 0; i < rows; i++) {
+          matrix[i] = new Array(cols);
+            for (let j = 0; j < cols; j++) {
+                matrix[i][j] = 'default';
+            }
+        }
+        return matrix
+    },
+
+    mapAssetsOnMatrix(assetList) {
+        let matrix = this.initializeMatrix(8, 8);
+        let assetListContent = this.getAssetListContent(assetList);
+        for (let content of assetListContent) {
+            matrix[content.y][content.x] = content.vk;
+        }
+        return matrix
+    },
+
+    mapAccountsOnStates(accountList) {
+        let states = {'default': 'available'};
+        if (!accountList) {
+            return states;
+        }
+        for (let i = 0; i < accountList.length; i++){
+            states[accountList[i].vk] = 'state' + i;
+        }
+        return states;
+    },
+
+    getAssetListContent(assetList) {
+        if (!assetList) {
+            return [];
+        }
+        assetList = assetList.bigchain.concat(assetList.backlog);
+
+        return assetList.map(( asset ) => {
+            return {
+                vk: asset.transaction.new_owner,
+                x: asset.transaction.data.payload.content.x,
+                y: asset.transaction.data.payload.content.y
+            };
+        });
+    },
+
     handleCellClick(cellState) {
-        let { matrix } = this.props;
 
-        let y = parseInt(cellState.x, 10);
-        let x = parseInt(cellState.y, 10);
-
-        matrix[x][y] = '1';
+        let x = parseInt(cellState.x, 10);
+        let y = parseInt(cellState.y, 10);
+        console.log(x, y)
     },
 
     render() {
-        console.log('render matrix')
-        const { squareSize, states, matrix } = this.props;
+        const { squareSize } = this.props;
+        const { accountList, assetList } = this.state;
+
+        const states=this.mapAccountsOnStates( accountList );
+        const matrix=this.mapAssetsOnMatrix( assetList );
 
         return (
             <div style={{textAlign: 'center'}}>

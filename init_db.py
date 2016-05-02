@@ -1,3 +1,5 @@
+import random
+
 import bigchaindb
 
 from server.lib.models.accounts import Account
@@ -36,7 +38,7 @@ def main():
         assets = []
         for i in range(app['num_assets']):
             asset = create_asset(bigchain=bigchain,
-                                 to=accounts[0].vk,
+                                 to=accounts[random.randint(0, app['num_accounts'] - 1)].vk,
                                  payload=app['payload_func'](i))
             assets.append(asset)
         print('INIT: {} assets initialized for app: {}'.format(len(assets), app['name']))

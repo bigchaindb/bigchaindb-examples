@@ -1,20 +1,24 @@
 .share-trade {
   $colorGrid:#BDC3C7;
   $colorAvailable:#ECF0F1;
-  $colorPath:#3498DB;
-  $colorBarrier:#E74C3C;
-  $colorPipette:#34495E;
-  $colorComponent:#1ABC9C;
+  $colorState0:#3498DB;
+  $colorState1: #39418b;
+  $colorState2:#E74C3C;
+  $colorState3:#34495E;
+  $colorState4:#1ABC9C;
 
   $colorList: (
     ("available", $colorAvailable),
-    ("barrier", $colorBarrier),
-    ("path", $colorPath),
-    ("pipette", $colorPipette),
-    ("component", $colorComponent)
+    ("state0", $colorState0),
+    ("state1", $colorState1),
+    ("state2", $colorState2),
+    ("state3", $colorState3),
+    ("state4", $colorState4)
   );
 
   .Matrix {
+    border: 1px solid black;
+
     .Grid {
       stroke: $colorGrid;
     }
@@ -29,7 +33,6 @@
         }
       }
     }
-
     .available {
       stroke: black;
       stroke-width: 0.1;
