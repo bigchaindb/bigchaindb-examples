@@ -64,8 +64,10 @@ def get_assets(bigchain, search):
     if search:
         cursor = r.db('bigchain')\
             .table('bigchain')\
-            .concat_map(lambda doc: doc["block"]["transactions"]\
-            .filter(lambda transaction: transaction["transaction"]["data"]["payload"]["content"].match(search))).run(bigchain.conn)
+            .concat_map(lambda doc: doc["block"]["transactions"]
+                        .filter(lambda transaction: transaction["transaction"]["data"]["payload"]["content"]
+                                .match(search)))\
+            .run(bigchain.conn)
     else:
         cursor = r.db('bigchain') \
             .table('bigchain') \
@@ -114,9 +116,9 @@ def create_asset_hashlock(bigchain, payload, secret):
     return hashlock_tx_signed
 
 
-def transfer_asset(bigchain, source, to, token, sk):
-    token_transfer = bigchain.create_transaction(source, to, token, 'TRANSFER')
-    token_transfer_signed = bigchain.sign_transaction(token_transfer, sk)
-    bigchain.validate_transaction(token_transfer_signed)
-    bigchain.write_transaction(token_transfer_signed)
-    return token_transfer_signed
+def transfer_asset(bigchain, source, to, asset, sk):
+    asset_transfer = bigchain.create_transaction(source, to, asset, 'TRANSFER')
+    asset_transfer_signed = bigchain.sign_transaction(asset_transfer, sk)
+    bigchain.validate_transaction(asset_transfer_signed)
+    bigchain.write_transaction(asset_transfer_signed)
+    return asset_transfer_signed

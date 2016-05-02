@@ -12,13 +12,26 @@ APPS = [
         'name': 'ontherecord',
         'num_accounts': 10,
         'num_assets': 0,
-        'payload_func': (lambda x: {'content': x})
+        'payload_func': (
+            lambda x: {
+                'app': 'ontherecord',
+                'content': x
+            }
+        )
     },
     {
         'name': 'sharetrade',
         'num_accounts': 10,
         'num_assets': 64,
-        'payload_func': (lambda i: {'content': {'x': int(i / 8), 'y': int(i % 8)}})
+        'payload_func': (
+            lambda i: {
+                'app': 'sharetrade',
+                'content': {
+                    'x': int(i / 8),
+                    'y': int(i % 8)
+                }
+            }
+        )
     }
 ]
 

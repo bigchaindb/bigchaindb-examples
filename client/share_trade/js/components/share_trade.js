@@ -2,7 +2,7 @@
 
 import React from 'react/';
 
-import {Navbar, Row, Col } from 'react-bootstrap/lib/';
+import {Navbar, Row, Col, Button } from 'react-bootstrap/lib/';
 
 import Scroll from 'react-scroll';
 
@@ -14,6 +14,8 @@ import AssetMatrix from './asset_matrix';
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 import AssetStore from '../../../lib/js/react/stores/asset_store';
 
+import AccountStore from '../../../lib/js/react/stores/account_store';
+
 import { mergeOptions } from '../../../lib/js/utils/general_utils';
 
 
@@ -21,68 +23,84 @@ const ShareTrade = React.createClass({
 
     getInitialState() {
         const assetStore = AssetStore.getState();
+        const accountStore = AccountStore.getState();
 
         return mergeOptions(
             {
                 activeAccount: null,
+                activeAsset: null,
                 searchQuery: null
             },
-            assetStore
+            assetStore,
+            accountStore
         );
     },
-    
+
     componentDidMount() {
-        AssetStore.listen(this.onChange);
+        AssetStore.listen( this.onChange );
+        AccountStore.listen( this.onChange );
 
         this.fetchAssetList();
         Scroll.animateScroll.scrollToBottom();
     },
 
     componentWillUnmount() {
-        AssetStore.unlisten(this.onChange);
+        AssetStore.unlisten( this.onChange );
+        AccountStore.unlisten( this.onChange );
     },
 
-    fetchAssetList(){
-        AssetActions.flushAssetList();
-        const { activeAccount, searchQuery } = this.state;
-        if ( activeAccount ) {
-            AssetActions.fetchAssetList({ accountToFetch: activeAccount.vk, search: searchQuery });
-        }
-        setTimeout(this.fetchAssetList, 1000);
+    onChange( state ) {
+        this.setState( state );
     },
 
-    onChange(state) {
-        this.setState(state);
-    },
-
-    setActiveAccount(account){
+    setActiveAccount( account ){
         this.setState({
             activeAccount: account
         });
     },
 
-    handleSearch(query){
+    resetActiveAccount(){
+        this.setState({
+            activeAccount: null
+        });
+    },
+
+    setActiveAsset( asset ){
+        this.setState({
+            activeAsset: asset
+        });
+    },
+    
+    mapAccountsOnStates( accountList ) {
+        let states = {'default': 'available'};
+        if (!accountList) {
+            return states;
+        }
+        for (let i = 0; i < accountList.length; i++){
+            states[accountList[i].vk] = 'state' + i;
+        }
+        return states;
+    },
+
+    fetchAssetList(){
+        AssetActions.flushAssetList();
+        const { activeAccount, searchQuery } = this.state;
+        const accountPublicKey = activeAccount ? activeAccount.vk : null;
+
+        AssetActions.fetchAssetList({ accountToFetch: accountPublicKey, search: searchQuery });
+
+        setTimeout(this.fetchAssetList, 1000);
+    },
+
+    handleSearch( query ){
         this.setState({
             searchQuery: query
         });
     },
 
     render() {
-        const { activeAccount, assetList, assetMeta } = this.state;
-
-        let content = (
-            <div className='content-text'>
-                Select account from the list...
-            </div>
-        );
-
-        if ( activeAccount ) {
-            content = (
-                <Assets
-                    assetList={ assetList }
-                    activeAccount={ activeAccount }/>
-            );
-        }
+        const { activeAccount, accountList, activeAsset, assetList, assetMeta } = this.state;
+        const states = this.mapAccountsOnStates( accountList );
 
         return (
             <div>
@@ -95,6 +113,12 @@ const ShareTrade = React.createClass({
                             <Search
                                 initialQuery={ assetMeta.search }
                                 handleSearch={ this.handleSearch }/>
+                            <div style={{textAlign: 'center'}}>
+                                <Button
+                                    onClick={ this.resetActiveAccount }>
+                                    Select All
+                                </Button>
+                            </div>
                             <Accounts
                                 activeAccount={ activeAccount }
                                 handleAccountClick={ this.setActiveAccount }/>
@@ -108,12 +132,20 @@ const ShareTrade = React.createClass({
                                         <div className="vertical-align-inner">
                                             <AssetMatrix
                                                 rows={ 8 }
-                                                cols={ 8 } />
+                                                cols={ 8 }
+                                                states={ states }
+                                                handleAssetClick={ this.setActiveAsset }/>
                                         </div>
                                     </div>
                                 </Col>
                                 <Col xs={ 6 } md={ 4 } className="asset-history">
-                                    { content }
+                                    <Assets
+                                        activeAccount={ activeAccount }
+                                        accountList={ accountList }
+                                        activeAsset={ activeAsset }
+                                        assetList={ assetList }
+                                        assetClasses={ states }
+                                        handleAssetClick={ this.setActiveAsset }/>
                                 </Col>
                             </Row>
                         </div>

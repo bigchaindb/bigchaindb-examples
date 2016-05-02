@@ -2,10 +2,14 @@
   $colorGrid:#BDC3C7;
   $colorAvailable:#ECF0F1;
   $colorState0:#3498DB;
-  $colorState1: #39418b;
+  $colorState1:#39418b;
   $colorState2:#E74C3C;
   $colorState3:#34495E;
   $colorState4:#1ABC9C;
+  $colorState5: #ff8600;
+  $colorState6: #437c2b;
+  $colorState7: #adaf35;
+  $colorState8: #5bbc50;
 
   $colorList: (
     ("available", $colorAvailable),
@@ -13,7 +17,11 @@
     ("state1", $colorState1),
     ("state2", $colorState2),
     ("state3", $colorState3),
-    ("state4", $colorState4)
+    ("state4", $colorState4),
+    ("state5", $colorState5),
+    ("state6", $colorState6),
+    ("state7", $colorState7),
+    ("state8", $colorState8)
   );
 
   .Matrix {
@@ -63,14 +71,33 @@
 
   .asset-container {
     border-bottom: 1px solid lighten($fg-color, 50%);
+    border-left: 5px solid transparent;
     padding: 1em;
-    margin-bottom: .5em;
   }
 
+  @each $colorMap in $colorList {
+    $state: nth($colorMap, 1);
+    $color: nth($colorMap, 2);
+
+    .asset-container.#{$state} {
+      .asset-container-id,
+      .asset-container-timestamp .glyphicon{
+        color: $color
+      }
+      &:hover {
+        border-left-color: rgba($color, 0.6);
+        background: rgba($color, 0.05);
+        cursor: pointer;
+      }
+      &.active {
+        border-left-color: $color;
+        background: rgba($color, 0.1);
+      }
+    }
+  }
   .asset-container-id,
   .asset-container-timestamp {
     font-size: 0.8em;
-    color: lighten($fg-color, 50%);
     text-transform: uppercase;
   }
 
@@ -83,7 +110,12 @@
   }
 
   .asset-container-timestamp {
+    color: lighten($fg-color, 50%);
     margin-bottom: -.6em;
+  }
+
+  .asset-container-actions {
+    margin-top: 1em
   }
 
 }

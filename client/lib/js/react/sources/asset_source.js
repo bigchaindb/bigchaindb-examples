@@ -20,11 +20,17 @@ const AssetSource = {
     
     lookupAssetList: {
         remote(state) {
-            let queryParams = {
-                search: state.assetMeta.search
-            };
-            return requests.get('asset_list',
-            { account_id: state.assetMeta.accountToFetch, search: state.assetMeta.search});
+            if (state.assetMeta.accountToFetch) {
+                return requests.get('assets_for_account',
+                    {
+                        account_id: state.assetMeta.accountToFetch,
+                        search: state.assetMeta.search
+                    });
+            }
+            else {
+                return requests.get('assets',
+                    {search: state.assetMeta.search});
+            }
         },
 
         success: AssetActions.successFetchAssetList,
@@ -40,7 +46,22 @@ const AssetSource = {
 
         success: AssetActions.successPostAsset,
         error: AssetActions.errorAsset
+    },
+    
+    transferAsset: {
+        remote(state) {
+            return requests.post('assets_transfer',
+                {
+                    asset_id: state.assetMeta.idToTransfer,
+                    body: state.assetMeta.payloadToPost
+                }
+            );
+        },
+
+        success: AssetActions.successPostAsset,
+        error: AssetActions.errorAsset
     }
+    
 };
 
 export default AssetSource;

@@ -5,7 +5,6 @@ import React from 'react/';
 import Matrix from 'react-matrix';
 
 import AssetStore from '../../../lib/js/react/stores/asset_store';
-import AccountStore from '../../../lib/js/react/stores/account_store';
 
 import { mergeOptions } from '../../../lib/js/utils/general_utils';
 
@@ -15,7 +14,9 @@ const AssetMatrix = React.createClass({
     propTypes: {
         rows: React.PropTypes.number,
         cols: React.PropTypes.number,
-        squareSize: React.PropTypes.number
+        squareSize: React.PropTypes.number,
+        states : React.PropTypes.object,
+        handleAssetClick: React.PropTypes.func
     },
 
     getDefaultProps() {
@@ -28,71 +29,65 @@ const AssetMatrix = React.createClass({
                 '1': 'state1',
                 '2': 'state2',
                 '3': 'state3',
-                '4': 'state4'
+                '4': 'state4',
+                '5': 'state5',
+                '6': 'state6',
+                '7': 'state7',
+                '8': 'state8'
             }
         }
     },
 
     getInitialState() {
         const assetStore = AssetStore.getState();
-        const accountStore = AccountStore.getState();
-
+        
         return mergeOptions(
-            accountStore,
             assetStore
         );
     },
 
     componentDidMount() {
-        AssetStore.listen(this.onChange);
-        AccountStore.listen(this.onChange);
+        AssetStore.listen( this.onChange );
     },
 
     componentWillUnmount() {
-        AssetStore.unlisten(this.onChange);
-        AccountStore.unlisten(this.onChange);
+        AssetStore.unlisten( this.onChange );
     },
 
     onChange(state) {
-        this.setState(state);
+        this.setState( state );
     },
 
     initializeMatrix(rows, cols) {
-        let matrix = new Array(cols);
-        for (let i = 0; i < rows; i++) {
-          matrix[i] = new Array(cols);
-            for (let j = 0; j < cols; j++) {
+        let matrix = new Array( cols );
+        
+        for ( let i = 0; i < rows; i++ ) {
+          matrix[i] = new Array( cols );
+        
+            for ( let j = 0; j < cols; j++ ) {
                 matrix[i][j] = 'default';
             }
         }
         return matrix
     },
 
-    mapAssetsOnMatrix(assetList) {
-        let matrix = this.initializeMatrix(8, 8);
-        let assetListContent = this.getAssetListContent(assetList);
-        for (let content of assetListContent) {
+    mapAssetsOnMatrix() {
+        const { rows, cols } = this.props;
+        let matrix = this.initializeMatrix( cols, rows );
+        
+        for ( let content of this.getAssetListContent() ) {
             matrix[content.y][content.x] = content.vk;
         }
         return matrix
     },
 
-    mapAccountsOnStates(accountList) {
-        let states = {'default': 'available'};
-        if (!accountList) {
-            return states;
-        }
-        for (let i = 0; i < accountList.length; i++){
-            states[accountList[i].vk] = 'state' + i;
-        }
-        return states;
-    },
 
-    getAssetListContent(assetList) {
+    getAssetListContent() {
+        const { assetList } = this.state;
+        
         if (!assetList) {
             return [];
         }
-        assetList = assetList.bigchain.concat(assetList.backlog);
 
         return assetList.map(( asset ) => {
             return {
@@ -103,27 +98,39 @@ const AssetMatrix = React.createClass({
         });
     },
 
-    handleCellClick(cellState) {
+    getAssetForCell(x, y) {
+        const { assetList } = this.state;
+        
+        for ( let asset of assetList ) {
+            let content = asset.transaction.data.payload.content;
+        
+            if ( content.x === x && content.y === y ) {
+                return asset
+            }
+        }
+        return null;
+    },
 
-        let x = parseInt(cellState.x, 10);
-        let y = parseInt(cellState.y, 10);
-        console.log(x, y)
+    handleCellClick(cellState) {
+        const { handleAssetClick } = this.props;
+
+        const x = parseInt( cellState.x, 10 );
+        const y = parseInt( cellState.y, 10 );
+
+        const activeAsset = this.getAssetForCell( x, y );
+        handleAssetClick( activeAsset )
     },
 
     render() {
-        const { squareSize } = this.props;
-        const { accountList, assetList } = this.state;
-
-        const states=this.mapAccountsOnStates( accountList );
-        const matrix=this.mapAssetsOnMatrix( assetList );
-
+        const { squareSize, states } = this.props;
+        
         return (
-            <div style={{textAlign: 'center'}}>
+            <div style={{ textAlign: 'center' }}>
                 <Matrix
-                    squareSize={squareSize}
-                    matrix={matrix}
-                    onCellClick={this.handleCellClick}
-                    cellStates={states} />
+                    squareSize={ squareSize }
+                    matrix={ this.mapAssetsOnMatrix() }
+                    onCellClick={ this.handleCellClick }
+                    cellStates={ states } />
             </div>
         );
     }

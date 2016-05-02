@@ -1,6 +1,6 @@
 'use strict';
 
-const apiEndpoint = 'http://localhost:8000/api/';
+const apiEndpoint = '/api/';
 const baseUrl = '/';
 
 const constants = {

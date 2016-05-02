@@ -9,6 +9,7 @@ class AssetActions {
             'flushAsset',
             'fetchAsset',
             'successFetchAsset',
+            'transferAsset',
             'flushAssetList',
             'fetchAssetList',
             'successFetchAssetList',

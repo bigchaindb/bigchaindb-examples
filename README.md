@@ -54,10 +54,7 @@ $ python3 -m server.app
 
 "On the Record" is a simple logging app, wrapped as a messaging board.
 
-You should see the app running on [http://localhost:8000/ontherecord/](http://localhost:8000/)
-
-__Warning__: do not use `127.0.0.1` opposed to `localhost` as this may cause CORS problems.
-
+You should see the app running on [http://localhost:8000/ontherecord/](http://localhost:8000/ontherecord/)
 
 <p align="center">
   <img width="70%" height="70%" src ="./docs/img/on_the_record_v0.0.1.png" />

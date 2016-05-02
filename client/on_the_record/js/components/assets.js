@@ -66,7 +66,6 @@ const AssetHistory = React.createClass({
 
     render() {
         let { assetList } = this.props;
-        assetList = assetList ? assetList.bigchain.concat(assetList.backlog) : assetList;
 
         if ( assetList && assetList.length > 0 ) {
 

@@ -15,14 +15,15 @@ class AssetStore {
             err: null,
             payloadToPost: null,
             idToFetch: null,
+            idToTransfer: null,
             accountToFetch: null,
             search: null
         };
-        this.bindActions(AssetActions);
-        this.registerAsync(AssetSource);
+        this.bindActions( AssetActions );
+        this.registerAsync( AssetSource );
     }
 
-    onFetchAsset(idToFetch) {
+    onFetchAsset( idToFetch ) {
         this.assetMeta.idToFetch = idToFetch;
         this.getInstance().lookupAsset();
     }
@@ -45,8 +46,20 @@ class AssetStore {
     }
 
     onSuccessFetchAssetList( assetList ) {
-        if (assetList) {
-            this.assetList = assetList['assets'];
+        if ( assetList ) {
+            if ( this.assetMeta.accountToFetch ) {
+                assetList = assetList['assets'];
+                if (assetList && Object.keys(assetList).indexOf('bigchain') > -1) {
+                    this.assetList = assetList.bigchain.concat(assetList.backlog);
+                }
+            } else {
+                this.assetList = assetList['assets'].filter(( asset ) => {
+                    if (asset.transaction.data.payload.app == 'sharetrade'){
+                        return asset;
+                    }
+                })
+            }
+
             this.assetMeta.err = null;
             this.assetMeta.accountToFetch = null;
             this.assetMeta.search = null;
@@ -60,10 +73,18 @@ class AssetStore {
         this.getInstance().postAsset();
     }
 
+
+    onTransferAsset( {idToTransfer, payloadToPost} ) {
+        this.assetMeta.idToTransfer = idToTransfer;
+        this.assetMeta.payloadToPost = payloadToPost;
+        this.getInstance().transferAsset();
+    }
+
     onSuccessPostAsset( asset ) {
         if (asset) {
             this.asset = asset;
             this.assetMeta.err = null;
+            this.assetMeta.idToTransfer = null;
             this.assetMeta.payloadToPost = null;
         } else {
             this.assetMeta.err = new Error('Problem posting to the asset');
