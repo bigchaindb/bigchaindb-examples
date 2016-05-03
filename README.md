@@ -87,6 +87,7 @@ error: Setup script exited with error in BigchainDB setup command: 'install_requ
 
 - __Solution__: update the `setuptools`, see PR fix [here](https://github.com/bigchaindb/bigchaindb/issues/236)
 
+
 ##### OMG: I've messed up my database
 
 - __Solution__: reset your bigchaindb_examples database
