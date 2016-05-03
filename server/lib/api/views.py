@@ -82,7 +82,7 @@ def transfer_asset(asset_id):
     tx = assets.transfer_asset(bigchain=bigchain,
                                source=source['vk'],
                                to=to['vk'],
-                               asset=asset_id,
+                               asset_id=asset_id,
                                sk=source['sk'])
 
     return flask.jsonify(**tx)

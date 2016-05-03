@@ -116,8 +116,10 @@ def create_asset_hashlock(bigchain, payload, secret):
     return hashlock_tx_signed
 
 
-def transfer_asset(bigchain, source, to, asset, sk):
-    asset_transfer = bigchain.create_transaction(source, to, asset, 'TRANSFER')
+def transfer_asset(bigchain, source, to, asset_id, sk):
+    asset = bigchain.get_transaction(asset_id)
+    asset_transfer = bigchain.create_transaction(source, to, asset_id, 'TRANSFER',
+                                                 payload=asset['transaction']['data']['payload'])
     asset_transfer_signed = bigchain.sign_transaction(asset_transfer, sk)
     bigchain.validate_transaction(asset_transfer_signed)
     bigchain.write_transaction(asset_transfer_signed)
