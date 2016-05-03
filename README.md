@@ -4,9 +4,10 @@ This repo contains examples and tutorials for BigchainDB.
 
 __Warning__: These examples are for demonstration purpose and should not be used for production
 
-- [Installation](installation)
-- [Example: "On the Record"](example-on-the-record)
-- [Example: Share Trader](example-share-trader)
+## Table of Contents
+- [Installation](#installation)
+- [Example: "On the Record"](#example-on-the-record)
+- [Example: Share Trader](#example-share-trader)
 
 ## Structure
 
