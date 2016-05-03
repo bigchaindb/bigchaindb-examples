@@ -10,7 +10,7 @@ module.exports = {
 
     entry:  {
         on_the_record: "./client/on_the_record/js/App.js",
-        share_trade: "./client/share_trade/js/App.js"
+        share_trader: "./client/share_trader/js/App.js"
     },
 
     output: {

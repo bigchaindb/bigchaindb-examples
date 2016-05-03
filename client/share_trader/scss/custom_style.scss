@@ -1,4 +1,4 @@
-.share-trade {
+.share-trader {
   $colorGrid:#BDC3C7;
   $colorAvailable:#ECF0F1;
   $colorState0:#3498DB;
@@ -92,6 +92,11 @@
       &.active {
         border-left-color: $color;
         background: rgba($color, 0.1);
+      }
+      &.transfered {
+        border-left-color: rgba($color, 0.4);
+        background: rgba($color, 0.05);
+        cursor: wait;
       }
     }
   }

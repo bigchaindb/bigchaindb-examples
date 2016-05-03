@@ -2,7 +2,16 @@
 
 This repo contains examples and tutorials for BigchainDB.
 
-Warning: These examples are for demonstration purpose and should not be used for production
+__Warning__: These examples are for demonstration purpose and should not be used for production
+
+## Structure
+
+The apps are structured as follows:
+- Client: ReactJS
+- Server: Python Flask REST API server
+- DB: BigchainDB
+
+All messages are JSON based.
 
 ## Installation
 
@@ -24,14 +33,17 @@ $ source venv/bin/activate
 
 # Install server
 $ python3 setup.py install
-# or
-$ pip install -e .
+# or in dev mode
+$ pip install -e .[dev]
 
 # Load initial data (Make sure RethinkDB is running!)
-$ python3 init_db_.py
+$ python3 init_db.py
 
 # Install client
 $ npm install
+
+# when in dev mode
+$ webpack -w
 ```
 
 ### Launch BigchainDB
@@ -65,16 +77,6 @@ You should see the app running on [http://localhost:8000/ontherecord/](http://lo
 - Immutable logging of data
 - Notarization of data, text, emails
 
-### Structure
-
-The app is structured as follows:
-- Client: ReactJS
-- Server: Python Flask REST API server
-- DB: BigchainDB
-
-All messages are JSON based.
-
-
 ### Functionality
 
 #### Create assets
@@ -84,9 +86,50 @@ All messages are JSON based.
 #### Retrieve assets
 - that you currently own (like UTXO's)
 - by searching the asset data/payload
+- state indicator (in backlog vs. on bigchain)
 
 #### What this app doesn't provide
 
 - Proper user and key management
 - Transfer of assets
 
+## Example: Share Trader
+
+Share Trader is a simple share allocation and trade app. Each square represents an asset that can be traded amongst accounts.
+
+You should see the app running on [http://localhost:8000/sharetrader/](http://localhost:8000/sharetrader/)
+
+<p align="center">
+  <img width="70%" height="70%" src ="./docs/img/share_trader_v0.0.1.png" />
+</p>
+
+### Use cases
+
+- Reservation of tickets, seats in a concert/transport, ...
+- Trade of limited issued assets
+
+### Functionality
+
+#### Create assets
+- assets are created following a structured payload
+- the amount is limited
+
+#### Transfer assets
+- easy transfer of assets between accounts by clicking on them
+
+#### Retrieve assets
+- that you currently own (like UTXO's)
+- all assets on bigchain
+- state indicator (blinks if asset has various owners)
+
+#### What this app doesn't provide
+
+- Proper user and key management
+- Proper signing of transfers
+- Proper search by payload
+
+## Acknowledgements:
+
+Special thanks to the BigchainDB/ascribe.io team for their insights and code contributions:
+
+@r-marques, @vrde, @ttmc, @rhsimplex, @SohKai, @sbellem, @TimDaub

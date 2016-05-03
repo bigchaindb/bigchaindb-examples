@@ -23,9 +23,9 @@ def on_the_record():
     return render_template('on_the_record.html')
 
 
-@basic_views.route('/sharetrade/')
-def share_trade():
-    return render_template('share_trade.html')
+@basic_views.route('/sharetrader/')
+def share_trader():
+    return render_template('share_trader.html')
 
 
 @api_views.route('/accounts/')

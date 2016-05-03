@@ -77,7 +77,8 @@ const AssetRow = React.createClass({
 
     getInitialState() {
         return {
-            selectedAccount: null
+            selectedAccount: null,
+            transfered: false
         }
     },
 
@@ -104,19 +105,19 @@ const AssetRow = React.createClass({
             'to': selectedAccount
         };
         AssetActions.transferAsset({idToTransfer: idToTransfer, payloadToPost: payloadToPost});
-        console.log('transfer', asset, activeAccount, selectedAccount)
+        this.setState({transfered: true});
     },
 
     render() {
         const { asset, active, activeAccount, accountList, assetClass } = this.props;
-        const { selectedAccount } = this.state;
+        const { selectedAccount, transfered } = this.state;
 
         const inBacklog = 'assignee' in asset;
         const data = asset.transaction.data;
         const validGlyph = inBacklog ? <Glyphicon glyph="cog"/> : <Glyphicon glyph="ok"/>;
 
         let actionsPanel = null;
-        if (active && activeAccount && accountList) {
+        if (active && activeAccount && accountList && !transfered) {
             actionsPanel = (
                 <AssetActionPanel
                     activeAccount={ activeAccount}
@@ -129,7 +130,10 @@ const AssetRow = React.createClass({
 
         return (
             <Row onClick={ this.handleAssetClick }>
-                <div className={classNames('asset-container', assetClass, {'active': active})}>
+                <div className={classNames('asset-container',
+                                            assetClass,
+                                            {'active': active && !transfered},
+                                            {'transfered': transfered})}>
                     <div className='asset-container-id'>
                         { asset.id }
                     </div>

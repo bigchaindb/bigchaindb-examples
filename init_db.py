@@ -20,12 +20,12 @@ APPS = [
         )
     },
     {
-        'name': 'sharetrade',
+        'name': 'sharetrader',
         'num_accounts': 10,
         'num_assets': 64,
         'payload_func': (
             lambda i: {
-                'app': 'sharetrade',
+                'app': 'sharetrader',
                 'content': {
                     'x': int(i / 8),
                     'y': int(i % 8)

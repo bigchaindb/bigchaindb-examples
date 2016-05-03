@@ -54,7 +54,7 @@ class AssetStore {
                 }
             } else {
                 this.assetList = assetList['assets'].filter(( asset ) => {
-                    if (asset.transaction.data.payload.app == 'sharetrade'){
+                    if (asset.transaction.data.payload.app == 'sharetrader'){
                         return asset;
                     }
                 })

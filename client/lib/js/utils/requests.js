@@ -92,7 +92,6 @@ class Requests {
     prepareUrl(url, params, attachParamsToQuery) {
         let newUrl;
         let re = /\${(\w+)}/g;
-        console.log(url, params, attachParamsToQuery)
         // catch errors and throw them to react
         try {
             newUrl = this.getUrl(url);

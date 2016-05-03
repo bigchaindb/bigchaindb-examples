@@ -19,7 +19,7 @@ import AccountStore from '../../../lib/js/react/stores/account_store';
 import { mergeOptions } from '../../../lib/js/utils/general_utils';
 
 
-const ShareTrade = React.createClass({
+const ShareTrader = React.createClass({
 
     getInitialState() {
         const assetStore = AssetStore.getState();
@@ -105,7 +105,7 @@ const ShareTrade = React.createClass({
         return (
             <div>
                 <Navbar inverse fixedTop>
-                    <h1 style={{ textAlign: 'center', color: 'white' }}>"Share Trade"</h1>
+                    <h1 style={{ textAlign: 'center', color: 'white' }}>Share Trader</h1>
                 </Navbar>
                 <div id="wrapper">
                     <div id="sidebar-wrapper">
@@ -156,4 +156,4 @@ const ShareTrade = React.createClass({
     }
 });
 
-export default ShareTrade;
+export default ShareTrader;

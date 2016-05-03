@@ -34,7 +34,7 @@ const Accounts = React.createClass({
     
     fetchAccountList(){
         AccountActions.flushAccountList();
-        AccountActions.fetchAccountList({app: 'sharetrade'});
+        AccountActions.fetchAccountList({app: 'sharetrader'});
     },
     
     onChange(state) {
