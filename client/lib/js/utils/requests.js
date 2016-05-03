@@ -92,7 +92,7 @@ class Requests {
     prepareUrl(url, params, attachParamsToQuery) {
         let newUrl;
         let re = /\${(\w+)}/g;
-
+        console.log(url, params, attachParamsToQuery)
         // catch errors and throw them to react
         try {
             newUrl = this.getUrl(url);
@@ -102,7 +102,7 @@ class Requests {
 
         newUrl = newUrl.replace(re, (match, key) => {
             let val = params[key];
-            if (!val) {
+            if (typeof val === 'undefined') {
                 throw new Error(`Cannot find param ${key}`);
             }
             delete params[key];

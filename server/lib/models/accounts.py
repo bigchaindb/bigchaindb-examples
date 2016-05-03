@@ -20,11 +20,11 @@ class Account:
     def assets(self):
         return self.bigchain.get_owned_ids(self.vk)
 
-    def transfer(self, to, token):
+    def transfer(self, to, asset_id):
         return transfer_asset(bigchain=self.bigchain,
                               source=self.vk,
                               to=to,
-                              token=token,
+                              asset_id=asset_id,
                               sk=self.sk)
 
     def save(self):

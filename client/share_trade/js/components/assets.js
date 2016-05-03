@@ -30,7 +30,7 @@ const Assets = React.createClass({
                     {assetList.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
                         .map(( asset ) => {
                             const active = (activeAsset) ? activeAsset.id === asset.id : false;
-                            const assetClass = assetClasses[asset.transaction.new_owner];
+                            const assetClass = assetClasses[asset.transaction.conditions[0].new_owners[0]];
 
                             return (
                                 <AssetRow
@@ -93,12 +93,17 @@ const AssetRow = React.createClass({
     handleTransferClick() {
         const { asset, activeAccount } = this.props;
         const { selectedAccount } = this.state;
-        
+
+        const idToTransfer = {
+            txid: asset.id,
+            cid: 0
+        };
+
         const payloadToPost = {
             'source': activeAccount,
             'to': selectedAccount
         };
-        AssetActions.transferAsset({idToTransfer: asset.id, payloadToPost: payloadToPost});
+        AssetActions.transferAsset({idToTransfer: idToTransfer, payloadToPost: payloadToPost});
         console.log('transfer', asset, activeAccount, selectedAccount)
     },
 

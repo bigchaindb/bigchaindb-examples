@@ -91,7 +91,7 @@ const AssetMatrix = React.createClass({
 
         return assetList.map(( asset ) => {
             return {
-                vk: asset.transaction.new_owner,
+                vk: asset.transaction.conditions[0].new_owners[0],
                 x: asset.transaction.data.payload.content.x,
                 y: asset.transaction.data.payload.content.y
             };

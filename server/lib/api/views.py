@@ -73,8 +73,8 @@ def post_asset():
     return flask.jsonify(**tx)
 
 
-@api_views.route('/assets/<asset_id>/transfer', methods=['POST'])
-def transfer_asset(asset_id):
+@api_views.route('/assets/<asset_id>/<cid>/transfer/', methods=['POST'])
+def transfer_asset(asset_id, cid):
     json_payload = request.get_json(force=True)
     source = json_payload.pop('source')
     to = json_payload.pop('to')
@@ -82,7 +82,10 @@ def transfer_asset(asset_id):
     tx = assets.transfer_asset(bigchain=bigchain,
                                source=source['vk'],
                                to=to['vk'],
-                               asset_id=asset_id,
+                               asset_id={
+                                   'txid': asset_id,
+                                   'cid': int(cid)
+                               },
                                sk=source['sk'])
 
     return flask.jsonify(**tx)

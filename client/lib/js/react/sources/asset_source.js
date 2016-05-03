@@ -52,8 +52,9 @@ const AssetSource = {
         remote(state) {
             return requests.post('assets_transfer',
                 {
-                    asset_id: state.assetMeta.idToTransfer,
-                    body: state.assetMeta.payloadToPost
+                        asset_id: state.assetMeta.idToTransfer.txid,
+                        cid: state.assetMeta.idToTransfer.cid,
+                        body: state.assetMeta.payloadToPost
                 }
             );
         },

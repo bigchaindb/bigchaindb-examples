@@ -40,8 +40,10 @@ def get_owned_assets(bigchain, vk, query=None, table='bigchain'):
     asset_ids = bigchain.get_owned_ids(vk)
 
     if table == 'backlog':
-        reql_query = r.table(table).filter(lambda transaction: transaction['transaction']['new_owner'] == vk)
-
+        reql_query = r.table(table) \
+            .filter(lambda tx: tx['transaction']['conditions']
+                    .contains(lambda c: c['new_owners']
+                              .contains(vk)))
         response = query_reql_response(reql_query.run(bigchain.conn), query)
         if response:
             assets += response
@@ -117,7 +119,7 @@ def create_asset_hashlock(bigchain, payload, secret):
 
 
 def transfer_asset(bigchain, source, to, asset_id, sk):
-    asset = bigchain.get_transaction(asset_id)
+    asset = bigchain.get_transaction(asset_id['txid'])
     asset_transfer = bigchain.create_transaction(source, to, asset_id, 'TRANSFER',
                                                  payload=asset['transaction']['data']['payload'])
     asset_transfer_signed = bigchain.sign_transaction(asset_transfer, sk)
