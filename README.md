@@ -158,7 +158,9 @@ You should see the app running on [http://localhost:8000/sharetrader/](http://lo
 - the amount is limited
 
 #### Transfer assets
-- easy transfer of assets between accounts by clicking on them
+- easy transfer of assets between accounts by:
+ - clicking on an account first. This will give the assets for that account
+ - clicking on an asset of that account. Transfer actions will appear on the right side.
 
 #### Retrieve assets
 - that you currently own (like UTXO's)
