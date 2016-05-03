@@ -46,11 +46,11 @@ $ pip install -e .[dev]
 
 # Make sure RethinkDB is running!
 # Configure BigchainDB with a different BIGCHAINDB_DATABASE_NAME
-BIGCHAINDB_DATABASE_NAME=bigchaindb_examples \
+$ BIGCHAINDB_DATABASE_NAME=bigchaindb_examples \
  bigchaindb -yc .bigchaindb_examples configure 
 
 # Initialize BigchainDB
-bigchaindb -c .bigchaindb_examples init 
+$ bigchaindb -c .bigchaindb_examples init 
 
 # Load initial data 
 $ python3 init_db.py
