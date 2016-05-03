@@ -44,7 +44,15 @@ $ python3 setup.py install
 # or in dev mode
 $ pip install -e .[dev]
 
-# Load initial data (Make sure RethinkDB is running!)
+# Make sure RethinkDB is running!
+# Configure BigchainDB with a different BIGCHAINDB_DATABASE_NAME
+BIGCHAINDB_DATABASE_NAME=bigchaindb_examples \
+ bigchaindb -yc .bigchaindb_examples configure 
+
+# Initialize BigchainDB
+bigchaindb -c .bigchaindb_examples init 
+
+# Load initial data 
 $ python3 init_db.py
 
 # Install client
@@ -59,8 +67,7 @@ $ webpack -w
 Launch BigchainDB in a separate terminal
 
 ```bash
-# Note: first time requires configuration: bigchaindb configure
-$ bigchaindb start 
+$ bigchaindb -c .bigchaindb_examples start 
 ```
 
 ### Launch the App server
@@ -68,6 +75,33 @@ $ bigchaindb start
 In another terminal launch the gunicorn server (from the repository root dir)
 ```bash
 $ python3 -m server.app
+```
+
+### Oops ¯\\\_(ツ)\_/¯
+
+##### My installation fails with:
+
+```
+error: Setup script exited with error in BigchainDB setup command: 'install_requires' must be a string or list of strings containing valid project/version requirement specifiers
+```
+
+- __Solution__: update the `setuptools`, see PR fix [here](https://github.com/bigchaindb/bigchaindb/issues/236)
+
+##### OMG: I've messed up my database
+
+- __Solution__: reset your bigchaindb_examples database
+- __Warning__: the following resets your bigchaindb database as specified in the config file!
+
+```bash
+# Drop database
+$ bigchaindb -c .bigchaindb_examples drop
+
+# Restart BigchainDB
+$ bigchaindb -c .bigchaindb_examples init
+$ bigchaindb -c .bigchaindb_examples start
+
+# Load initial data (app accounts will remain the same if not deleted)
+$ python3 init_db.py
 ```
 
 ## Example: "On the Record"

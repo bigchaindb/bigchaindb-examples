@@ -1,11 +1,17 @@
 import random
+import logging
+import os.path
 
 import bigchaindb
+import bigchaindb.config_utils
 
 from server.lib.models.accounts import Account
 from server.lib.models.assets import create_asset
 
-bigchain = bigchaindb.Bigchain()
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+CONFIG_FILE = os.path.dirname(__file__) + '/.bigchaindb_examples'
 
 APPS = [
     {
@@ -36,6 +42,16 @@ APPS = [
 ]
 
 
+def get_bigchain(conf=CONFIG_FILE):
+    if os.path.isfile(conf):
+        bigchaindb.config_utils.autoconfigure(filename=CONFIG_FILE, force=True)
+
+    return bigchaindb.Bigchain()
+
+bigchain = get_bigchain()
+logging.info('INIT: bigchain initialized with database: {}'.format(bigchaindb.config['database']['name']))
+
+
 def main():
 
     for app in APPS:
@@ -46,7 +62,7 @@ def main():
                               db=app['name'])
             accounts.append(account)
 
-        print('INIT: {} accounts initialized for app: {}'.format(len(accounts), app['name']))
+        logging.info('INIT: {} accounts initialized for app: {}'.format(len(accounts), app['name']))
 
         assets = []
         for i in range(app['num_assets']):
@@ -54,7 +70,7 @@ def main():
                                  to=accounts[random.randint(0, app['num_accounts'] - 1)].vk,
                                  payload=app['payload_func'](i))
             assets.append(asset)
-        print('INIT: {} assets initialized for app: {}'.format(len(assets), app['name']))
+        logging.info('INIT: {} assets initialized for app: {}'.format(len(assets), app['name']))
 
 
 if __name__ == '__main__':

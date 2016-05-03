@@ -35,12 +35,13 @@ def query_reql_response(response, query):
 
 
 def get_owned_assets(bigchain, vk, query=None, table='bigchain'):
-    assets = []
 
+    assets = []
     asset_ids = bigchain.get_owned_ids(vk)
 
     if table == 'backlog':
-        reql_query = r.table(table) \
+        reql_query = \
+            r.table(table) \
             .filter(lambda tx: tx['transaction']['conditions']
                     .contains(lambda c: c['new_owners']
                               .contains(vk)))
@@ -64,15 +65,15 @@ def get_owned_assets(bigchain, vk, query=None, table='bigchain'):
 
 def get_assets(bigchain, search):
     if search:
-        cursor = r.db('bigchain')\
-            .table('bigchain')\
+        cursor = \
+            r.table('bigchain')\
             .concat_map(lambda doc: doc["block"]["transactions"]
                         .filter(lambda transaction: transaction["transaction"]["data"]["payload"]["content"]
                                 .match(search)))\
             .run(bigchain.conn)
     else:
-        cursor = r.db('bigchain') \
-            .table('bigchain') \
+        cursor = \
+            r.table('bigchain') \
             .concat_map(lambda doc: doc["block"]["transactions"]).run(bigchain.conn)
     return list(cursor)
 
