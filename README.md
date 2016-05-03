@@ -9,7 +9,9 @@ __Warning__: These examples are for demonstration purpose and should not be used
 - [Example: "On the Record"](#example-on-the-record)
 - [Example: Share Trader](#example-share-trader)
 
-## Structure
+## Installation
+
+### Structure
 
 The apps are structured as follows:
 - Client: ReactJS
@@ -18,14 +20,15 @@ The apps are structured as follows:
 
 All messages are JSON based.
 
-## Installation
+### Dependencies
 
-Dependencies:
  - LINUX dependencies: see [setup BigchainDB & RethinkDB](https://bigchaindb.readthedocs.io/en/latest/installing-server.html#install-and-run-rethinkdb-server)
  - python>=3.4
  - [node>=5.3](https://nodejs.org/en/download/) 
  - [npm>=3.3](https://docs.npmjs.com/getting-started/installing-node) 
  - [webpack>=1.13.0](https://webpack.github.io/docs/installation.html)
+
+### Setup
 
 ```bash
 # Clone the repository and install:
