@@ -16,7 +16,7 @@ downloads/
 eggs/
 .eggs/
 node_modules
-lib/
+rethinkdb_data
 lib64/
 parts/
 sdist/
