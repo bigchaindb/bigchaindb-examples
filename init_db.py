@@ -16,7 +16,7 @@ CONFIG_FILE = os.path.join(os.path.dirname(__file__), '.bigchaindb_examples')
 APPS = [
     {
         'name': 'ontherecord',
-        'num_accounts': 10,
+        'num_accounts': 3,
         'num_assets': 0,
         'payload_func': (
             lambda x: {
@@ -27,7 +27,7 @@ APPS = [
     },
     {
         'name': 'sharetrader',
-        'num_accounts': 10,
+        'num_accounts': 3,
         'num_assets': 64,
         'payload_func': (
             lambda i: {
@@ -44,11 +44,11 @@ APPS = [
 
 def get_bigchain(conf=CONFIG_FILE):
     if os.path.isfile(conf):
-        bigchaindb.config_utils.autoconfigure(filename=CONFIG_FILE, force=True)
+        bigchaindb.config_utils.autoconfigure(filename=conf, force=True)
 
     return bigchaindb.Bigchain()
 
-bigchain = bigchaindb.Bigchain('bigchaindb_examples')
+bigchain = get_bigchain()
 logging.info('INIT: bigchain initialized with database: {}'.format(bigchaindb.config['database']['name']))
 
 
