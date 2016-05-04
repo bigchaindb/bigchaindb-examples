@@ -49,11 +49,11 @@ $ pip install -e .[dev]
 
 # Make sure RethinkDB is running!
 # Configure BigchainDB with a different BIGCHAINDB_DATABASE_NAME
-BIGCHAINDB_DATABASE_NAME=bigchaindb_examples \
+$ BIGCHAINDB_DATABASE_NAME=bigchaindb_examples \
  bigchaindb -yc .bigchaindb_examples configure 
 
 # Initialize BigchainDB
-bigchaindb -c .bigchaindb_examples init 
+$ bigchaindb -c .bigchaindb_examples init 
 
 # Load initial data 
 $ python3 init_db.py
@@ -89,6 +89,7 @@ error: Setup script exited with error in BigchainDB setup command: 'install_requ
 ```
 
 - __Solution__: update the `setuptools`, see PR fix [here](https://github.com/bigchaindb/bigchaindb/issues/236)
+
 
 ##### OMG: I've messed up my database
 
@@ -160,7 +161,9 @@ You should see the app running on [http://localhost:8000/sharetrader/](http://lo
 - the amount is limited
 
 #### Transfer assets
-- easy transfer of assets between accounts by clicking on them
+- easy transfer of assets between accounts by:
+ - clicking on an account first. This will give the assets for that account
+ - clicking on an asset of that account. Transfer actions will appear on the right side.
 
 #### Retrieve assets
 - that you currently own (like UTXO's)
