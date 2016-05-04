@@ -48,7 +48,7 @@ def get_bigchain(conf=CONFIG_FILE):
 
     return bigchaindb.Bigchain()
 
-bigchain = get_bigchain()
+bigchain = bigchaindb.Bigchain('bigchaindb_examples')
 logging.info('INIT: bigchain initialized with database: {}'.format(bigchaindb.config['database']['name']))
 
 

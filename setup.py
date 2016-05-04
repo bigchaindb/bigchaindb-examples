@@ -59,7 +59,8 @@ setup(
     packages=find_packages(exclude=['tests*']),
 
     install_requires=[
-        "BigchainDB==0.3.0"
+        "BigchainDB==0.3.0",
+        "decorator==4.0.9"
     ],
 
     setup_requires=['pytest-runner'],

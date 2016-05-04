@@ -22,8 +22,13 @@ All messages are JSON based.
 
 ### Dependencies
 
+
  - LINUX dependencies: see [setup BigchainDB & RethinkDB](https://bigchaindb.readthedocs.io/en/latest/installing-server.html#install-and-run-rethinkdb-server)
  - python>=3.4
+ 
+For the JavaScript part, we recommend using nvm, see [here](https://github.com/creationix/nvm#installation).
+
+Otherwise:
  - [node>=5.3](https://nodejs.org/en/download/) 
  - [npm>=3.3](https://docs.npmjs.com/getting-started/installing-node) 
  - [webpack>=1.13.0](https://webpack.github.io/docs/installation.html)
@@ -40,8 +45,6 @@ $ virtualenv venv -p python3
 $ source venv/bin/activate
 
 # Install server
-$ python3 setup.py install
-# or in dev mode
 $ pip install -e .[dev]
 
 # Make sure RethinkDB is running!
