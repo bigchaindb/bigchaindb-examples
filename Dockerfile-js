@@ -1,0 +1,12 @@
+FROM node:6
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+RUN npm install -g webpack
+
+COPY package.json /usr/src/app/
+COPY webpack.config.js /usr/src/app/
+COPY client /usr/src/app/client
+
+RUN npm install
