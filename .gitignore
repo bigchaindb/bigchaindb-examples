@@ -75,5 +75,7 @@ target/
 deploy-cluster-aws/conf/rethinkdb.conf
 deploy-cluster-aws/hostlist.py
 
+# bigchaindb-examples
 .bigchaindb
 .bigchaindb_examples
+server/static/
