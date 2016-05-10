@@ -28,6 +28,7 @@ services:
       dockerfile: Dockerfile-bdb
     volumes:
       - ./setup.py:/usr/src/app/init_db.py
+      - ./docs:/usr/src/app/docs
       - ./init_db.py:/usr/src/app/init_db.py
       - ./.bigchaindb:/root/.bigchaindb
     environment:
