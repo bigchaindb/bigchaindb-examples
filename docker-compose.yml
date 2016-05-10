@@ -33,7 +33,7 @@ services:
       - ./.bigchaindb:/root/.bigchaindb
     environment:
       BIGCHAINDB_CONFIG: /root/.bigchaindb
-      BIGCHAIN_DATABASE_HOST: rdb
+      BIGCHAINDB_DATABASE_HOST: rdb
     command: bigchaindb start
   
   app:
