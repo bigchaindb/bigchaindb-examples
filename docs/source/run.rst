@@ -1,10 +1,20 @@
 Running the Examples
 ====================
 
+The Easy Way
+------------
+
+.. code-block:: bash
+
+    $ docker-compose up
+
+
+The Hard Way
+------------
 Have three terminal shells.
 
 Running the javascript client
------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 In one terminal, run ``webpack`` to serve the static files
 
 .. code-block:: bash
@@ -13,7 +23,7 @@ In one terminal, run ``webpack`` to serve the static files
 
 
 Running BigchainDB
-------------------
+^^^^^^^^^^^^^^^^^^
 Launch ``BigchainDB`` in a separate terminal
 
 .. code-block:: bash
@@ -22,7 +32,7 @@ Launch ``BigchainDB`` in a separate terminal
 
 
 Running the App server
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 In another terminal launch the ``gunicorn`` server (from the repository root
 dir)
 
