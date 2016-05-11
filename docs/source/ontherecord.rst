@@ -1,9 +1,9 @@
+.. _ontherecord:
+
 On the Record
 =============
 
 "On the Record" is a simple logging app, wrapped as a messaging board.
-
-You should see the app running on `<http://localhost:8000/ontherecord/>`_
 
 .. image:: /_static/ontherecord.png
 

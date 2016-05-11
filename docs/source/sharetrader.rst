@@ -1,10 +1,10 @@
+.. _sharetrader:
+
 Share Trader
 ============
 
 Share Trader is a simple share allocation and trade app. Each square represents
 an asset that can be traded amongst accounts.
-
-You should see the app running on `<http://localhost:8000/sharetrader/>`_
 
 .. image:: /_static/sharetrader.png
 

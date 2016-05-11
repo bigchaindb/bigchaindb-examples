@@ -1,5 +1,12 @@
+.. _run:
+
 Running the Examples
 ====================
+Details about each app is documented under:
+
+* :ref:`ontherecord`
+* :ref:`sharetrader`
+
 
 The Easy Way
 ------------
@@ -7,6 +14,11 @@ The Easy Way
 .. code-block:: bash
 
     $ docker-compose up
+
+
+You should be able to view the "On the record" app at
+`<http://localhost:32800/ontherecord/>`_, and the "Share Trader" app at 
+`<http://localhost:32800/sharetrader/>`_.
 
 
 The Hard Way
@@ -39,3 +51,7 @@ dir)
 .. code-block:: bash
 
     $ python3 -m server.app
+
+You should be able to view the "On the record" app at
+`<http://localhost:8000/ontherecord/>`_, and the "Share Trader" app at 
+`<http://localhost:8000/sharetrader/>`_.

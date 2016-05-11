@@ -40,17 +40,23 @@ Build the images:
 
     $ docker-compose build
 
+Start ``RethinkDB`` in the backgroud:
+
+.. code-block:: bash
+
+    $ docker-compose up -d rdb
+
 Configure ``BigchaninDB``:
 
 .. code-block:: bash
 
     $ docker-compose run --rm bdb bigchaindb -y configure
 
-Start ``RethinkDB`` in the backgroud:
+Initialize ``BigchainDB``:
 
 .. code-block:: bash
-
-    $ docker-compose up -d rdb
+ 
+    $ docker-compose run --rm bdb bigchaindb init
 
 Load initial data:
 
@@ -59,7 +65,7 @@ Load initial data:
     $ docker-compose run --rm bdb python init_db.py
 
 
-You should now be ready to run the examples.
+You should now be ready to run the examples. See :ref:`run` for instructions.
 
 
 The Hard Way
@@ -116,6 +122,8 @@ Make sure you have all the :ref:`dependencies`.
     $ npm install
 
     
-    
+You should now be ready to run the examples. See :ref:`run` for instructions.
+ 
+
 .. _docker engine: https://www.docker.com/products/docker-engine
 .. _docker-compose: https://www.docker.com/products/docker-compose
