@@ -28,5 +28,5 @@ def create_app(debug):
 
 if __name__ == '__main__':
     app = create_app(debug=True)
-    app.run(host=os.environ.get('FLASK_HOST', '127.0.0.1'), port=8000)
+    app.run(host=os.environ.get('FLASK_HOST', '127.0.0.1'), port=os.environ.get('FLASK_PORT', 8000))
     app.run()
