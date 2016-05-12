@@ -5,6 +5,7 @@ The application is implemented in Flask and runs using Gunicorn.
 import os
 
 from flask import Flask
+from flask.ext.cors import CORS
 
 from server.lib.api.views import api_views
 
@@ -18,6 +19,22 @@ def create_app(debug):
     """
 
     app = Flask(__name__)
+    CORS(app,
+         origins="^(https?://)?(www\.)?localhost(\.com)?:\d{1,5}$",
+         headers=(
+            'x-requested-with',
+            'content-type',
+            'accept',
+            'origin',
+            'authorization',
+            'x-csrftoken',
+            'withcredentials',
+            'cache-control',
+            'cookie',
+            'session-id'
+        ),
+        supports_credentials=True,
+    )
 
     app.debug = debug
 
