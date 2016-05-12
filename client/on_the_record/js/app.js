@@ -1,7 +1,6 @@
-'use strict';
-
-import 'babel/polyfill';
-import fetch from 'isomorphic-fetch/';
+// Install necessary polyfills (see supported browsers) into global
+import 'core-js/es6';
+import 'isomorphic-fetch';
 
 import '../../lib/css/scss/main.scss';
 
