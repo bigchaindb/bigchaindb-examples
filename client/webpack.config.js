@@ -36,6 +36,7 @@ const ENTRY = {
 const DEFINITIONS = {
     'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+        FLASK_BASE_URL: JSON.stringify(process.env.FLASK_BASE_URL || 'http://localhost:8000'),
     },
 };
 
