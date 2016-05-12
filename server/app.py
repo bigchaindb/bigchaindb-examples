@@ -2,6 +2,8 @@
 
 The application is implemented in Flask and runs using Gunicorn.
 """
+import os
+
 from flask import Flask
 
 from server.lib.api import views
@@ -26,5 +28,5 @@ def create_app(debug):
 
 if __name__ == '__main__':
     app = create_app(debug=True)
-    app.run(port=8000)
+    app.run(host=os.environ.get('FLASK_HOST', '127.0.0.1'), port=8000)
     app.run()

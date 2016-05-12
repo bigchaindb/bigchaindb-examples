@@ -1,0 +1,53 @@
+version: '2'
+
+
+services:
+  
+  js:
+    build: 
+      context: .
+      dockerfile: Dockerfile-js
+    volumes:
+      - ./package.json:/usr/src/app/package.js
+      - ./webpack.config.js:/usr/src/app/webpack.config.js
+      - ./client:/usr/src/app/client
+      - /usr/src/app/node_modules
+    volumes_from:
+      - app
+    command: webpack -w
+  
+  rdb:
+    image: rethinkdb
+    ports:
+      - "58087:8080"
+      - "28015"
+
+  bdb:
+    build:
+      context: .
+      dockerfile: Dockerfile-bdb
+    volumes:
+      - ./setup.py:/usr/src/app/init_db.py
+      - ./docs:/usr/src/app/docs
+      - ./init_db.py:/usr/src/app/init_db.py
+      - ./.bigchaindb:/root/.bigchaindb
+    environment:
+      BIGCHAINDB_CONFIG: /root/.bigchaindb
+      BIGCHAINDB_DATABASE_HOST: rdb
+    command: bigchaindb start
+  
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile-bdb
+    volumes:
+      - ./server:/usr/src/app/server
+    volumes_from:
+      - bdb
+    environment:
+      BIGCHAINDB_CONFIG: /root/.bigchaindb
+      BIGCHAIN_DATABASE_HOST: rdb
+      FLASK_HOST: 0.0.0.0
+    ports:
+      - "32800:8000"
+    command: python -m server.app

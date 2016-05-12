@@ -11,7 +11,10 @@ from server.lib.models.assets import create_asset
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), '.bigchaindb_examples')
+try:
+    CONFIG_FILE = os.environ['BIGCHAINDB_CONFIG']
+except KeyError:
+    CONFIG_FILE = os.path.join(os.path.dirname(__file__), '.bigchaindb_examples')
 
 APPS = [
     {

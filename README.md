@@ -35,6 +35,8 @@ Otherwise:
 
 ### Setup
 
+Make sure you have all the [dependencies](#dependencies).
+
 ```bash
 # Clone the repository and install:
 $ git clone git@github.com:bigchaindb/bigchaindb-examples.git
