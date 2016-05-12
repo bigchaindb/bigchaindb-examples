@@ -4,7 +4,7 @@
 
 @import './style';
 $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
-@import "../../../../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
 @import 'normalize.css';
 @import 'custom_bootstrap';
 @import 'spinner';
