@@ -4,8 +4,10 @@ const path = require('path');
 
 const webpack = require('webpack');
 const autoPrefixer = require('autoprefixer');
+const capitalize = require('capitalize');
 const combineLoaders = require('webpack-combine-loaders');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 require('dotenv').load({ silent: true });
 
@@ -19,6 +21,14 @@ const PATHS = {
     BUILD: path.resolve(__dirname, 'build'),
     DIST: path.resolve(__dirname, 'dist'),
     NODE_MODULES: path.resolve(__dirname, 'node_modules'),
+};
+
+
+/** ENTRY POINTS **/
+const ENTRY = {
+    // Use one entry per app
+    on_the_record: PATHS.ON_THE_RECORD,
+    share_trader: PATHS.SHARE_TRADER,
 };
 
 
@@ -56,6 +66,24 @@ const EXTRACT_CSS_PLUGIN = new ExtractTextPlugin(
         allChunks: true
     }
 );
+
+// Generate html files for each of the example apps specified in ENTRY
+const HTML_PLUGINS = Object.keys(ENTRY).map((entryName) => (
+    new HtmlWebpackPlugin({
+        filename: `${entryName}.html`,
+        title: capitalize.words(entryName.replace(/_/g, ' ')) + ' - powered by BigchainDB',
+        chunks: [entryName],
+        minify: PRODUCTION ? {
+            collapseWhitespace: true,
+            minifyJS: true,
+            removeComments: true,
+            removeRedundantAttributes: true
+        } : false,
+        template: path.resolve(__dirname, 'app_index_template.html'),
+    })
+));
+
+PLUGINS.push(...HTML_PLUGINS);
 
 if (EXTRACT || PRODUCTION) {
     PLUGINS.push(EXTRACT_CSS_PLUGIN);
@@ -115,10 +143,7 @@ const LOADERS = [
 
 /** EXPORTED WEBPACK CONFIG **/
 module.exports = {
-    entry:  {
-        on_the_record: PATHS.ON_THE_RECORD,
-        share_trader: PATHS.SHARE_TRADER,
-    },
+    entry: ENTRY,
 
     output: {
         filename: PRODUCTION ? '[name].min.js' : '[name].js',

@@ -40,5 +40,4 @@ ReactDOM.render((
     <Router>
         {routes}
     </Router>
-), document.getElementById('container'));
-
+), document.getElementById('bigchaindb-example-app'));

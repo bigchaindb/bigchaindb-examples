@@ -6,7 +6,7 @@ import os
 
 from flask import Flask
 
-from server.lib.api import views
+from server.lib.api.views import api_views
 
 
 def create_app(debug):
@@ -21,8 +21,7 @@ def create_app(debug):
 
     app.debug = debug
 
-    app.register_blueprint(views.basic_views)
-    app.register_blueprint(views.api_views, url_prefix='/api')
+    app.register_blueprint(api_views, url_prefix='/api')
     return app
 
 

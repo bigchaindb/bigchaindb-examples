@@ -5,28 +5,16 @@ For more information please refer to the documentation in Apiary:
 """
 
 import flask
-from flask import request, Blueprint, render_template
+from flask import request, Blueprint
 
 from init_db import get_bigchain
 
 from server.lib.models import accounts
 from server.lib.models import assets
 
-app_name = __name__.split('.')[0]
-bigchain = get_bigchain()
-
-basic_views = Blueprint('basic_views', __name__)
 api_views = Blueprint('api_views', __name__)
 
-
-@basic_views.route('/ontherecord/')
-def on_the_record():
-    return render_template('on_the_record.html')
-
-
-@basic_views.route('/sharetrader/')
-def share_trader():
-    return render_template('share_trader.html')
+bigchain = get_bigchain()
 
 
 @api_views.route('/accounts/')
