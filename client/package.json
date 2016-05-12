@@ -1,14 +1,11 @@
 {
-  "name": "on-the-record",
-  "version": "0.0.2",
-  "description": "Put your messages on the record",
-  "main": "gulpfile.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "npm run build",
-    "build": "webpack -p",
-    "serve": "webpack -w"
-  },
+  "name": "bigchaindb-examples",
+  "version": "0.0.3",
+  "description": "BigchainDB Examples",
+  "homepage": "https://www.bigchain.io/",
+  "bugs": "https://github.com/bigchain/bigchaindb-examples/issues",
+  "license": "Apache-2.0",
+  "author": "Dimitri De Jonghe",
   "repository": {
     "type": "git",
     "url": "git@github.com:bigchaindb/bigchaindb-examples.git"
@@ -18,8 +15,10 @@
     "examples",
     "react"
   ],
-  "author": "Dimitri De Jonghe",
-  "license": "Apache-2.0",
+  "scripts": {
+    "lint": "eslint ./",
+    "test": "echo \"Error: no test specified\" && exit 1",
+  },
   "dependencies": {
     "alt": "^0.16.5",
     "babel": "^5.8.23",
