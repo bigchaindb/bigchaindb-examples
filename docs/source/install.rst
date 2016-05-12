@@ -20,8 +20,8 @@ We now document two options:
   components, and required dependencies to be rarely a smooth process.
     
 
-The Easy Way
-------------
+The Docker Way
+--------------
 Just make sure you have recent versions of `docker engine`_ and
 `docker-compose`_, e.g.:
 
@@ -68,8 +68,8 @@ Load initial data:
 You should now be ready to run the examples. See :ref:`run` for instructions.
 
 
-The Hard Way
-------------
+The "Normal" Way
+----------------
 Good luck!
 
 .. _dependencies:
