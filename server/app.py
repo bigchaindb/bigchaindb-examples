@@ -20,7 +20,9 @@ def create_app(debug):
 
     app = Flask(__name__)
     CORS(app,
-         origins="^(https?://)?(www\.)?localhost(\.com)?:\d{1,5}$",
+         origins=("^(https?://)?(www\.)?(" +
+                  os.environ.get('DOCKER_MACHINE_IP', 'localhost') +
+                  "|localhost|127.0.0.1)(\.com)?:\d{1,5}$"),
          headers=(
             'x-requested-with',
             'content-type',

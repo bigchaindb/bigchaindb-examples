@@ -19,6 +19,7 @@ services:
       - ./client/webpack.config.js:/usr/src/app/client/webpack.config.js
     environment:
       CLIENT_HOST: 0.0.0.0
+      FLASK_BASE_URL: "http://${DOCKER_MACHINE_IP}:32801"
     ports:
       - "32800:3000"
     command: node server.demo.js
@@ -55,6 +56,7 @@ services:
       BIGCHAINDB_CONFIG: /root/.bigchaindb
       BIGCHAIN_DATABASE_HOST: rdb
       FLASK_HOST: 0.0.0.0
+      DOCKER_MACHINE_IP: "${DOCKER_MACHINE_IP}"
     ports:
       - "32801:8000"
     command: python -m server.app
