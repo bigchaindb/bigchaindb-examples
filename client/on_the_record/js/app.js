@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom/';
 
 import { Router, Route, IndexRoute } from 'react-router/';
 
-import ShareTrader from './components/share_trader';
+import OnTheRecord from './components/on_the_record';
 
 
 let App = React.createClass({
@@ -24,7 +24,7 @@ let App = React.createClass({
 
     render() {
         return (
-            <div className="App share-trader">
+            <div className="app on-the-record">
                 {this.props.children}
             </div>
         );
@@ -33,7 +33,7 @@ let App = React.createClass({
 
 let routes = (
     <Route path='/' component={App}>
-        <IndexRoute component={ShareTrader} />
+        <IndexRoute component={OnTheRecord} />
     </Route>
 );
 
