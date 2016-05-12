@@ -8,14 +8,21 @@ services:
       context: .
       dockerfile: Dockerfile-js
     volumes:
-      - ./package.json:/usr/src/app/package.js
-      - ./webpack.config.js:/usr/src/app/webpack.config.js
-      - ./client:/usr/src/app/client
-      - /usr/src/app/node_modules
-    volumes_from:
-      - app
-    command: webpack -w
   
+      - ./client/demo:/usr/src/app/client/demo
+      - ./client/lib:/usr/src/app/client/lib
+      - ./client/js:/usr/src/app/client/js
+      - ./client/app_index_template.html:/usr/src/app/client/app_index_template.html
+      - ./client/browserlist:/usr/src/app/client/browserlist
+      - ./client/package.json:/usr/src/app/client/package.json
+      - ./client/server.demo.js/:/usr/src/app/client/server.demo.js
+      - ./client/webpack.config.js:/usr/src/app/client/webpack.config.js
+    environment:
+      CLIENT_HOST: 0.0.0.0
+    ports:
+      - "32800:3000"
+    command: node server.demo.js
+
   rdb:
     image: rethinkdb
     ports:
@@ -49,5 +56,5 @@ services:
       BIGCHAIN_DATABASE_HOST: rdb
       FLASK_HOST: 0.0.0.0
     ports:
-      - "32800:8000"
+      - "32801:8000"
     command: python -m server.app
