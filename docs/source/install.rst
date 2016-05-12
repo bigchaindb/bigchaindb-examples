@@ -50,6 +50,7 @@ Configure ``BigchaninDB``:
 
 .. code-block:: bash
 
+    $ touch .bigchaindb     # if the file is not there docker will create a dir
     $ docker-compose run --rm bdb bigchaindb -y configure
 
 Initialize ``BigchainDB``:
