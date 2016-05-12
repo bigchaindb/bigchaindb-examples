@@ -1,0 +1,10 @@
+# Supported browsers by this project.
+# For format, see https://github.com/ai/browserslist
+Chrome >= 30
+Safari >= 6.1
+Firefox >= 35
+Opera >= 32
+Explorer >= 10
+iOS >= 8
+Android >= 2.3
+Last 2 versions
