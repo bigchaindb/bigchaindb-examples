@@ -20,58 +20,9 @@ We now document two options:
   components, and required dependencies to be rarely a smooth process.
     
 
-The Docker Way
---------------
-Just make sure you have recent versions of `docker engine`_ and
-`docker-compose`_, e.g.:
 
-.. code-block:: bash
-    
-    $ docker --version
-    Docker version 1.11.1, build 5604cbe
-
-    $ docker-compose --version
-    docker-compose version 1.7.0, build 0d7bf73
-
-
-Build the images:
-
-.. code-block:: bash
-
-    $ docker-compose build
-
-Start ``RethinkDB`` in the backgroud:
-
-.. code-block:: bash
-
-    $ docker-compose up -d rdb
-
-Configure ``BigchaninDB``:
-
-.. code-block:: bash
-
-    $ touch .bigchaindb     # if the file is not there docker will create a dir
-    $ docker-compose run --rm bdb bigchaindb -y configure
-
-Initialize ``BigchainDB``:
-
-.. code-block:: bash
- 
-    $ docker-compose run --rm bdb bigchaindb init
-
-Load initial data:
-
-.. code-block:: bash
-
-    $ docker-compose run --rm bdb python init_db.py
-
-
-You should now be ready to run the examples. See :ref:`run` for instructions.
-
-
-The "Normal" Way
-----------------
-Good luck!
+Install from Source
+-------------------
 
 .. _dependencies:
 
@@ -124,6 +75,56 @@ Make sure you have all the :ref:`dependencies`.
 
     
 You should now be ready to run the examples. See :ref:`run` for instructions.
+
+
+The Docker Way
+--------------
+Just make sure you have recent versions of `docker engine`_ and
+`docker-compose`_, e.g.:
+
+.. code-block:: bash
+    
+    $ docker --version
+    Docker version 1.11.1, build 5604cbe
+
+    $ docker-compose --version
+    docker-compose version 1.7.0, build 0d7bf73
+
+
+Build the images:
+
+.. code-block:: bash
+
+    $ docker-compose build
+
+Start ``RethinkDB`` in the backgroud:
+
+.. code-block:: bash
+
+    $ docker-compose up -d rdb
+
+Configure ``BigchaninDB``:
+
+.. code-block:: bash
+
+    $ touch .bigchaindb     # if the file is not there docker will create a dir
+    $ docker-compose run --rm bdb bigchaindb -y configure
+
+Initialize ``BigchainDB``:
+
+.. code-block:: bash
+ 
+    $ docker-compose run --rm bdb bigchaindb init
+
+Load initial data:
+
+.. code-block:: bash
+
+    $ docker-compose run --rm bdb python init_db.py
+
+
+You should now be ready to run the examples. See :ref:`run` for instructions.
+
  
 
 .. _docker engine: https://www.docker.com/products/docker-engine
