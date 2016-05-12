@@ -7,7 +7,7 @@ const config = require('./webpack.config.js');
 
 require('dotenv').load({ silent: true });
 
-const HOST_NAME = process.env.CLIENT_HOST_NAME || 'localhost';
+const HOST_NAME = process.env.CLIENT_HOST || 'localhost';
 const PORT = process.env.CLIENT_PORT || 3000;
 
 // Enable hot reloading if on demo mode
