@@ -19,7 +19,7 @@ services:
   rdb:
     image: rethinkdb
     ports:
-      - "58080:8080"
+      - "58087:8080"
       - "28015"
 
   bdb:
