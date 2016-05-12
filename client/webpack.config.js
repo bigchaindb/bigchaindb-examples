@@ -1,50 +1,144 @@
-var path = require('path');
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+'use strict';
+
+const path = require('path');
+
+const webpack = require('webpack');
+const autoPrefixer = require('autoprefixer');
+const combineLoaders = require('webpack-combine-loaders');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+require('dotenv').load({ silent: true });
+
+const PRODUCTION = process.env.NODE_ENV === 'production';
+const EXTRACT = process.env.NODE_ENV === 'extract';
+
+const PATHS = {
+    ON_THE_RECORD: path.resolve(__dirname, 'on_the_record/js/app.js'),
+    SHARE_TRADER: path.resolve(__dirname, 'share_trader/js/app.js'),
+
+    BUILD: path.resolve(__dirname, 'build'),
+    DIST: path.resolve(__dirname, 'dist'),
+    NODE_MODULES: path.resolve(__dirname, 'node_modules'),
+};
 
 
+/** EXTERNAL DEFINITIONS INJECTED INTO APP **/
+const DEFINITIONS = {
+    'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+    },
+};
+
+
+/** PLUGINS **/
+const PLUGINS = [
+    new webpack.DefinePlugin(DEFINITIONS),
+    new webpack.NoErrorsPlugin(),
+];
+
+const PROD_PLUGINS = [
+    new webpack.optimize.UglifyJsPlugin({
+        compress: {
+            warnings: false
+        },
+        output: {
+            comments: false
+        }
+    }),
+    new webpack.LoaderOptionsPlugin({
+        debug: false,
+        minimize: true
+    }),
+];
+
+const EXTRACT_CSS_PLUGIN = new ExtractTextPlugin(
+    PRODUCTION ? 'styles.min.css' : 'styles.css', {
+        allChunks: true
+    }
+);
+
+if (EXTRACT || PRODUCTION) {
+    PLUGINS.push(EXTRACT_CSS_PLUGIN);
+}
+
+if (PRODUCTION) {
+    PLUGINS.push(...PROD_PLUGINS);
+}
+
+
+/** LOADERS **/
+const JS_LOADER = combineLoaders([
+    {
+        loader: 'babel',
+        query: {
+            cacheDirectory: true,
+        },
+    },
+]);
+
+const CSS_LOADER = combineLoaders([
+    {
+        loader: 'css',
+        query: {
+            sourceMap: true
+        }
+    },
+    { loader: 'postcss' },
+    {
+        loader: 'sass',
+        query: {
+            precision: '8', // See https://github.com/twbs/bootstrap-sass#sass-number-precision
+            outputStyle: 'expanded',
+            sourceMap: true
+        }
+    },
+]);
+
+const LOADERS = [
+    {
+        test: /\.jsx?$/,
+        exclude: [PATHS.NODE_MODULES],
+        loader: JS_LOADER,
+    },
+    {
+        test: /\.s[ac]ss$/,
+        exclude: [PATHS.NODE_MODULES],
+        loader: PRODUCTION || EXTRACT ? ExtractTextPlugin.extract('style', CSS_LOADER)
+                                      : `style!${CSS_LOADER}`,
+    },
+    {
+        test: /.(png|woff(2)?|eot|ttf|svg)(\?[a-z0-9=\.]+)?$/,
+        loader: 'url-loader?limit=100000'
+    },
+];
+
+
+/** EXPORTED WEBPACK CONFIG **/
 module.exports = {
-    context: __dirname,
-
-    devtool: 'source-map',
-
     entry:  {
-        on_the_record: "./client/on_the_record/js/App.js",
-        share_trader: "./client/share_trader/js/App.js"
+        on_the_record: PATHS.ON_THE_RECORD,
+        share_trader: PATHS.SHARE_TRADER,
     },
 
     output: {
-        path: path.resolve(path.join(__dirname, '/server/static/')),
-        filename: "[name].js"
+        filename: PRODUCTION ? '[name].min.js' : '[name].js',
+        path: PRODUCTION ? PATHS.DIST : PATHS.BUILD,
     },
 
-    module: {
-        loaders: [{
-            test: /\.js$/,
-            exclude: /node_modules/,
-            loaders: ['babel-loader?presets[]=react&presets[]=es2015']
-        }, {
-            test: /.(png|woff(2)?|eot|ttf|svg)(\?[a-z0-9=\.]+)?$/,
-            loader: 'url-loader?limit=100000'
-        }, {
-            test: /\.s[ac]ss/,
-            loader: ExtractTextPlugin.extract('style-loader', 'css!sass?indentedSyntax=true&sourceMap=true&includePaths[]=' + (path.resolve(__dirname, "./node_modules")))
-        }]
-    },
+    debug: !PRODUCTION,
 
-    plugins: [
-        new ExtractTextPlugin('style.css', {
-            allChunks: true
-        })
-    ],
+    devtool: PRODUCTION ? '#source-map' : '#inline-source-map',
 
     resolve: {
-        modulesDirectories: ['node_modules', 'bower_components'],
-        extensions: ['', '.js', '.jsx']
+        extensions: ['', '.js', '.jsx'],
+        modules: ['node_modules'], // Don't use absolute path here to allow recursive matching
     },
 
-    resolveLoader: {
-        root: path.join(__dirname, 'node_modules')
-    }
+    plugins: PLUGINS,
 
+    module: {
+        loaders: LOADERS,
+    },
+
+    postcss: [autoPrefixer()],
 };
