@@ -29,7 +29,7 @@ necessary)
 
 The Hard Way
 ------------
-Have three terminal shells.
+Have three terminal shells (in ``bigchaindb-examples/``)
 
 Running the javascript client
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -43,17 +43,17 @@ In one terminal, run ``npm start`` in ``client/`` to serve the client apps
 
 Running BigchainDB
 ^^^^^^^^^^^^^^^^^^
-Launch ``BigchainDB`` in a separate terminal
+Launch ``BigchainDB`` with ``RethinkDB`` in a separate terminal
 
 .. code-block:: bash
 
+    $ rethinkdb &   # skip this if RethinkDB is already running
     $ bigchaindb -c .bigchaindb_examples start
 
 
 Running the App server
 ^^^^^^^^^^^^^^^^^^^^^^
-In another terminal launch the ``gunicorn`` server (from the repository root
-dir)
+In another terminal, launch the ``flask`` server
 
 .. code-block:: bash
 
