@@ -27,8 +27,8 @@ const PATHS = {
 /** ENTRY POINTS **/
 const ENTRY = {
     // Use one entry per app
-    on_the_record: PATHS.ON_THE_RECORD,
-    share_trader: PATHS.SHARE_TRADER,
+    ontherecord: PATHS.ON_THE_RECORD,
+    sharetrader: PATHS.SHARE_TRADER,
 };
 
 
@@ -63,7 +63,7 @@ const PROD_PLUGINS = [
 ];
 
 const EXTRACT_CSS_PLUGIN = new ExtractTextPlugin(
-    PRODUCTION ? 'styles.min.css' : 'styles.css', {
+    PRODUCTION ? '[name]/styles.min.css' : '[name]/styles.css', {
         allChunks: true
     }
 );
@@ -71,7 +71,7 @@ const EXTRACT_CSS_PLUGIN = new ExtractTextPlugin(
 // Generate html files for each of the example apps specified in ENTRY
 const HTML_PLUGINS = Object.keys(ENTRY).map((entryName) => (
     new HtmlWebpackPlugin({
-        filename: `${entryName}.html`,
+        filename: `${entryName}/index.html`,
         title: capitalize.words(entryName.replace(/_/g, ' ')) + ' - powered by BigchainDB',
         chunks: [entryName],
         minify: PRODUCTION ? {
@@ -147,7 +147,7 @@ module.exports = {
     entry: ENTRY,
 
     output: {
-        filename: PRODUCTION ? '[name].min.js' : '[name].js',
+        filename: PRODUCTION ? '[name]/bundle.min.js' : '[name]/bundle.js',
         path: PRODUCTION ? PATHS.DIST : PATHS.BUILD,
     },
 
