@@ -60,5 +60,5 @@ In another terminal, launch the ``flask`` server
     $ python3 -m server.app
 
 You should be able to view the "On the record" app at
-`<http://localhost:8000/ontherecord/>`_, and the "Share Trader" app at 
+`<http://localhost:8000/ontherecord/>`_, and the "Share Trader" app at
 `<http://localhost:8000/sharetrader/>`_.

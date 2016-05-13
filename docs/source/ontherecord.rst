@@ -20,15 +20,15 @@ Functionality
 Create assets
 ^^^^^^^^^^^^^
 
-- with arbitrary payload
-- and an unlimited amount
+- With arbitrary payload
+- And an unlimited amount
 
 Retrieve assets
 ***************
 
-- that you currently own (like UTXO's)
-- by searching the asset data/payload
-- state indicator (in backlog vs. on bigchain)
+- That you currently own (like UTXO's)
+- By searching the asset data/payload
+- State indicator (in backlog vs. on bigchain)
 
 What this app doesn't provide
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
