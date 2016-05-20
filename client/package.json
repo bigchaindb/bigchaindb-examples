@@ -32,7 +32,6 @@
     "classnames": "^2.2.5",
     "core-js": "^2.4.0",
     "decamelize": "^1.1.1",
-    "history": "^1.13.1",
     "isomorphic-fetch": "^2.2.0",
     "moment": "^2.10.6",
     "q": "^1.4.1",
@@ -41,7 +40,6 @@
     "react-bootstrap": "^0.28.1",
     "react-dom": "^0.14.8",
     "react-matrix": "0.0.6",
-    "react-router": ">=2.0.0-rc2",
     "react-scroll": "^1.0.15",
     "shallow-equals": "0.0.0"
   },
