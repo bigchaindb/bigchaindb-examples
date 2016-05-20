@@ -1,5 +1,4 @@
-'use strict';
-
+/* eslint-disable prefer-template */
 import { API_PATH } from './application_constants';
 
 

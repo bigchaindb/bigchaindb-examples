@@ -1,6 +1,4 @@
-'use strict';
-
-import { alt } from '../alt';
+import alt from '../alt';
 
 import AccountActions from '../actions/account_actions';
 
@@ -26,7 +24,7 @@ class AccountStore {
         this.getInstance().lookupAccount();
     }
 
-    onSuccessFetchAccount( account ) {
+    onSuccessFetchAccount(account) {
         if (account) {
             this.account = account;
             this.accountMeta.err = null;
@@ -36,15 +34,15 @@ class AccountStore {
             this.accountMeta.err = new Error('Problem fetching the account');
         }
     }
-    
-    onFetchAccountList( { app }) {
+
+    onFetchAccountList({ app }) {
         this.accountMeta.app = app;
         this.getInstance().lookupAccountList();
     }
 
-    onSuccessFetchAccountList( accountList ) {
+    onSuccessFetchAccountList(accountList) {
         if (accountList) {
-            this.accountList = accountList['accounts'];
+            this.accountList = accountList.accounts;
             this.accountMeta.err = null;
             this.accountMeta.app = null;
         } else {
@@ -57,7 +55,7 @@ class AccountStore {
         this.getInstance().postAccount();
     }
 
-    onSuccessPostAccount( account ) {
+    onSuccessPostAccount(account) {
         if (account) {
             this.account = account;
             this.accountMeta.err = null;
@@ -80,7 +78,6 @@ class AccountStore {
         this.accountList = null;
         this.accountMeta.err = null;
         this.accountMeta.app = null;
-        
     }
 
     onErrorAccount(err) {

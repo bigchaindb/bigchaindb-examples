@@ -1,6 +1,4 @@
-'use strict';
-
-import { alt } from '../alt';
+import alt from '../alt';
 
 import AssetActions from '../actions/asset_actions';
 
@@ -19,16 +17,16 @@ class AssetStore {
             accountToFetch: null,
             search: null
         };
-        this.bindActions( AssetActions );
-        this.registerAsync( AssetSource );
+        this.bindActions(AssetActions);
+        this.registerAsync(AssetSource);
     }
 
-    onFetchAsset( idToFetch ) {
+    onFetchAsset(idToFetch) {
         this.assetMeta.idToFetch = idToFetch;
         this.getInstance().lookupAsset();
     }
 
-    onSuccessFetchAsset( asset ) {
+    onSuccessFetchAsset(asset) {
         if (asset) {
             this.asset = asset;
             this.assetMeta.err = null;
@@ -38,26 +36,25 @@ class AssetStore {
             this.assetMeta.err = new Error('Problem fetching the asset');
         }
     }
-    
+
     onFetchAssetList({ accountToFetch, search }) {
         this.assetMeta.accountToFetch = accountToFetch;
         this.assetMeta.search = search;
         this.getInstance().lookupAssetList();
     }
 
-    onSuccessFetchAssetList( assetList ) {
-        if ( assetList ) {
-            if ( this.assetMeta.accountToFetch ) {
-                assetList = assetList['assets'];
-                if (assetList && Object.keys(assetList).indexOf('bigchain') > -1) {
-                    this.assetList = assetList.bigchain.concat(assetList.backlog);
+    onSuccessFetchAssetList(assetList) {
+        if (assetList) {
+            const { assets } = assetList;
+
+            if (this.assetMeta.accountToFetch) {
+                if (assets && Object.keys(assets).indexOf('bigchain') > -1) {
+                    this.assetList = assets.bigchain.concat(assets.backlog);
                 }
             } else {
-                this.assetList = assetList['assets'].filter(( asset ) => {
-                    if (asset.transaction.data.payload.app == 'sharetrader'){
-                        return asset;
-                    }
-                })
+                this.assetList = assets.filter((asset) => (
+                    asset.transaction.data.payload.app === 'sharetrader'
+                ));
             }
 
             this.assetMeta.err = null;
@@ -74,13 +71,13 @@ class AssetStore {
     }
 
 
-    onTransferAsset( {idToTransfer, payloadToPost} ) {
+    onTransferAsset({ idToTransfer, payloadToPost }) {
         this.assetMeta.idToTransfer = idToTransfer;
         this.assetMeta.payloadToPost = payloadToPost;
         this.getInstance().transferAsset();
     }
 
-    onSuccessPostAsset( asset ) {
+    onSuccessPostAsset(asset) {
         if (asset) {
             this.asset = asset;
             this.assetMeta.err = null;

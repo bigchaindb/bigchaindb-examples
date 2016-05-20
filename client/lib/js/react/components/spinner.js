@@ -1,9 +1,8 @@
-'use strict';
-
 import React from 'react';
 import classNames from 'classnames';
 
-let AscribeSpinner = React.createClass({
+
+const AscribeSpinner = React.createClass({
     propTypes: {
         classNames: React.PropTypes.string,
         size: React.PropTypes.oneOf(['sm', 'md', 'lg']),
@@ -23,11 +22,11 @@ let AscribeSpinner = React.createClass({
 
         return (
             <div
-                className={classNames('spinner-wrapper-' + size,
-                                      color ? 'spinner-wrapper-' + color : null,
+                className={classNames(`spinner-wrapper-${size}`,
+                                      color ? `spinner-wrapper-${color}` : null,
                                       classes)}>
-                <div className='spinner-circle' />
-                <div className='spinner-inner'>A</div>
+                <div className="spinner-circle" />
+                <div className="spinner-inner">A</div>
             </div>
         );
     }

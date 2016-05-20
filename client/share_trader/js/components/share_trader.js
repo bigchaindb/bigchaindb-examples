@@ -1,8 +1,6 @@
-'use strict';
-
 import React from 'react/';
 
-import {Navbar, Row, Col, Button } from 'react-bootstrap/lib/';
+import { Navbar, Row, Col, Button } from 'react-bootstrap/lib/';
 
 import Scroll from 'react-scroll';
 
@@ -37,52 +35,55 @@ const ShareTrader = React.createClass({
     },
 
     componentDidMount() {
-        AssetStore.listen( this.onChange );
-        AccountStore.listen( this.onChange );
+        AssetStore.listen(this.onChange);
+        AccountStore.listen(this.onChange);
 
         this.fetchAssetList();
         Scroll.animateScroll.scrollToBottom();
     },
 
     componentWillUnmount() {
-        AssetStore.unlisten( this.onChange );
-        AccountStore.unlisten( this.onChange );
+        AssetStore.unlisten(this.onChange);
+        AccountStore.unlisten(this.onChange);
     },
 
-    onChange( state ) {
-        this.setState( state );
+    onChange(state) {
+        this.setState(state);
     },
 
-    setActiveAccount( account ){
+    setActiveAccount(account) {
         this.setState({
             activeAccount: account
         });
     },
 
-    resetActiveAccount(){
+    resetActiveAccount() {
         this.setState({
             activeAccount: null
         });
     },
 
-    setActiveAsset( asset ){
+    setActiveAsset(asset) {
         this.setState({
             activeAsset: asset
         });
     },
-    
-    mapAccountsOnStates( accountList ) {
-        let states = {'default': 'available'};
+
+    mapAccountsOnStates(accountList) {
+        const states = { 'default': 'available' };
+
         if (!accountList) {
             return states;
         }
-        for (let i = 0; i < accountList.length; i++){
-            states[accountList[i].vk] = 'state' + i;
+
+        for (let i = 0; i < accountList.length; i++) {
+            states[accountList[i].vk] = `state${i}`;
         }
+
         return states;
     },
 
-    fetchAssetList(){
+    fetchAssetList() {
         AssetActions.flushAssetList();
         const { activeAccount, searchQuery } = this.state;
         const accountPublicKey = activeAccount ? activeAccount.vk : null;
@@ -92,7 +93,7 @@ const ShareTrader = React.createClass({
         setTimeout(this.fetchAssetList, 1000);
     },
 
-    handleSearch( query ){
+    handleSearch(query) {
         this.setState({
             searchQuery: query
         });
@@ -100,52 +101,52 @@ const ShareTrader = React.createClass({
 
     render() {
         const { activeAccount, accountList, activeAsset, assetList, assetMeta } = this.state;
-        const states = this.mapAccountsOnStates( accountList );
+        const states = this.mapAccountsOnStates(accountList);
 
         return (
             <div>
-                <Navbar inverse fixedTop>
+                <Navbar fixedTop inverse>
                     <h1 style={{ textAlign: 'center', color: 'white' }}>Share Trader</h1>
                 </Navbar>
                 <div id="wrapper">
                     <div id="sidebar-wrapper">
                         <div className="sidebar-nav">
                             <Search
-                                initialQuery={ assetMeta.search }
-                                handleSearch={ this.handleSearch }/>
-                            <div style={{textAlign: 'center'}}>
+                                handleSearch={this.handleSearch}
+                                initialQuery={assetMeta.search} />
+                            <div style={{ textAlign: 'center' }}>
                                 <Button
-                                    onClick={ this.resetActiveAccount }>
+                                    onClick={this.resetActiveAccount}>
                                     Select All
                                 </Button>
                             </div>
                             <Accounts
-                                activeAccount={ activeAccount }
-                                handleAccountClick={ this.setActiveAccount }/>
+                                activeAccount={activeAccount}
+                                handleAccountClick={this.setActiveAccount} />
                         </div>
                     </div>
                     <div id="page-content-wrapper">
                         <div className="page-content">
                             <Row>
-                                <Col xs={ 6 } md={ 8 } className="asset-matrix">
+                                <Col className="asset-matrix" md={8} xs={6}>
                                     <div className="vertical-align-outer">
                                         <div className="vertical-align-inner">
                                             <AssetMatrix
-                                                rows={ 8 }
-                                                cols={ 8 }
-                                                states={ states }
-                                                handleAssetClick={ this.setActiveAsset }/>
+                                                cols={8}
+                                                handleAssetClick={this.setActiveAsset}
+                                                rows={8}
+                                                states={states} />
                                         </div>
                                     </div>
                                 </Col>
-                                <Col xs={ 6 } md={ 4 } className="asset-history">
+                                <Col className="asset-history" md={4} xs={6}>
                                     <Assets
-                                        activeAccount={ activeAccount }
-                                        accountList={ accountList }
-                                        activeAsset={ activeAsset }
-                                        assetList={ assetList }
-                                        assetClasses={ states }
-                                        handleAssetClick={ this.setActiveAsset }/>
+                                        accountList={accountList}
+                                        activeAccount={activeAccount}
+                                        activeAsset={activeAsset}
+                                        assetClasses={states}
+                                        assetList={assetList}
+                                        handleAssetClick={this.setActiveAsset} />
                                 </Col>
                             </Row>
                         </div>

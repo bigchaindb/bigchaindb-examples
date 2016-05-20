@@ -1,5 +1,6 @@
+/* eslint-disable strict, no-console */
+/* eslint-disable import/no-extraneous-dependencies, import/newline-after-import */
 'use strict';
-const path = require('path');
 
 const WebpackDevServer = require('webpack-dev-server');
 const webpack = require('webpack');
@@ -41,7 +42,8 @@ const server = new WebpackDevServer(compiler, {
 // Start server
 server.listen(PORT, HOST_NAME, (err) => {
     if (err) {
-        console.error(`Demo server ran into ${err} while starting on  ${HOST_NAME}:${PORT}. Shutting down...`);
+        console.error(`Demo server ran into ${err} while starting on  ${HOST_NAME}:${PORT}.` +
+                      'Shutting down...');
         server.close();
     }
     console.log(`Demo server running on ${HOST_NAME}:${PORT}`);
