@@ -1,7 +1,6 @@
-'use strict';
-
-import 'babel/polyfill';
-import fetch from 'isomorphic-fetch/';
+// Install necessary polyfills (see supported browsers) into global
+import 'core-js/es6';
+import 'isomorphic-fetch';
 
 import '../../lib/css/scss/main.scss';
 
@@ -24,7 +23,7 @@ let App = React.createClass({
 
     render() {
         return (
-            <div className="App on-the-record">
+            <div className="app on-the-record">
                 {this.props.children}
             </div>
         );
@@ -41,5 +40,5 @@ ReactDOM.render((
     <Router>
         {routes}
     </Router>
-), document.getElementById('container'));
+), document.getElementById('bigchaindb-example-app'));
 

@@ -15,10 +15,16 @@ The Easy Way
 
     $ docker-compose up
 
+Or, if you're using docker-machine instances (ie. on OSX / Windows),
+
+.. code-block:: bash
+
+    $ DOCKER_MACHINE_IP=$(docker-machine ip) docker-compose up
 
 You should be able to view the "On the record" app at
-`<http://localhost:32800/ontherecord/>`_, and the "Share Trader" app at 
-`<http://localhost:32800/sharetrader/>`_.
+`<http://localhost:32800/ontherecord/>`_, and the "Share Trader" app at
+`<http://localhost:32800/sharetrader/>`_ (replace ``localhost`` with your docker-machine ip as
+necessary)
 
 
 The Hard Way
@@ -27,11 +33,12 @@ Have three terminal shells.
 
 Running the javascript client
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-In one terminal, run ``webpack`` to serve the static files
+In one terminal, run ``npm start`` in ``client/`` to serve the client apps
 
 .. code-block:: bash
 
-    $ webpack -w
+    $ cd client
+    $ npm start
 
 
 Running BigchainDB

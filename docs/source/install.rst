@@ -70,8 +70,8 @@ Make sure you have all the :ref:`dependencies`.
     # Load initial data 
     $ python3 init_db.py
     
-    # Install client
-    $ npm install
+    # Install client dependencies
+    $ cd client && npm install && cd -
 
     
 You should now be ready to run the examples. See :ref:`run` for instructions.

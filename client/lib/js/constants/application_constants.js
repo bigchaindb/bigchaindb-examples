@@ -1,11 +1,7 @@
-'use strict';
+export const FLASK_BASE_URL = process.env.FLASK_BASE_URL;
+export const API_PATH = `${FLASK_BASE_URL}/api/`;
 
-const apiEndpoint = '/api/';
-const baseUrl = '/';
-
-const constants = {
-    baseUrl,
-    apiEndpoint
+export default {
+    API_PATH,
+    FLASK_BASE_URL
 };
-
-export default constants;
