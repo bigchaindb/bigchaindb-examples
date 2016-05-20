@@ -4,7 +4,6 @@ const path = require('path');
 
 const webpack = require('webpack');
 const autoPrefixer = require('autoprefixer');
-const capitalize = require('capitalize');
 const combineLoaders = require('webpack-combine-loaders');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -29,6 +28,11 @@ const ENTRY = {
     // Use one entry per app
     ontherecord: PATHS.ON_THE_RECORD,
     sharetrader: PATHS.SHARE_TRADER,
+};
+
+const ENTRY_NAMES = {
+    ontherecord: 'On the Record',
+    sharetrader: 'Share Trader',
 };
 
 
@@ -72,7 +76,7 @@ const EXTRACT_CSS_PLUGIN = new ExtractTextPlugin(
 const HTML_PLUGINS = Object.keys(ENTRY).map((entryName) => (
     new HtmlWebpackPlugin({
         filename: `${entryName}/index.html`,
-        title: capitalize.words(entryName.replace(/_/g, ' ')) + ' - powered by BigchainDB',
+        title: `${ENTRY_NAMES[entryName]} - powered by BigchainDB`,
         chunks: [entryName],
         minify: PRODUCTION ? {
             collapseWhitespace: true,
