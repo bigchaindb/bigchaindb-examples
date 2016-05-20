@@ -21,23 +21,23 @@ Functionality
 Create assets
 ^^^^^^^^^^^^^
 
-- assets are created following a structured payload
-- the amount is limited
+- Assets are created following a structured payload
+- The amount is limited
 
 Transfer assets
 ^^^^^^^^^^^^^^^
 
-- easy transfer of assets between accounts by:
-    - clicking on an account first. This will give the assets for that account
-    - clicking on an asset of that account. Transfer actions will appear on the
+- Easy transfer of assets between accounts by:
+    - Clicking on an account first. This will give the assets for that account
+    - Clicking on an asset of that account. Transfer actions will appear on the
       right side.
 
 Retrieve assets
 ^^^^^^^^^^^^^^^
 
-- that you currently own (like UTXO's)
-- all assets on bigchain
-- state indicator (blinks if asset has various owners)
+- That you currently own (like UTXO's)
+- All assets on bigchain
+- State indicator (blinks if asset has various owners)
 
 What this app doesn't provide
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

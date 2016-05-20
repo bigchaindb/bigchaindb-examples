@@ -2,13 +2,12 @@ version: '2'
 
 
 services:
-  
+
   js:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile-js
     volumes:
-  
       - ./client/demo:/usr/src/app/client/demo
       - ./client/lib:/usr/src/app/client/lib
       - ./client/js:/usr/src/app/client/js
@@ -43,7 +42,7 @@ services:
       BIGCHAINDB_CONFIG: /root/.bigchaindb
       BIGCHAINDB_DATABASE_HOST: rdb
     command: bigchaindb start
-  
+
   app:
     build:
       context: .

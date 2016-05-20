@@ -2,119 +2,36 @@
 
 This repo contains examples and tutorials for BigchainDB.
 
-__Warning__: These examples are for demonstration purpose and should not be used for production
+__Warning__: These examples are for demonstration purposes and should not be used as-is for production
 
-## Table of Contents
-- [Installation](#installation)
-- [Example: "On the Record"](#example-on-the-record)
-- [Example: Share Trader](#example-share-trader)
+See the [documentation](http://bigchaindb-examples.readthedocs.io/en/latest/index.html):
+* [Installing](http://bigchaindb-examples.readthedocs.io/en/latest/install.html)
+* [Running](http://bigchaindb-examples.readthedocs.io/en/latest/run.html)
+* [Troubleshooting](http://bigchaindb-examples.readthedocs.io/en/latest/troubleshooting.html)
 
-## Installation
-
-### Structure
-
-The apps are structured as follows:
-- Client: ReactJS
-- Server: Python Flask REST API server
-- DB: BigchainDB
-
-All messages are JSON based.
+Examples:
+* [On the Record](#example-on-the-record)
+* [Share Trader](#example-share-trader)
 
 ### Dependencies
 
+The examples can be [run via Docker](http://bigchaindb-examples.readthedocs.io/en/latest/install.html#the-docker-way)
+(**recommended**), but, if you'd like, you can [run them locally](http://bigchaindb-examples.readthedocs.io/en/latest/install.html#install-from-source)
+with the following system dependencies:
 
- - LINUX dependencies: see [setup BigchainDB & RethinkDB](https://bigchaindb.readthedocs.io/en/latest/installing-server.html#install-and-run-rethinkdb-server)
+ - OS dependencies: see [setup BigchainDB & RethinkDB](https://bigchaindb.readthedocs.io/en/latest/installing-server.html#install-and-run-rethinkdb-server)
  - python>=3.4
- 
-For the JavaScript part, we recommend using nvm, see [here](https://github.com/creationix/nvm#installation).
+ - node>=5.3 using [nvm](https://github.com/creationix/nvm#installation) (**recommended**), or [manually](https://nodejs.org/en/download/)
+ - [npm>=3.3](https://docs.npmjs.com/getting-started/installing-node) (should be installed with node)
 
-Otherwise:
- - [node>=5.3](https://nodejs.org/en/download/) 
- - [npm>=3.3](https://docs.npmjs.com/getting-started/installing-node) 
- - [webpack>=1.13.0](https://webpack.github.io/docs/installation.html)
-
-### Setup
-
-Make sure you have all the [dependencies](#dependencies).
-
-```bash
-# Clone the repository and install:
-$ git clone git@github.com:bigchaindb/bigchaindb-examples.git
-$ cd bigchaindb-examples
-
-# (optional) Run a virtualenv
-$ virtualenv venv -p python3
-$ source venv/bin/activate
-
-# Install server
-$ pip install -e .[dev]
-
-# Make sure RethinkDB is running!
-# Configure BigchainDB with a different BIGCHAINDB_DATABASE_NAME
-$ BIGCHAINDB_DATABASE_NAME=bigchaindb_examples \
- bigchaindb -yc .bigchaindb_examples configure 
-
-# Initialize BigchainDB
-$ bigchaindb -c .bigchaindb_examples init 
-
-# Load initial data 
-$ python3 init_db.py
-
-# Install client
-$ npm install
-
-# when in dev mode
-$ webpack -w
-```
-
-### Launch BigchainDB
-
-Launch BigchainDB in a separate terminal
-
-```bash
-$ bigchaindb -c .bigchaindb_examples start 
-```
-
-### Launch the App server
-
-In another terminal launch the gunicorn server (from the repository root dir)
-```bash
-$ python3 -m server.app
-```
-
-### Oops ¯\\\_(ツ)\_/¯
-
-##### My installation fails with:
-
-```
-error: Setup script exited with error in BigchainDB setup command: 'install_requires' must be a string or list of strings containing valid project/version requirement specifiers
-```
-
-- __Solution__: update the `setuptools`, see PR fix [here](https://github.com/bigchaindb/bigchaindb/issues/236)
-
-
-##### OMG: I've messed up my database
-
-- __Solution__: reset your bigchaindb_examples database
-- __Warning__: the following resets your bigchaindb database as specified in the config file!
-
-```bash
-# Drop database
-$ bigchaindb -c .bigchaindb_examples drop
-
-# Restart BigchainDB
-$ bigchaindb -c .bigchaindb_examples init
-$ bigchaindb -c .bigchaindb_examples start
-
-# Load initial data (app accounts will remain the same if not deleted)
-$ python3 init_db.py
-```
 
 ## Example: "On the Record"
 
 "On the Record" is a simple logging app, wrapped as a messaging board.
 
-You should see the app running on [http://localhost:8000/ontherecord/](http://localhost:8000/ontherecord/)
+You should see the app running on [http://localhost:3000/ontherecord/](http://localhost:3000/ontherecord/),
+or if running docker, `http://docker-machine:32800/ontherecord/` (replace `docker-machine` as
+necessary with `localhost` or your docker-machine ip).
 
 <p align="center">
   <img width="70%" height="70%" src ="./docs/img/on_the_record_v0.0.1.png" />
@@ -145,7 +62,9 @@ You should see the app running on [http://localhost:8000/ontherecord/](http://lo
 
 Share Trader is a simple share allocation and trade app. Each square represents an asset that can be traded amongst accounts.
 
-You should see the app running on [http://localhost:8000/sharetrader/](http://localhost:8000/sharetrader/)
+You should see the app running on [http://localhost:3000/sharetrader/](http://localhost:3000/sharetrader/),
+or if running on docker, `http://docker-machine:32800/sharetrader/` (replace `docker-machine` as
+necessary with `localhost` or your docker-machine ip).
 
 <p align="center">
   <img width="70%" height="70%" src ="./docs/img/share_trader_v0.0.1.png" />
