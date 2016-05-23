@@ -1,8 +1,6 @@
-'use strict';
-
 import React from 'react/';
 
-import {Navbar, Row } from 'react-bootstrap/lib/';
+import { Navbar } from 'react-bootstrap/lib/';
 
 import Scroll from 'react-scroll';
 
@@ -28,7 +26,7 @@ const OnTheRecord = React.createClass({
             assetStore
         );
     },
-    
+
     componentDidMount() {
         AssetStore.listen(this.onChange);
 
@@ -40,15 +38,15 @@ const OnTheRecord = React.createClass({
         AssetStore.unlisten(this.onChange);
     },
 
-    fetchAssetList(){
+    fetchAssetList() {
         AssetActions.flushAssetList();
         const { activeAccount, searchQuery } = this.state;
         const maxScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        if ( activeAccount ) {
+        if (activeAccount) {
             AssetActions.fetchAssetList({ accountToFetch: activeAccount.vk, search: searchQuery });
 
             if (maxScroll - currentPositionY() < 40) {
-               Scroll.animateScroll.scrollToBottom();
+                Scroll.animateScroll.scrollToBottom();
             }
         }
         setTimeout(this.fetchAssetList, 1000);
@@ -58,13 +56,13 @@ const OnTheRecord = React.createClass({
         this.setState(state);
     },
 
-    setActiveAccount(account){
+    setActiveAccount(account) {
         this.setState({
             activeAccount: account
         });
     },
 
-    handleSearch(query){
+    handleSearch(query) {
         this.setState({
             searchQuery: query
         });
@@ -74,38 +72,38 @@ const OnTheRecord = React.createClass({
         const { activeAccount, assetList, assetMeta } = this.state;
 
         let content = (
-            <div className='content-text'>
+            <div className="content-text">
                 Select account from the list...
             </div>
         );
 
-        if ( activeAccount ) {
+        if (activeAccount) {
             content = (
                 <Assets
-                    assetList={ assetList }
-                    activeAccount={ activeAccount }/>
+                    activeAccount={activeAccount}
+                    assetList={assetList} />
             );
         }
 
         return (
             <div>
-                <Navbar inverse fixedTop>
+                <Navbar fixedTop inverse>
                     <h1 style={{ textAlign: 'center', color: 'white' }}>"On the Record"</h1>
                 </Navbar>
                 <div id="wrapper">
                     <div id="sidebar-wrapper">
                         <div className="sidebar-nav">
                             <Search
-                                initialQuery={ assetMeta.search }
-                                handleSearch={ this.handleSearch }/>
+                                handleSearch={this.handleSearch}
+                                initialQuery={assetMeta.search} />
                             <Accounts
-                                activeAccount={ activeAccount }
-                                handleAccountClick={ this.setActiveAccount }/>
+                                activeAccount={activeAccount}
+                                handleAccountClick={this.setActiveAccount} />
                         </div>
                     </div>
                     <div id="page-content-wrapper">
                         <div className="page-content">
-                            { content }
+                            {content}
                         </div>
                     </div>
                 </div>

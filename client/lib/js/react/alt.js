@@ -1,5 +1,6 @@
-'use strict';
-
 import Alt from 'alt';
 
-export let alt = new Alt();
+
+const alt = new Alt();
+
+export default alt;

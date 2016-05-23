@@ -1,7 +1,6 @@
-
 import React from 'react/';
 
-import {Input, Glyphicon} from 'react-bootstrap/lib/';
+import { Input, Glyphicon } from 'react-bootstrap/lib/';
 
 
 const Search = React.createClass({
@@ -59,11 +58,11 @@ const Search = React.createClass({
         return (
             <div className="search-wrapper">
                 <Input
-                    type='text'
-                    value={searchQuery}
-                    placeholder={'Search...'}
+                    addonAfter={<Glyphicon glyph="search" />}
                     onChange={this.handleSearchThrottled}
-                    addonAfter={<Glyphicon glyph="search" />} />
+                    placeholder={'Search...'}
+                    type="text"
+                    value={searchQuery} />
             </div>
         );
     }

@@ -1,5 +1,3 @@
-'use strict';
-
 import requests from '../../utils/requests';
 
 import AccountActions from '../actions/account_actions';
@@ -9,9 +7,9 @@ const AccountSource = {
 
     lookupAccount: {
         remote(state) {
-            return requests.get('accounts_detail',
-                {account_id: state.accountMeta.idToFetch}
-            );
+            return requests.get('accounts_detail', {
+                account_id: state.accountMeta.idToFetch
+            });
         },
 
         success: AccountActions.successFetchAccount,
@@ -20,7 +18,9 @@ const AccountSource = {
 
     lookupAccountList: {
         remote(state) {
-            return requests.get('accounts', {app: state.accountMeta.app});
+            return requests.get('accounts', {
+                app: state.accountMeta.app
+            });
         },
 
         success: AccountActions.successFetchAccountList,
@@ -29,9 +29,9 @@ const AccountSource = {
 
     postAccount: {
         remote(state) {
-            return requests.post('accounts',
-                {body: state.accountMeta.payloadToPost}
-            );
+            return requests.post('accounts', {
+                body: state.accountMeta.payloadToPost
+            });
         },
 
         success: AccountActions.successPostAccount,

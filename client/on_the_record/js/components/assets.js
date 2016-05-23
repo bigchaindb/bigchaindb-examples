@@ -1,8 +1,6 @@
-'use strict';
-
 import React from 'react/';
 
-import { Row, Col, Button, Glyphicon } from 'react-bootstrap/lib/';
+import { Row, Glyphicon } from 'react-bootstrap/lib/';
 
 import Scroll from 'react-scroll';
 
@@ -14,15 +12,15 @@ import AscribeSpinner from '../../../lib/js/react/components/spinner';
 const Assets = React.createClass({
 
     propTypes: {
-        assetList: React.PropTypes.object,
-        activeAccount: React.PropTypes.object
+        activeAccount: React.PropTypes.object,
+        assetList: React.PropTypes.object
     },
 
     getInitialState() {
         return { value: null };
     },
 
-    handleInputSubmit(event){
+    handleInputSubmit(event) {
         event.preventDefault();
         const { activeAccount } = this.props;
         const { value } = this.state;
@@ -45,13 +43,14 @@ const Assets = React.createClass({
 
         return (
             <div>
-                <AssetHistory assetList={ assetList }/>
-                <form onSubmit={ this.handleInputSubmit }>
+                <AssetHistory assetList={assetList}/>
+                <form onSubmit={this.handleInputSubmit}>
                     <input
+                        autoFocus
                         className="navbar-fixed-bottom"
-                        autoFocus placeholder="Type what you want to share on the blockchain"
-                        value={ value }
-                        onChange={ this.handleInputChange }/>
+                        onChange={this.handleInputChange}
+                        placeholder="Type what you want to share on the blockchain"
+                        value={value} />
                 </form>
             </div>
         );
@@ -65,36 +64,27 @@ const AssetHistory = React.createClass({
     },
 
     render() {
-        let { assetList } = this.props;
+        const { assetList } = this.props;
 
-        if ( assetList && assetList.length > 0 ) {
-
+        if (assetList && assetList.length > 0) {
             return (
-                <div>
-                    {
-                        assetList.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
-                            .map(asset => {
-                            return (
-                                <AssetRow
-                                    key={ asset.id }
-                                    asset={ asset }/>
-                            );
-                        })
-                    }
-                </div>
+                <div>{assetList
+                        .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
+                        .map(asset => (
+                            <AssetRow key={asset.id} asset={asset} />
+                        ))
+                }</div>
             );
-        }
-        else if ( assetList && assetList.length == 0 ) {
-
+        } else if (assetList && assetList.length) {
             return (
-                <div className='content-text'>
+                <div className="content-text">
                     No messages found on BigchainDB. Start typing...
                 </div>
             );
         }
 
         return (
-            <div style={{margin: '2em'}}>
+            <div style={{ margin: '2em' }}>
                 <AscribeSpinner />
             </div>
         );
@@ -103,33 +93,28 @@ const AssetHistory = React.createClass({
 
 
 const AssetRow = React.createClass({
-
     propTypes: {
         asset: React.PropTypes.object
     },
 
-
     render() {
         const { asset } = this.props;
+        const assetContent = asset.transaction.data ? asset.transaction.data.payload.content : '-';
+        const validGlyph = asset.hasOwnProperty('assignee') ? <Glyphicon glyph="cog" />
+                                                            : <Glyphicon glyph="ok" />;
 
-        const inBacklog = 'assignee' in asset;
-
-        let validGlyph = inBacklog ? <Glyphicon glyph="cog"/> : <Glyphicon glyph="ok"/>;
         return (
             <Row>
-                <div className='asset-container pull-right'>
-                    <div className='asset-container-id'>
-                        { asset.id }
+                <div className="asset-container pull-right">
+                    <div className="asset-container-id">
+                        {asset.id}
                     </div>
-                    <div className='asset-container-detail'>
-                        { asset.transaction.data ?
-                            asset.transaction.data.payload.content :
-                            '-'
-                        }
+                    <div className="asset-container-detail">
+                        {assetContent}
                     </div>
-                    <div className='asset-container-timestamp pull-right'>
-                        { new Date(parseInt(asset.transaction.timestamp, 10)*1000).toGMTString() + '   ' }
-                        { validGlyph }
+                    <div className="asset-container-timestamp pull-right">
+                        {new Date(parseInt(asset.transaction.timestamp, 10) * 1000).toGMTString()} + '   '}
+                        {validGlyph}
                     </div>
                 </div>
             </Row>

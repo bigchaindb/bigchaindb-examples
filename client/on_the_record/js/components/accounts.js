@@ -1,10 +1,6 @@
-'use strict';
-
 import React from 'react/';
 
-import { History } from 'react-router/';
-
-import { Row, Col, Button, Glyphicon } from 'react-bootstrap/lib/';
+import { Row } from 'react-bootstrap/lib/';
 
 import classnames from 'classnames/';
 
@@ -18,11 +14,11 @@ const Accounts = React.createClass({
         activeAccount: React.PropTypes.object,
         handleAccountClick: React.PropTypes.func
     },
-    
+
     getInitialState() {
         return AccountStore.getState();
     },
-    
+
     componentDidMount() {
         AccountStore.listen(this.onChange);
         this.fetchAccountList();
@@ -31,54 +27,49 @@ const Accounts = React.createClass({
     componentWillUnmount() {
         AccountStore.unlisten(this.onChange);
     },
-    
-    fetchAccountList(){
+
+    fetchAccountList() {
         AccountActions.flushAccountList();
-        AccountActions.fetchAccountList({app: 'ontherecord'});
+        AccountActions.fetchAccountList({ app: 'ontherecord' });
     },
-    
+
     onChange(state) {
         this.setState(state);
     },
-    
+
     render() {
         const { activeAccount, handleAccountClick } = this.props;
         const { accountList } = this.state;
-        
-        if ( accountList && accountList.length > 0 ) {
 
+        if (accountList && accountList.length > 0) {
             return (
                 <div>
-                    {
-                        accountList
-                            .sort((a, b) => {
-                                if(a.name < b.name) return -1;
-                                if(a.name > b.name) return 1;
-                                return 0;
-                            })
-                            .map(account => {
-                                return (
-                                    <AccountRow
-                                        key={ account.name }
-                                        account={ account }
-                                        activeAccount = { activeAccount }
-                                        handleClick={ handleAccountClick }/>
-                                );
+                    {accountList
+                        .sort((a, b) => {
+                            if (a.name < b.name) return -1;
+                            if (a.name > b.name) return 1;
+                            return 0;
                         })
-                    }
+                        .map(account => (
+                            <AccountRow
+                                key={account.name}
+                                account={account}
+                                activeAccount={activeAccount}
+                                handleClick={handleAccountClick} />
+                        ))}
+                </div>
+            );
+        } else {
+            return (
+                <div style={{ margin: '2em' }}>
+                    <AscribeSpinner />
                 </div>
             );
         }
-        return (
-            <div style={{margin: '2em'}}>
-                <AscribeSpinner />
-            </div>
-        );
     }
 });
 
 const AccountRow = React.createClass({
-
     propTypes: {
         account: React.PropTypes.object,
         activeAccount: React.PropTypes.object,
@@ -91,16 +82,16 @@ const AccountRow = React.createClass({
 
     render() {
         const { account, activeAccount } = this.props;
-        
+
         return (
             <div
                 className={classnames('list-row', { 'active': activeAccount === account })}
                 onClick={this.handleClick}>
                 <Row>
-                    <div className='list-row-name'>
+                    <div className="list-row-name">
                         {account.name}
                     </div>
-                    <div className='list-row-detail'>
+                    <div className="list-row-detail">
                         {account.vk}
                     </div>
                 </Row>

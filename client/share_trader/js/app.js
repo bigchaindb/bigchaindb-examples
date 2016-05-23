@@ -2,17 +2,17 @@
 import 'core-js/es6';
 import 'isomorphic-fetch';
 
-import '../../lib/css/scss/main.scss';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import React from 'react/';
-import ReactDOM from 'react-dom/';
-
-import { Router, Route, IndexRoute } from 'react-router/';
+import { Router, Route, IndexRoute } from 'react-router';
 
 import ShareTrader from './components/share_trader';
 
+import '../../lib/css/scss/main.scss';
 
-let App = React.createClass({
+
+const App = React.createClass({
     propTypes: {
         children: React.PropTypes.oneOfType([
             React.PropTypes.arrayOf(React.PropTypes.element),
@@ -31,7 +31,7 @@ let App = React.createClass({
 });
 
 let routes = (
-    <Route path='/' component={App}>
+    <Route component={App} path="/">
         <IndexRoute component={ShareTrader} />
     </Route>
 );

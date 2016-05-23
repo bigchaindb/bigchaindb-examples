@@ -1,6 +1,4 @@
-'use strict';
-
-import { alt } from '../alt';
+import alt from '../alt';
 
 
 class AssetActions {

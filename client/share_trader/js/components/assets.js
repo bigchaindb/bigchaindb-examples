@@ -1,76 +1,78 @@
-'use strict';
-
 import React from 'react/';
+import classNames from 'classnames';
 
-import { Row, Col, Button, Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap/lib/';
+import { Row, Button, Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap/lib/';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 
 import AscribeSpinner from '../../../lib/js/react/components/spinner';
 
-import classNames from 'classnames';
-
 
 const Assets = React.createClass({
     propTypes: {
-        activeAccount: React.PropTypes.object,
         accountList: React.PropTypes.array,
+        activeAccount: React.PropTypes.object,
         activeAsset: React.PropTypes.object,
-        assetList: React.PropTypes.array,
         assetClasses: React.PropTypes.object,
+        assetList: React.PropTypes.array,
         handleAssetClick: React.PropTypes.func
     },
 
     render() {
-        let { activeAccount, accountList, assetList, activeAsset, assetClasses, handleAssetClick } = this.props;
+        const {
+            activeAccount,
+            accountList,
+            assetList,
+            activeAsset,
+            assetClasses,
+            handleAssetClick
+        } = this.props;
 
-        if ( assetList && assetList.length > 0 ) {
+        if (assetList && assetList.length > 0) {
             return (
                 <div>
                     {assetList.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
-                        .map(( asset ) => {
+                        .map((asset) => {
                             const active = (activeAsset) ? activeAsset.id === asset.id : false;
-                            const assetClass = assetClasses[asset.transaction.conditions[0].new_owners[0]];
+                            const assetClass = assetClasses[asset.transaction.conditions[0]
+                                                   .new_owners[0]];
 
                             return (
                                 <AssetRow
-                                    key={ asset.id }
-                                    asset={ asset }
-                                    active={ active }
-                                    activeAccount={ active ? activeAccount: null }
-                                    accountList={ active ? accountList : null }
-                                    assetClass={ assetClass }
-                                    handleAssetClick={ handleAssetClick }/>
+                                    key={asset.id}
+                                    accountList={active ? accountList : null}
+                                    active={active}
+                                    activeAccount={active ? activeAccount : null}
+                                    asset={asset}
+                                    assetClass={assetClass}
+                                    handleAssetClick={handleAssetClick} />
                             );
                         })}
                 </div>
             );
-        }
-    else if ( assetList && assetList.length == 0 ) {
-
+        } else if (assetList && assetList.length) {
             return (
-                <div className='content-text'>
+                <div className="content-text">
                     No shares found on BigchainDB. Start trading...
                 </div>
             );
+        } else {
+            return (
+                <div style={{ margin: '2em' }}>
+                    <AscribeSpinner />
+                </div>
+            );
         }
-
-        return (
-            <div style={{margin: '2em'}}>
-                <AscribeSpinner />
-            </div>
-        );
     }
 });
 
 
 const AssetRow = React.createClass({
-
     propTypes: {
-        asset: React.PropTypes.object,
+        accountList: React.PropTypes.array,
         active: React.PropTypes.bool,
         activeAccount: React.PropTypes.object,
-        accountList: React.PropTypes.array,
+        asset: React.PropTypes.object,
         assetClass: React.PropTypes.string,
         handleAssetClick: React.PropTypes.func
     },
@@ -79,16 +81,16 @@ const AssetRow = React.createClass({
         return {
             selectedAccount: null,
             transfered: false
-        }
+        };
     },
 
     setSelectedAccount(account) {
-        this.setState({selectedAccount: account})
+        this.setState({ selectedAccount: account });
     },
 
     handleAssetClick() {
         const { asset, handleAssetClick } = this.props;
-        handleAssetClick( asset );
+        handleAssetClick(asset);
     },
 
     handleTransferClick() {
@@ -104,50 +106,53 @@ const AssetRow = React.createClass({
             'source': activeAccount,
             'to': selectedAccount
         };
-        AssetActions.transferAsset({idToTransfer: idToTransfer, payloadToPost: payloadToPost});
-        this.setState({transfered: true});
+
+        AssetActions.transferAsset({
+            idToTransfer,
+            payloadToPost
+        });
+
+        this.setState({ transfered: true });
     },
 
     render() {
         const { asset, active, activeAccount, accountList, assetClass } = this.props;
         const { selectedAccount, transfered } = this.state;
 
-        const inBacklog = 'assignee' in asset;
-        const data = asset.transaction.data;
-        const validGlyph = inBacklog ? <Glyphicon glyph="cog"/> : <Glyphicon glyph="ok"/>;
+        const { data: { payload: { content } } = {} } = asset.transaction;
+        const validGlyph = asset.hasOwnProperty('assignee') ? <Glyphicon glyph="cog" />
+                                                            : <Glyphicon glyph="ok" />;
 
         let actionsPanel = null;
         if (active && activeAccount && accountList && !transfered) {
             actionsPanel = (
                 <AssetActionPanel
-                    activeAccount={ activeAccount}
-                    selectedAccount={ selectedAccount }
-                    accountList={ accountList }
-                    handleAccountClick={ this.setSelectedAccount }
-                    handleTransferClick={ this.handleTransferClick } />
+                    accountList={accountList}
+                    activeAccount={activeAccount}
+                    handleAccountClick={this.setSelectedAccount}
+                    handleTransferClick={this.handleTransferClick}
+                    selectedAccount={selectedAccount} />
             );
         }
 
         return (
-            <Row onClick={ this.handleAssetClick }>
-                <div className={classNames('asset-container',
+            <Row onClick={this.handleAssetClick}>
+                <div
+                    className={classNames('asset-container',
                                             assetClass,
-                                            {'active': active && !transfered},
-                                            {'transfered': transfered})}>
-                    <div className='asset-container-id'>
-                        { asset.id }
+                                            { 'active': active && !transfered },
+                                            { 'transfered': transfered })}>
+                    <div className="asset-container-id">
+                        {asset.id}
                     </div>
-                    <div className='asset-container-detail'>
-                        {  data ?
-                            'Row: ' + (data.payload.content.y + 1) + ', Col: ' + (data.payload.content.x + 1) :
-                            '-'
-                        }
+                    <div className="asset-container-detail">
+                        {content ? `Row: ${content.y + 1}, Col: ${content.x + 1}` : '-'}
                     </div>
-                    <div className='asset-container-timestamp'>
-                        { new Date(parseInt(asset.transaction.timestamp, 10)*1000).toGMTString() + '   ' }
-                        { validGlyph }
+                    <div className="asset-container-timestamp">
+                        {new Date(parseInt(asset.transaction.timestamp, 10) * 1000).toGMTString() + '   '}
+                        {validGlyph}
                     </div>
-                    { actionsPanel }
+                    {actionsPanel}
                 </div>
             </Row>
         );
@@ -157,11 +162,11 @@ const AssetRow = React.createClass({
 
 const AssetActionPanel = React.createClass({
     propTypes: {
-        activeAccount: React.PropTypes.object,
-        selectedAccount: React.PropTypes.object,
         accountList: React.PropTypes.array,
+        activeAccount: React.PropTypes.object,
         handleAccountClick: React.PropTypes.func,
-        handleTransferClick: React.PropTypes.func
+        handleTransferClick: React.PropTypes.func,
+        selectedAccount: React.PropTypes.object
     },
 
     handleAccountClick(account) {
@@ -172,9 +177,9 @@ const AssetActionPanel = React.createClass({
         const { activeAccount, selectedAccount, accountList, handleTransferClick } = this.props;
 
         let transferButton = null;
-        if ( selectedAccount ){
+        if (selectedAccount) {
             transferButton = (
-                <Button onClick={ handleTransferClick }>
+                <Button onClick={handleTransferClick}>
                     TRANSFER
                 </Button>
             );
@@ -182,25 +187,23 @@ const AssetActionPanel = React.createClass({
 
         return (
             <div className="asset-container-actions">
-                <div>Transfer asset from { activeAccount.name } to:</div>
+                <div>Transfer asset from {activeAccount.name} to:</div>
                 <DropdownButton
                     active
-                    title={ selectedAccount ? selectedAccount.name : 'Select account' }
-                    className='filter-dropdown-button'
-                    id="bg-nested-dropdown">
-                    {accountList.map(( account ) => {
-                        return (
-                            <MenuItem
-                                key={ account.name }
-                                onClick={ this.handleAccountClick.bind( this, account )}>
-                                { account.name }
-                            </MenuItem>
-                        );
-                    })}
+                    className="filter-dropdown-button"
+                    id="bg-nested-dropdown"
+                    title={selectedAccount ? selectedAccount.name : 'Select account'}>
+                    {accountList.map((account) => (
+                        <MenuItem
+                            key={account.name}
+                            onClick={() => this.handleAccountClick(account)}>
+                            {account.name}
+                        </MenuItem>
+                    ))}
                 </DropdownButton>
-                { transferButton }
+                {transferButton}
             </div>
-        )
+        );
     }
 });
 
