@@ -33,10 +33,10 @@ def create_app(debug):
             'withcredentials',
             'cache-control',
             'cookie',
-            'session-id'
-        ),
-        supports_credentials=True,
-    )
+            'session-id',
+            ),
+         supports_credentials=True,
+         )
 
     app.debug = debug
 
