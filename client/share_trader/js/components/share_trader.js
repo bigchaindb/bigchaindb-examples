@@ -4,6 +4,8 @@ import { Navbar, Row, Col, Button } from 'react-bootstrap/lib/';
 
 import Scroll from 'react-scroll';
 
+import { safeMerge } from 'js-utility-belt/es6/general';
+
 import Accounts from './accounts';
 import Assets from './assets';
 import Search from '../../../lib/js/react/components/search';
@@ -14,8 +16,6 @@ import AssetStore from '../../../lib/js/react/stores/asset_store';
 
 import AccountStore from '../../../lib/js/react/stores/account_store';
 
-import { mergeOptions } from '../../../lib/js/utils/general_utils';
-
 
 const ShareTrader = React.createClass({
 
@@ -23,7 +23,7 @@ const ShareTrader = React.createClass({
         const assetStore = AssetStore.getState();
         const accountStore = AccountStore.getState();
 
-        return mergeOptions(
+        return safeMerge(
             {
                 activeAccount: null,
                 activeAsset: null,

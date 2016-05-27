@@ -4,6 +4,9 @@ import { Navbar } from 'react-bootstrap/lib/';
 
 import Scroll from 'react-scroll';
 
+import { safeMerge } from 'js-utility-belt/es6/general';
+import { getScrollPosition } from 'js-utility-belt/es6/dom';
+
 import Accounts from './accounts';
 import Assets from './assets';
 import Search from '../../../lib/js/react/components/search';
@@ -11,14 +14,13 @@ import Search from '../../../lib/js/react/components/search';
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 import AssetStore from '../../../lib/js/react/stores/asset_store';
 
-import { mergeOptions, currentPositionY } from '../../../lib/js/utils/general_utils';
 
 const OnTheRecord = React.createClass({
 
     getInitialState() {
         const assetStore = AssetStore.getState();
 
-        return mergeOptions(
+        return safeMerge(
             {
                 activeAccount: null,
                 searchQuery: null
@@ -45,7 +47,7 @@ const OnTheRecord = React.createClass({
         if (activeAccount) {
             AssetActions.fetchAssetList({ accountToFetch: activeAccount.vk, search: searchQuery });
 
-            if (maxScroll - currentPositionY() < 40) {
+            if (maxScroll - getScrollPosition().y < 40) {
                 Scroll.animateScroll.scrollToBottom();
             }
         }

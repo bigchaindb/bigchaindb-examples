@@ -2,11 +2,11 @@
 
 import Q from 'q';
 
-import ApiUrls from '../constants/api_urls';
+import { getCookie } from 'js-utility-belt/es6/cookie';
+import { omitFromObject } from 'js-utility-belt/es6/general';
+import { stringifyObjToQueryParam } from 'js-utility-belt/es6/url';
 
-import { getCookie } from '../utils/fetch_api_utils';
-import { omitFromObject } from '../utils/general_utils';
-import { argsToQueryParams } from '../utils/url_utils';
+import ApiUrls from '../constants/api_urls';
 
 
 class Requests {
@@ -109,7 +109,7 @@ class Requests {
         });
 
         if (attachParamsToQuery && params && Object.keys(params).length > 0) {
-            newUrl += argsToQueryParams(params);
+            newUrl += stringifyObjToQueryParam(params);
         }
 
         return newUrl;
