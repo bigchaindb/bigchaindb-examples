@@ -13,7 +13,7 @@ const Assets = React.createClass({
 
     propTypes: {
         activeAccount: React.PropTypes.object,
-        assetList: React.PropTypes.object
+        assetList: React.PropTypes.array
     },
 
     getInitialState() {
@@ -60,34 +60,37 @@ const Assets = React.createClass({
 
 const AssetHistory = React.createClass({
     propTypes: {
-        assetList: React.PropTypes.object
+        assetList: React.PropTypes.array
     },
 
     render() {
         const { assetList } = this.props;
 
-        if (assetList && assetList.length > 0) {
+        if (assetList) {
+            if (assetList.length) {
+                return (
+                    <div>
+                        {assetList
+                            .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
+                            .map(asset => (
+                                <AssetRow key={asset.id} asset={asset} />
+                            ))}
+                    </div>
+                );
+            } else {
+                return (
+                    <div className="content-text">
+                        No messages found in BigchainDB. Start typing...
+                    </div>
+                );
+            }
+        } else {
             return (
-                <div>{assetList
-                        .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
-                        .map(asset => (
-                            <AssetRow key={asset.id} asset={asset} />
-                        ))
-                }</div>
-            );
-        } else if (assetList && assetList.length) {
-            return (
-                <div className="content-text">
-                    No messages found on BigchainDB. Start typing...
+                <div style={{ margin: '2em' }}>
+                    <AscribeSpinner />
                 </div>
             );
         }
-
-        return (
-            <div style={{ margin: '2em' }}>
-                <AscribeSpinner />
-            </div>
-        );
     }
 });
 
@@ -113,7 +116,7 @@ const AssetRow = React.createClass({
                         {assetContent}
                     </div>
                     <div className="asset-container-timestamp pull-right">
-                        {new Date(parseInt(asset.transaction.timestamp, 10) * 1000).toGMTString()} + '   '}
+                        {new Date(parseInt(asset.transaction.timestamp, 10) * 1000).toGMTString() + '   '}
                         {validGlyph}
                     </div>
                 </div>
