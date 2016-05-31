@@ -4,7 +4,7 @@ import { Navbar, Row, Col, Button } from 'react-bootstrap/lib/';
 
 import Scroll from 'react-scroll';
 
-import { safeMerge } from 'js-utility-belt/es6/general';
+import { safeMerge } from 'js-utility-belt/es6';
 
 import Accounts from './accounts';
 import Assets from './assets';

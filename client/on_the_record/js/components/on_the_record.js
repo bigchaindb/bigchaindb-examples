@@ -4,7 +4,7 @@ import { Navbar } from 'react-bootstrap/lib/';
 
 import Scroll from 'react-scroll';
 
-import { safeMerge } from 'js-utility-belt/es6/general';
+import { safeMerge } from 'js-utility-belt/es6';
 import { getScrollPosition } from 'js-utility-belt/es6/dom';
 
 import Accounts from './accounts';
