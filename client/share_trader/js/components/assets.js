@@ -140,10 +140,10 @@ const AssetRow = React.createClass({
         return (
             <Row onClick={this.handleAssetClick}>
                 <div
-                    className={classNames('asset-container',
-                                            assetClass,
-                                            { 'active': active && !transfered },
-                                            { 'transfered': transfered })}>
+                    className={classNames('asset-container', assetClass, {
+                        transfered,
+                        active: active && !transfered
+                    })}>
                     <div className="asset-container-id">
                         {asset.id}
                     </div>

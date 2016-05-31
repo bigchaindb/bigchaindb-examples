@@ -43,7 +43,7 @@ const Assets = React.createClass({
 
         return (
             <div>
-                <AssetHistory assetList={assetList}/>
+                <AssetHistory assetList={assetList} />
                 <form onSubmit={this.handleInputSubmit}>
                     <input
                         autoFocus
