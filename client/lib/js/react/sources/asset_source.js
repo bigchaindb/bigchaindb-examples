@@ -1,4 +1,4 @@
-import requests from '../../utils/requests';
+import request from '../../utils/request';
 
 import AssetActions from '../actions/asset_actions';
 
@@ -7,8 +7,10 @@ const AssetSource = {
 
     lookupAsset: {
         remote(state) {
-            return requests.get('asset_detail', {
-                asset_id: state.assetMeta.idToFetch
+            return request('asset_detail', {
+                urlTemplateSpec: {
+                    assetId: state.assetMeta.idToFetch
+                }
             });
         },
 
@@ -18,15 +20,17 @@ const AssetSource = {
 
     lookupAssetList: {
         remote(state) {
-            if (state.assetMeta.accountToFetch) {
-                return requests.get('assets_for_account',
-                    {
-                        account_id: state.assetMeta.accountToFetch,
-                        search: state.assetMeta.search
-                    });
+            const { accountToFetch, search } = state.assetMeta;
+            if (accountToFetch) {
+                return request('assets_for_account', {
+                    query: { search },
+                    urlTemplateSpec: {
+                        accountId: accountToFetch
+                    }
+                });
             } else {
-                return requests.get('assets', {
-                    search: state.assetMeta.search
+                return request('assets', {
+                    query: { search }
                 });
             }
         },
@@ -37,8 +41,9 @@ const AssetSource = {
 
     postAsset: {
         remote(state) {
-            return requests.post('assets', {
-                body: state.assetMeta.payloadToPost
+            return request('assets', {
+                method: 'POST',
+                jsonBody: state.assetMeta.payloadToPost
             });
         },
 
@@ -48,10 +53,12 @@ const AssetSource = {
 
     transferAsset: {
         remote(state) {
-            return requests.post('assets_transfer', {
-                asset_id: state.assetMeta.idToTransfer.txid,
-                cid: state.assetMeta.idToTransfer.cid,
-                body: state.assetMeta.payloadToPost
+            const { idToTransfer: { cid, txid: assetId }, payloadToPost } = state.assetMeta;
+
+            return request('assets_transfer', {
+                method: 'POST',
+                jsonBody: payloadToPost,
+                urlTemplateSpec: { assetId, cid }
             });
         },
 

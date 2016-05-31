@@ -31,7 +31,7 @@
     "classnames": "^2.2.5",
     "core-js": "^2.4.0",
     "isomorphic-fetch": "^2.2.0",
-    "js-utility-belt": "^1.0.4",
+    "js-utility-belt": "^1.0.5",
     "moment": "^2.10.6",
     "q": "^1.4.1",
     "react": "^0.14.8",

@@ -70,7 +70,6 @@ class AssetStore {
         this.getInstance().postAsset();
     }
 
-
     onTransferAsset({ idToTransfer, payloadToPost }) {
         this.assetMeta.idToTransfer = idToTransfer;
         this.assetMeta.payloadToPost = payloadToPost;
