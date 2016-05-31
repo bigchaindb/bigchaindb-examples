@@ -10,7 +10,8 @@ services:
     volumes:
       - ./client/demo:/usr/src/app/client/demo
       - ./client/lib:/usr/src/app/client/lib
-      - ./client/js:/usr/src/app/client/js
+      - ./client/on_the_record:/usr/src/app/client/on_the_record
+      - ./client/share_trader:/usr/src/app/client/share_trader
       - ./client/app_index_template.html:/usr/src/app/client/app_index_template.html
       - ./client/browserlist:/usr/src/app/client/browserlist
       - ./client/package.json:/usr/src/app/client/package.json
@@ -18,7 +19,8 @@ services:
       - ./client/webpack.config.js:/usr/src/app/client/webpack.config.js
     environment:
       CLIENT_HOST: 0.0.0.0
-      FLASK_BASE_URL: "http://${DOCKER_MACHINE_IP}:32801"
+      FLASK_HOST: "${DOCKER_MACHINE_IP}"
+      FLASK_PORT: 32801
     ports:
       - "32800:3000"
     command: node server.demo.js

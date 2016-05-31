@@ -28,34 +28,36 @@ const Assets = React.createClass({
             handleAssetClick
         } = this.props;
 
-        if (assetList && assetList.length > 0) {
-            return (
-                <div>
-                    {assetList.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
-                        .map((asset) => {
-                            const active = (activeAsset) ? activeAsset.id === asset.id : false;
-                            const assetClass = assetClasses[asset.transaction.conditions[0]
-                                                   .new_owners[0]];
+        if (assetList) {
+            if (assetList.length) {
+                return (
+                    <div>
+                        {assetList.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
+                            .map((asset) => {
+                                const active = (activeAsset) ? activeAsset.id === asset.id : false;
+                                const assetClass = assetClasses[asset.transaction.conditions[0]
+                                                       .new_owners[0]];
 
-                            return (
-                                <AssetRow
-                                    key={asset.id}
-                                    accountList={active ? accountList : null}
-                                    active={active}
-                                    activeAccount={active ? activeAccount : null}
-                                    asset={asset}
-                                    assetClass={assetClass}
-                                    handleAssetClick={handleAssetClick} />
-                            );
-                        })}
-                </div>
-            );
-        } else if (assetList && assetList.length) {
-            return (
-                <div className="content-text">
-                    No shares found on BigchainDB. Start trading...
-                </div>
-            );
+                                return (
+                                    <AssetRow
+                                        key={asset.id}
+                                        accountList={active ? accountList : null}
+                                        active={active}
+                                        activeAccount={active ? activeAccount : null}
+                                        asset={asset}
+                                        assetClass={assetClass}
+                                        handleAssetClick={handleAssetClick} />
+                                );
+                            })}
+                    </div>
+                );
+            } else {
+                return (
+                    <div className="content-text">
+                        No shares found on BigchainDB. Start trading...
+                    </div>
+                );
+            }
         } else {
             return (
                 <div style={{ margin: '2em' }}>
@@ -138,10 +140,10 @@ const AssetRow = React.createClass({
         return (
             <Row onClick={this.handleAssetClick}>
                 <div
-                    className={classNames('asset-container',
-                                            assetClass,
-                                            { 'active': active && !transfered },
-                                            { 'transfered': transfered })}>
+                    className={classNames('asset-container', assetClass, {
+                        transfered,
+                        active: active && !transfered
+                    })}>
                     <div className="asset-container-id">
                         {asset.id}
                     </div>

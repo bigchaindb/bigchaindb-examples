@@ -4,8 +4,6 @@ import Matrix from 'react-matrix';
 
 import AssetStore from '../../../lib/js/react/stores/asset_store';
 
-import { mergeOptions } from '../../../lib/js/utils/general_utils';
-
 
 const AssetMatrix = React.createClass({
 
@@ -37,11 +35,7 @@ const AssetMatrix = React.createClass({
     },
 
     getInitialState() {
-        const assetStore = AssetStore.getState();
-
-        return mergeOptions(
-            assetStore
-        );
+        return AssetStore.getState();
     },
 
     componentDidMount() {

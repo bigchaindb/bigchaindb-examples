@@ -4,11 +4,11 @@ import { API_PATH } from './application_constants';
 
 const ApiUrls = {
     'accounts': API_PATH + 'accounts/',
-    'accounts_detail': API_PATH + 'accounts/${account_id}/',
-    'assets_for_account': API_PATH + 'accounts/${account_id}/assets/',
+    'accounts_detail': API_PATH + 'accounts/%(accountId)s/',
+    'assets_for_account': API_PATH + 'accounts/%(accountId)s/assets/',
     'assets': API_PATH + 'assets/',
-    'assets_detail': API_PATH + 'assets/${asset_id}/${cid}/',
-    'assets_transfer': API_PATH + 'assets/${asset_id}/${cid}/transfer/'
+    'assets_detail': API_PATH + 'assets/%(assetId)s/',
+    'assets_transfer': API_PATH + 'assets/%(assetId)s/%(cid)s/transfer/'
 };
 
 

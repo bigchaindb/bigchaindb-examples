@@ -1,14 +1,15 @@
-import requests from '../../utils/requests';
-
 import AccountActions from '../actions/account_actions';
+
+import request from '../../utils/request';
 
 
 const AccountSource = {
-
     lookupAccount: {
         remote(state) {
-            return requests.get('accounts_detail', {
-                account_id: state.accountMeta.idToFetch
+            return request('accounts_detail', {
+                urlTemplateSpec: {
+                    accountId: state.accountMeta.idToFetch
+                }
             });
         },
 
@@ -18,8 +19,10 @@ const AccountSource = {
 
     lookupAccountList: {
         remote(state) {
-            return requests.get('accounts', {
-                app: state.accountMeta.app
+            return request('accounts', {
+                query: {
+                    app: state.accountMeta.app
+                }
             });
         },
 
@@ -29,8 +32,9 @@ const AccountSource = {
 
     postAccount: {
         remote(state) {
-            return requests.post('accounts', {
-                body: state.accountMeta.payloadToPost
+            return request('accounts', {
+                method: 'POST',
+                jsonBody: state.accountMeta.payloadToPost
             });
         },
 

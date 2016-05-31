@@ -10,10 +10,13 @@ const combineLoaders = require('webpack-combine-loaders');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-require('dotenv').load({ silent: true });
+require('dotenv').load({ path: '../.env', silent: true });
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
 const EXTRACT = process.env.NODE_ENV === 'extract';
+
+const FLASK_BASE_URL = process.env.FLASK_HOST && process.env.FLASK_PORT &&
+                       `http://${process.env.FLASK_HOST}:${process.env.FLASK_PORT}`;
 
 const PATHS = {
     ON_THE_RECORD: path.resolve(__dirname, 'on_the_record/js/app.js'),
@@ -42,7 +45,7 @@ const ENTRY_NAMES = {
 const DEFINITIONS = {
     'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
-        FLASK_BASE_URL: JSON.stringify(process.env.FLASK_BASE_URL || 'http://localhost:8000'),
+        FLASK_BASE_URL: JSON.stringify(FLASK_BASE_URL || 'http://localhost:8000'),
     },
 };
 
