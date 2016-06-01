@@ -6,9 +6,8 @@ import Scroll from 'react-scroll';
 
 import { safeMerge } from 'js-utility-belt/es6';
 
-import Accounts from './accounts';
+import AccountList from '../../../lib/js/react/components/accounts';
 import Assets from './assets';
-import Search from '../../../lib/js/react/components/search';
 import AssetMatrix from './asset_matrix';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
@@ -93,14 +92,8 @@ const ShareTrader = React.createClass({
         setTimeout(this.fetchAssetList, 1000);
     },
 
-    handleSearch(query) {
-        this.setState({
-            searchQuery: query
-        });
-    },
-
     render() {
-        const { activeAccount, accountList, activeAsset, assetList, assetMeta } = this.state;
+        const { activeAccount, accountList, activeAsset, assetList } = this.state;
         const states = this.mapAccountsOnStates(accountList);
 
         return (
@@ -111,17 +104,15 @@ const ShareTrader = React.createClass({
                 <div id="wrapper">
                     <div id="sidebar-wrapper">
                         <div className="sidebar-nav">
-                            <Search
-                                handleSearch={this.handleSearch}
-                                initialQuery={assetMeta.search} />
                             <div style={{ textAlign: 'center' }}>
                                 <Button
                                     onClick={this.resetActiveAccount}>
                                     Select All
                                 </Button>
                             </div>
-                            <Accounts
+                            <AccountList
                                 activeAccount={activeAccount}
+                                appName="sharetrader"
                                 handleAccountClick={this.setActiveAccount} />
                         </div>
                     </div>

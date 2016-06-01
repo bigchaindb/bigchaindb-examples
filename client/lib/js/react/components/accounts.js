@@ -4,14 +4,16 @@ import { Row } from 'react-bootstrap/lib/';
 
 import classnames from 'classnames/';
 
-import AccountActions from '../../../lib/js/react/actions/account_actions';
-import AccountStore from '../../../lib/js/react/stores/account_store';
+import AccountActions from '../actions/account_actions';
+import AccountStore from '../stores/account_store';
 
-import AscribeSpinner from '../../../lib/js/react/components/spinner';
+import Spinner from './spinner';
 
-const Accounts = React.createClass({
+const AccountList = React.createClass({
     propTypes: {
         activeAccount: React.PropTypes.object,
+        appName: React.PropTypes.string,
+        className: React.PropTypes.string,
         handleAccountClick: React.PropTypes.func
     },
 
@@ -29,8 +31,9 @@ const Accounts = React.createClass({
     },
 
     fetchAccountList() {
+        const { appName } = this.props;
         AccountActions.flushAccountList();
-        AccountActions.fetchAccountList({ app: 'sharetrader' });
+        AccountActions.fetchAccountList({ app: appName });
     },
 
     onChange(state) {
@@ -38,12 +41,12 @@ const Accounts = React.createClass({
     },
 
     render() {
-        const { activeAccount, handleAccountClick } = this.props;
+        const { activeAccount, className, handleAccountClick } = this.props;
         const { accountList } = this.state;
 
         if (accountList && accountList.length > 0) {
             return (
-                <div>
+                <div className={classnames(className)}>
                     {accountList
                         .sort((a, b) => {
                             if (a.name < b.name) return -1;
@@ -62,7 +65,7 @@ const Accounts = React.createClass({
         } else {
             return (
                 <div style={{ margin: '2em' }}>
-                    <AscribeSpinner />
+                    <Spinner />
                 </div>
             );
         }
@@ -86,7 +89,8 @@ const AccountRow = React.createClass({
         return (
             <div
                 className={classnames('list-row', { 'active': activeAccount === account })}
-                onClick={this.handleClick}>
+                onClick={this.handleClick}
+                tabIndex={0} >
                 <Row>
                     <div className="list-row-name">
                         {account.name}
@@ -100,4 +104,4 @@ const AccountRow = React.createClass({
     }
 });
 
-export default Accounts;
+export default AccountList;

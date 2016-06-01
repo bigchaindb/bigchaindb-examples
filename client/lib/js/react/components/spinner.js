@@ -2,11 +2,11 @@ import React from 'react';
 import classNames from 'classnames';
 
 
-const AscribeSpinner = React.createClass({
+const Spinner = React.createClass({
     propTypes: {
         classNames: React.PropTypes.string,
-        size: React.PropTypes.oneOf(['sm', 'md', 'lg']),
-        color: React.PropTypes.oneOf(['black', 'blue', 'dark-blue', 'light-blue', 'pink', 'white', 'loop'])
+        color: React.PropTypes.oneOf(['black', 'blue', 'dark-blue', 'light-blue', 'pink', 'white', 'loop']),
+        size: React.PropTypes.oneOf(['sm', 'md', 'lg'])
     },
 
     getDefaultProps() {
@@ -32,4 +32,4 @@ const AscribeSpinner = React.createClass({
     }
 });
 
-export default AscribeSpinner;
+export default Spinner;
