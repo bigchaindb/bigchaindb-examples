@@ -6,7 +6,7 @@ import Scroll from 'react-scroll';
 
 import { safeMerge } from 'js-utility-belt/es6';
 
-import Accounts from '../../../lib/js/react/components/accounts';
+import AccountList from '../../../lib/js/react/components/accounts';
 import Assets from './assets';
 import AssetMatrix from './asset_matrix';
 
@@ -110,7 +110,7 @@ const ShareTrader = React.createClass({
                                     Select All
                                 </Button>
                             </div>
-                            <Accounts
+                            <AccountList
                                 activeAccount={activeAccount}
                                 appName="sharetrader"
                                 handleAccountClick={this.setActiveAccount} />

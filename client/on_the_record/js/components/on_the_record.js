@@ -7,7 +7,7 @@ import Scroll from 'react-scroll';
 import { safeMerge } from 'js-utility-belt/es6';
 import { getScrollPosition } from 'js-utility-belt/es6/dom';
 
-import Accounts from '../../../lib/js/react/components/accounts';
+import AccountList from '../../../lib/js/react/components/accounts';
 import Assets from './assets';
 import Search from '../../../lib/js/react/components/search';
 
@@ -98,7 +98,7 @@ const OnTheRecord = React.createClass({
                             <Search
                                 handleSearch={this.handleSearch}
                                 initialQuery={assetMeta.search} />
-                            <Accounts
+                            <AccountList
                                 activeAccount={activeAccount}
                                 appName="ontherecord"
                                 handleAccountClick={this.setActiveAccount} />

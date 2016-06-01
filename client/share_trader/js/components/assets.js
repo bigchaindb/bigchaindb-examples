@@ -5,7 +5,7 @@ import { Row, Button, Glyphicon, DropdownButton, MenuItem } from 'react-bootstra
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 
-import AscribeSpinner from '../../../lib/js/react/components/spinner';
+import Spinner from '../../../lib/js/react/components/spinner';
 
 
 const Assets = React.createClass({
@@ -61,7 +61,7 @@ const Assets = React.createClass({
         } else {
             return (
                 <div style={{ margin: '2em' }}>
-                    <AscribeSpinner />
+                    <Spinner />
                 </div>
             );
         }
