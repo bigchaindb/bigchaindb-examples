@@ -6,7 +6,7 @@ import Scroll from 'react-scroll';
 
 import { safeMerge } from 'js-utility-belt/es6';
 
-import Accounts from '../../../lib/js/react/components/accounts';
+import AccountList from '../../../lib/js/react/components/accounts';
 // import Assets from './assets';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
@@ -88,7 +88,7 @@ const Interledger = React.createClass({
                 <div id="wrapper">
                     <div id="sidebar-wrapper">
                         <div className="sidebar-nav">
-                            <Accounts
+                            <AccountList
                                 activeAccount={activeAccount}
                                 handleAccountClick={this.setActiveAccount} />
                         </div>
