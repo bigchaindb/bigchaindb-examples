@@ -7,12 +7,13 @@ import classnames from 'classnames/';
 import AccountActions from '../actions/account_actions';
 import AccountStore from '../stores/account_store';
 
-import AscribeSpinner from './spinner';
+import Spinner from './spinner';
 
-const Accounts = React.createClass({
+const AccountList = React.createClass({
     propTypes: {
         activeAccount: React.PropTypes.object,
         appName: React.PropTypes.string,
+        className: React.PropTypes.string,
         handleAccountClick: React.PropTypes.func
     },
 
@@ -40,12 +41,12 @@ const Accounts = React.createClass({
     },
 
     render() {
-        const { activeAccount, handleAccountClick } = this.props;
+        const { activeAccount, className, handleAccountClick } = this.props;
         const { accountList } = this.state;
 
         if (accountList && accountList.length > 0) {
             return (
-                <div>
+                <div className={classnames(className)}>
                     {accountList
                         .sort((a, b) => {
                             if (a.name < b.name) return -1;
@@ -54,17 +55,17 @@ const Accounts = React.createClass({
                         })
                         .map(account => (
                             <AccountRow
+                                key={account.name}
                                 account={account}
                                 activeAccount={activeAccount}
-                                handleClick={handleAccountClick}
-                                key={account.name} />
+                                handleClick={handleAccountClick} />
                         ))}
                 </div>
             );
         } else {
             return (
                 <div style={{ margin: '2em' }}>
-                    <AscribeSpinner />
+                    <Spinner />
                 </div>
             );
         }
@@ -103,4 +104,4 @@ const AccountRow = React.createClass({
     }
 });
 
-export default Accounts;
+export default AccountList;
