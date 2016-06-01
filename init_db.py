@@ -41,6 +41,17 @@ APPS = [
                 }
             }
         )
+    },
+    {
+        'name': 'interledger',
+        'num_accounts': 3,
+        'num_assets': 0,
+        'payload_func': (
+            lambda x: {
+                'app': 'interledger',
+                'content': x
+            }
+        )
     }
 ]
 

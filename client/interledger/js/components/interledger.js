@@ -74,7 +74,7 @@ const Interledger = React.createClass({
 
         AssetActions.fetchAssetList({ accountToFetch: accountPublicKey, search: searchQuery });
 
-        setTimeout(this.fetchAssetList, 1000);
+        // setTimeout(this.fetchAssetList, 1000);
     },
 
     render() {
@@ -83,13 +83,14 @@ const Interledger = React.createClass({
         return (
             <div>
                 <Navbar fixedTop inverse>
-                    <h1 style={{ textAlign: 'center', color: 'white' }}>Share Trader</h1>
+                    <h1 style={{ textAlign: 'center', color: 'white' }}>Interledger</h1>
                 </Navbar>
                 <div id="wrapper">
                     <div id="sidebar-wrapper">
                         <div className="sidebar-nav">
                             <AccountList
                                 activeAccount={activeAccount}
+                                appName="interledger"
                                 handleAccountClick={this.setActiveAccount} />
                         </div>
                     </div>
