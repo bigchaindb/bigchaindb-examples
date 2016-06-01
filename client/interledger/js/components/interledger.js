@@ -6,8 +6,8 @@ import Scroll from 'react-scroll';
 
 import { safeMerge } from 'js-utility-belt/es6';
 
-import Accounts from './accounts';
-import Assets from './assets';
+import Accounts from '../../../lib/js/react/components/accounts';
+// import Assets from './assets';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 import AssetStore from '../../../lib/js/react/stores/asset_store';
