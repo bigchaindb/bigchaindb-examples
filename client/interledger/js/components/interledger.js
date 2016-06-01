@@ -67,20 +67,6 @@ const Interledger = React.createClass({
         });
     },
 
-    mapAccountsOnStates(accountList) {
-        const states = { 'default': 'available' };
-
-        if (!accountList) {
-            return states;
-        }
-
-        for (let i = 0; i < accountList.length; i++) {
-            states[accountList[i].vk] = `state${i}`;
-        }
-
-        return states;
-    },
-
     fetchAssetList() {
         AssetActions.flushAssetList();
         const { activeAccount, searchQuery } = this.state;
@@ -91,15 +77,8 @@ const Interledger = React.createClass({
         setTimeout(this.fetchAssetList, 1000);
     },
 
-    handleSearch(query) {
-        this.setState({
-            searchQuery: query
-        });
-    },
-
     render() {
         const { activeAccount, accountList, activeAsset, assetList, assetMeta } = this.state;
-        const states = this.mapAccountsOnStates(accountList);
 
         return (
             <div>
@@ -109,15 +88,6 @@ const Interledger = React.createClass({
                 <div id="wrapper">
                     <div id="sidebar-wrapper">
                         <div className="sidebar-nav">
-                            <Search
-                                handleSearch={this.handleSearch}
-                                initialQuery={assetMeta.search} />
-                            <div style={{ textAlign: 'center' }}>
-                                <Button
-                                    onClick={this.resetActiveAccount}>
-                                    Select All
-                                </Button>
-                            </div>
                             <Accounts
                                 activeAccount={activeAccount}
                                 handleAccountClick={this.setActiveAccount} />
@@ -125,28 +95,6 @@ const Interledger = React.createClass({
                     </div>
                     <div id="page-content-wrapper">
                         <div className="page-content">
-                            <Row>
-                                <Col className="asset-matrix" md={8} xs={6}>
-                                    <div className="vertical-align-outer">
-                                        <div className="vertical-align-inner">
-                                            <AssetMatrix
-                                                cols={8}
-                                                handleAssetClick={this.setActiveAsset}
-                                                rows={8}
-                                                states={states} />
-                                        </div>
-                                    </div>
-                                </Col>
-                                <Col className="asset-history" md={4} xs={6}>
-                                    <Assets
-                                        accountList={accountList}
-                                        activeAccount={activeAccount}
-                                        activeAsset={activeAsset}
-                                        assetClasses={states}
-                                        assetList={assetList}
-                                        handleAssetClick={this.setActiveAsset} />
-                                </Col>
-                            </Row>
                         </div>
                     </div>
                 </div>
@@ -155,4 +103,4 @@ const Interledger = React.createClass({
     }
 });
 
-export default ShareTrader;
+export default Interledger;
