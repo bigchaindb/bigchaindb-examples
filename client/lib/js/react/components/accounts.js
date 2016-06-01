@@ -4,14 +4,15 @@ import { Row } from 'react-bootstrap/lib/';
 
 import classnames from 'classnames/';
 
-import AccountActions from '../../../lib/js/react/actions/account_actions';
-import AccountStore from '../../../lib/js/react/stores/account_store';
+import AccountActions from '../actions/account_actions';
+import AccountStore from '../stores/account_store';
 
-import AscribeSpinner from '../../../lib/js/react/components/spinner';
+import AscribeSpinner from './spinner';
 
 const Accounts = React.createClass({
     propTypes: {
         activeAccount: React.PropTypes.object,
+        appName: React.PropTypes.string,
         handleAccountClick: React.PropTypes.func
     },
 
@@ -29,8 +30,9 @@ const Accounts = React.createClass({
     },
 
     fetchAccountList() {
+        const { appName } = this.props;
         AccountActions.flushAccountList();
-        AccountActions.fetchAccountList({ app: 'sharetrader' });
+        AccountActions.fetchAccountList({ app: appName });
     },
 
     onChange(state) {
@@ -52,10 +54,10 @@ const Accounts = React.createClass({
                         })
                         .map(account => (
                             <AccountRow
-                                key={account.name}
                                 account={account}
                                 activeAccount={activeAccount}
-                                handleClick={handleAccountClick} />
+                                handleClick={handleAccountClick}
+                                key={account.name} />
                         ))}
                 </div>
             );
@@ -86,7 +88,8 @@ const AccountRow = React.createClass({
         return (
             <div
                 className={classnames('list-row', { 'active': activeAccount === account })}
-                onClick={this.handleClick}>
+                onClick={this.handleClick}
+                tabIndex={0} >
                 <Row>
                     <div className="list-row-name">
                         {account.name}
