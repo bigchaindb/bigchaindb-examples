@@ -92,14 +92,8 @@ const ShareTrader = React.createClass({
         setTimeout(this.fetchAssetList, 1000);
     },
 
-    handleSearch(query) {
-        this.setState({
-            searchQuery: query
-        });
-    },
-
     render() {
-        const { activeAccount, accountList, activeAsset, assetList, assetMeta } = this.state;
+        const { activeAccount, accountList, activeAsset, assetList } = this.state;
         const states = this.mapAccountsOnStates(accountList);
 
         return (
