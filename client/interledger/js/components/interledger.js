@@ -10,58 +10,48 @@ import AccountList from '../../../lib/js/react/components/accounts';
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 import AssetStore from '../../../lib/js/react/stores/asset_store';
 
-import AccountStore from '../../../lib/js/react/stores/account_store';
-
-import BigchainDBLedgerPlugin from '../../../lib/js/react/components/ledgerplugin';
-
-
 const Interledger = React.createClass({
 
     getInitialState() {
         const assetStore = AssetStore.getState();
-        const accountStore = AccountStore.getState();
-        
+
         return safeMerge(
             {
                 activeAccount: null,
                 activeAsset: null,
-                searchQuery: null,
-                ledger: new BigchainDBLedgerPlugin({
-                    auth: {
-                        account: 'ws://localhost:8888/changes'
-                    },
-                })
+                activeLedger: null,
+                searchQuery: null
             },
-            assetStore,
-            accountStore
+            assetStore
         );
     },
 
     componentDidMount() {
-        AccountStore.listen(this.onChange);
         AssetStore.listen(this.onChange);
         this.fetchAssetList();
-        
-        const { ledger } = this.state;
-        ledger.connect().catch((err) => {
-            console.error((err && err.stack) ? err.stack : err);
-        });
-
-        ledger.on('incoming', this.handleLedgerChanges);
     },
 
     componentWillUnmount() {
         AssetStore.unlisten(this.onChange);
-        AccountStore.unlisten(this.onChange);
-        
-        const { ledger } = this.state;
-        ledger.disconnect().catch((err) => {
-            console.error((err && err.stack) ? err.stack : err);
-        });
+        this.disconnectLedger(this.state.ledger);
     },
 
     onChange(state) {
         this.setState(state);
+    },
+
+    fetchAssetList() {
+        AssetActions.flushAssetList();
+        const { activeAccount, searchQuery } = this.state;
+        const accountPublicKey = activeAccount ? activeAccount.vk : null;
+
+        AssetActions.fetchAssetList({ accountToFetch: accountPublicKey, search: searchQuery });
+    },
+
+    disconnectLedger(ledger) {
+        if (ledger) {
+            ledger.disconnect();
+        }
     },
 
     handleLedgerChanges(changes) {
@@ -69,10 +59,17 @@ const Interledger = React.createClass({
         this.fetchAssetList();
     },
 
-    setActiveAccount(account) {
+    handleAccountChange(account, ledger) {
+        this.disconnectLedger(this.state.ledger);
+        ledger.on('incoming', this.handleLedgerChanges);
+
         this.setState({
-            activeAccount: account
+            activeAccount: account,
+            ledger
         });
+
+        console.log('switched accounts:', account);
+        this.fetchAssetList(account);
     },
 
     resetActiveAccount() {
@@ -87,18 +84,8 @@ const Interledger = React.createClass({
         });
     },
 
-    fetchAssetList() {
-        AssetActions.flushAssetList();
-        const { activeAccount, searchQuery } = this.state;
-        const accountPublicKey = activeAccount ? activeAccount.vk : null;
-
-        AssetActions.fetchAssetList({ accountToFetch: accountPublicKey, search: searchQuery });
-
-        // setTimeout(this.fetchAssetList, 1000);
-    },
-
     render() {
-        const { activeAccount, accountList, activeAsset, assetList, assetMeta } = this.state;
+        const { activeAccount } = this.state;
 
         return (
             <div>
@@ -111,7 +98,7 @@ const Interledger = React.createClass({
                             <AccountList
                                 activeAccount={activeAccount}
                                 appName="interledger"
-                                handleAccountClick={this.setActiveAccount} />
+                                handleAccountClick={this.handleAccountChange} />
                         </div>
                     </div>
                     <div id="page-content-wrapper">

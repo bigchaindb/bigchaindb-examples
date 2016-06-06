@@ -18,18 +18,37 @@ def print_changes():
     feed = yield r.table('backlog').changes().run(conn)
     while (yield feed.fetch_next()):
         change = yield feed.next()
+        tx = None
+        if change['old_val']:
+            tx = change['old_val']['transaction']
+        elif change['new_val']:
+            tx = change['new_val']['transaction']
         for client in clients:
-            client.write_message(change)
+            if tx:
+                msg_sent = False
+                for condition in tx['conditions']:
+                    if client.username in condition['new_owners']:
+                        client.write_message(change)
+                        msg_sent = True
+                        break
+                if msg_sent:
+                    continue
+                for fullfillment in tx['fulfillments']:
+                    if client.username in fullfillment['current_owners']:
+                        client.write_message(change)
+                        break
 
 
 class ChangeFeedWebSocket(websocket.WebSocketHandler):
+    username = None
 
     def check_origin(self, origin):
         return True
 
-    def open(self):
+    def open(self, username):
         # self.stream.set_nodelay(True)
         if self not in clients:
+            self.username = username
             clients.append(self)
         print('ws: open (Pool: {} connections)'.format(len(clients)))
 
@@ -44,9 +63,8 @@ class ChangeFeedWebSocket(websocket.WebSocketHandler):
                 return
 
 
-
 app = web.Application([
-    (r'/changes', ChangeFeedWebSocket)
+    (r'/users/(.*)/changes', ChangeFeedWebSocket)
 ])
 
 if __name__ == '__main__':
