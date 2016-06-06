@@ -1,8 +1,10 @@
 import co from 'co/';
+
 import reconnectCore from 'reconnect-core/';
 import EventEmitter2 from 'eventemitter2/';
+import SimpleWebsocket from 'simple-websocket/';
 
-class BigchainDBLedgerPlugin extends EventEmitter2 {
+class BigchainDBLedger extends EventEmitter2 {
 
     constructor(options) {
         super();
@@ -32,21 +34,26 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
         console.log('subscribing to ' + streamUri);
 
         const reconnect = reconnectCore(() => {
-            return new WebSocket(streamUri);
+            return new SimpleWebsocket(streamUri);
         });
 
         return new Promise((resolve, reject) => {
             this.connection = reconnect({immediate: true}, (ws) => {
-                ws.onopen = function () {
+                ws.on('open', () => {
                     console.log('ws connected to ' + streamUri);
-                };
-                ws.onmessage = function (msg) {
+                })
+                ws.on('data', (msg) => {
                     const notification = JSON.parse(msg);
-                    console.log('ws received ' + notification);
-                };
-                ws.onclose = function () {
+                    co.wrap(this._handleNotification)
+                        .call(this, notification)
+                        .catch((err) => {
+                            console.warn('failure while processing notification: ' +
+                            (err && err.stack) ? err.stack : err)
+                        });
+                });
+                ws.on('close', () => {
                     console.log('ws disconnected from ' + streamUri);
-                };
+                });
                 // reconnect-core expects the disconnect method to be called: `end`
                 ws.end = ws.close;
             })
@@ -97,8 +104,9 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
     replyToTransfer() {
     }
 
-    * _handleNotification(fiveBellsTransfer, relatedResources) {
+    * _handleNotification(changes) {
+        yield this.emitAsync('incoming', changes);
     }
 }
 
-export default BigchainDBLedgerPlugin;
+export default BigchainDBLedger;

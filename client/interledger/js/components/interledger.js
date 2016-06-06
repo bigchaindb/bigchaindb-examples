@@ -2,8 +2,6 @@ import React from 'react/';
 
 import { Navbar, Row, Col, Button } from 'react-bootstrap/lib/';
 
-import Scroll from 'react-scroll';
-
 import { safeMerge } from 'js-utility-belt/es6';
 
 import AccountList from '../../../lib/js/react/components/accounts';
@@ -44,18 +42,29 @@ const Interledger = React.createClass({
         AccountStore.listen(this.onChange);
         AssetStore.listen(this.onChange);
 
-        ledger.connect();
+        ledger.connect().catch((err) => {
+            console.error((err && err.stack) ? err.stack : err);
+        });
+
+        ledger.on('incoming', this.handleLedgerChanges);
         this.fetchAssetList();
-        Scroll.animateScroll.scrollToBottom();
     },
 
     componentWillUnmount() {
+        const { ledger } = this.state;
         AssetStore.unlisten(this.onChange);
         AccountStore.unlisten(this.onChange);
+        ledger.disconnect().catch((err) => {
+            console.error((err && err.stack) ? err.stack : err);
+        });
     },
 
     onChange(state) {
         this.setState(state);
+    },
+
+    handleLedgerChanges(changes) {
+        console.log('incoming: ', changes);
     },
 
     setActiveAccount(account) {

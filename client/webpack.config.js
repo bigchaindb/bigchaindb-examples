@@ -126,7 +126,7 @@ const CSS_LOADER = combineLoaders([
             sourceMap: true
         }
     },
-    { loader: 'postcss' },
+    {loader: 'postcss'},
     {
         loader: 'sass',
         query: {

@@ -42,7 +42,8 @@
     "react-matrix": "0.0.6",
     "react-scroll": "^1.0.15",
     "reconnect-core": "^1.2.0",
-    "shallow-equals": "0.0.0"
+    "shallow-equals": "0.0.0",
+    "simple-websocket": "^4.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
