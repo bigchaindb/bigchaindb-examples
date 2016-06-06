@@ -54,8 +54,6 @@ class BigchainDBLedger extends EventEmitter2 {
                 ws.on('close', () => {
                     console.log('ws disconnected from ' + streamUri);
                 });
-                // reconnect-core expects the disconnect method to be called: `end`
-                ws.end = ws.close;
             })
                 .once('connect', () => resolve(null))
                 .on('connect', () => {

@@ -12,7 +12,7 @@ import AssetStore from '../../../lib/js/react/stores/asset_store';
 
 import AccountStore from '../../../lib/js/react/stores/account_store';
 
-import BigchainDBLedgerPlugin from './ledgerplugin';
+import BigchainDBLedgerPlugin from '../../../lib/js/react/components/ledgerplugin';
 
 
 const Interledger = React.createClass({
@@ -28,7 +28,7 @@ const Interledger = React.createClass({
                 searchQuery: null,
                 ledger: new BigchainDBLedgerPlugin({
                     auth: {
-                        account: 'ws://localhost:8888/websocket'
+                        account: 'ws://localhost:8888/changes'
                     },
                 })
             },
@@ -38,22 +38,23 @@ const Interledger = React.createClass({
     },
 
     componentDidMount() {
-        const { ledger } = this.state;
         AccountStore.listen(this.onChange);
         AssetStore.listen(this.onChange);
-
+        this.fetchAssetList();
+        
+        const { ledger } = this.state;
         ledger.connect().catch((err) => {
             console.error((err && err.stack) ? err.stack : err);
         });
 
         ledger.on('incoming', this.handleLedgerChanges);
-        this.fetchAssetList();
     },
 
     componentWillUnmount() {
-        const { ledger } = this.state;
         AssetStore.unlisten(this.onChange);
         AccountStore.unlisten(this.onChange);
+        
+        const { ledger } = this.state;
         ledger.disconnect().catch((err) => {
             console.error((err && err.stack) ? err.stack : err);
         });
@@ -65,6 +66,7 @@ const Interledger = React.createClass({
 
     handleLedgerChanges(changes) {
         console.log('incoming: ', changes);
+        this.fetchAssetList();
     },
 
     setActiveAccount(account) {

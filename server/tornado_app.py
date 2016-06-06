@@ -22,16 +22,16 @@ def print_changes():
             client.write_message(change)
 
 
-class EchoWebSocket(websocket.WebSocketHandler):
+class ChangeFeedWebSocket(websocket.WebSocketHandler):
 
     def check_origin(self, origin):
         return True
 
     def open(self):
-        print('ws: open')
         # self.stream.set_nodelay(True)
         if self not in clients:
             clients.append(self)
+        print('ws: open (Pool: {} connections)'.format(len(clients)))
 
     def on_message(self, message):
         self.write_message(u"You said: " + message)
@@ -40,11 +40,13 @@ class EchoWebSocket(websocket.WebSocketHandler):
         for i, client in enumerate(clients):
             if client is self:
                 del clients[i]
+                print('ws: close (Pool: {} connections)'.format(len(clients)))
                 return
 
 
+
 app = web.Application([
-    (r'/websocket', EchoWebSocket)
+    (r'/changes', ChangeFeedWebSocket)
 ])
 
 if __name__ == '__main__':
