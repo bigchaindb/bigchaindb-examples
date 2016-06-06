@@ -14,18 +14,21 @@ import AssetStore from '../../../lib/js/react/stores/asset_store';
 
 import AccountStore from '../../../lib/js/react/stores/account_store';
 
+import BigchainDBLedgerPlugin from './ledgerplugin';
+
 
 const Interledger = React.createClass({
 
     getInitialState() {
         const assetStore = AssetStore.getState();
         const accountStore = AccountStore.getState();
-
+        
         return safeMerge(
             {
                 activeAccount: null,
                 activeAsset: null,
-                searchQuery: null
+                searchQuery: null,
+                ledger: new BigchainDBLedgerPlugin()
             },
             assetStore,
             accountStore
@@ -33,9 +36,11 @@ const Interledger = React.createClass({
     },
 
     componentDidMount() {
-        AssetStore.listen(this.onChange);
+        const { ledger } = this.state;
         AccountStore.listen(this.onChange);
+        AssetStore.listen(this.onChange);
 
+        ledger.connect();
         this.fetchAssetList();
         Scroll.animateScroll.scrollToBottom();
     },

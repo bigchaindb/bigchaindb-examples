@@ -18,6 +18,8 @@ const EXTRACT = process.env.NODE_ENV === 'extract';
 const FLASK_BASE_URL = process.env.FLASK_HOST && process.env.FLASK_PORT &&
                        `http://${process.env.FLASK_HOST}:${process.env.FLASK_PORT}`;
 
+console.log(FLASK_BASE_URL)
+
 const PATHS = {
     ON_THE_RECORD: path.resolve(__dirname, 'on_the_record/js/app.js'),
     SHARE_TRADER: path.resolve(__dirname, 'share_trader/js/app.js'),
