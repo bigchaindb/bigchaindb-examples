@@ -28,7 +28,11 @@ const Interledger = React.createClass({
                 activeAccount: null,
                 activeAsset: null,
                 searchQuery: null,
-                ledger: new BigchainDBLedgerPlugin()
+                ledger: new BigchainDBLedgerPlugin({
+                    auth: {
+                        account: 'ws://localhost:8888/websocket'
+                    },
+                })
             },
             assetStore,
             accountStore

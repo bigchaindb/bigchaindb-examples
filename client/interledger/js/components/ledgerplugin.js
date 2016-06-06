@@ -9,7 +9,6 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
 
         this.id = null;
         this.credentials = options.auth;
-        this.credentials.accountUri = 'ws://localhost:8888/websocket';
         this.config = options.config;
 
         this.connection = null;
@@ -38,38 +37,16 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
 
         return new Promise((resolve, reject) => {
             this.connection = reconnect({immediate: true}, (ws) => {
-                ws.on('open', () => {
+                ws.onopen = function () {
                     console.log('ws connected to ' + streamUri);
-                })
-                ws.on('message', (msg) => {
+                };
+                ws.onmessage = function (msg) {
                     const notification = JSON.parse(msg);
-                    console.log('notify transfer', notification.resource.state, notification.resource.id);
-
-                    co.wrap(this._handleNotification)
-                        .call(this, notification.resource, notification.related_resources)
-                        .then(() => {
-                            // TODO Re-enable this test feature
-                            // if (this.config.features.debugReplyNotifications) {
-                            //   ws.send(JSON.stringify({ result: 'processed' }))
-                            // }
-                        })
-                        .catch((err) => {
-                            console.warn('failure while processing notification: ' + (err && err.stack) ? err.stack : err);
-                            if (this.config.features.debugReplyNotifications) {
-                                ws.send(JSON.stringify({
-                                    result: 'ignored',
-                                    ignoreReason: {
-                                        id: err.name,
-                                        message: err.message
-                                    }
-                                }));
-                            }
-                        });
-                });
-                ws.on('close', () => {
+                    console.log('ws received ' + notification);
+                };
+                ws.onclose = function () {
                     console.log('ws disconnected from ' + streamUri);
-                });
-
+                };
                 // reconnect-core expects the disconnect method to be called: `end`
                 ws.end = ws.close;
             })
@@ -119,7 +96,7 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
 
     replyToTransfer() {
     }
-    
+
     * _handleNotification(fiveBellsTransfer, relatedResources) {
     }
 }
