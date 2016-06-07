@@ -22,7 +22,7 @@ const OnTheRecord = React.createClass({
             {
                 activeAccount: null,
                 activeLedger: null,
-                searchQuery: null
+                search: null
             },
             assetStore
         );
@@ -30,7 +30,6 @@ const OnTheRecord = React.createClass({
 
     componentDidMount() {
         AssetStore.listen(this.onChange);
-        this.fetchAssetList();
     },
 
     componentWillUnmount() {
@@ -42,14 +41,13 @@ const OnTheRecord = React.createClass({
         this.setState(state);
     },
 
-    fetchAssetList(account) {
+    fetchAssetList({ accountToFetch, search }) {
         AssetActions.flushAssetList();
-        const { activeAccount, searchQuery } = this.state;
 
-        if (account || activeAccount) {
+        if (accountToFetch) {
             AssetActions.fetchAssetList({
-                accountToFetch: account ? account.vk : activeAccount.vk,
-                search: searchQuery
+                accountToFetch,
+                search
             });
             Scroll.animateScroll.scrollToBottom();
         }
@@ -70,17 +68,32 @@ const OnTheRecord = React.createClass({
             activeLedger: ledger
         });
 
-        this.fetchAssetList(account);
+        this.fetchAssetList({
+            accountToFetch: account.vk,
+            search: this.state.search
+        });
     },
 
     handleLedgerChanges(changes) {
         console.log('incoming: ', changes);
-        this.fetchAssetList();
+        const { activeAccount, search } = this.state;
+
+        this.fetchAssetList({
+            accountToFetch: activeAccount.vk,
+            search
+        });
     },
 
     handleSearch(query) {
+        const { activeAccount } = this.state;
+
         this.setState({
-            searchQuery: query
+            search: query
+        });
+
+        this.fetchAssetList({
+            accountToFetch: activeAccount.vk,
+            search: query
         });
     },
 

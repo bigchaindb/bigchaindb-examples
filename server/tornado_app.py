@@ -31,16 +31,12 @@ def print_changes(db_table):
 
 def get_block_from_change(change, db_table):
     block = []
-    if db_table == 'backlog':
-        if change['old_val']:
-            block.append(change['old_val'])
-        elif change['new_val']:
-            block.append(change['new_val'])
-    elif db_table == 'bigchain':
-        if change['old_val']:
-            block = change['old_val']['block']['transactions']
-        elif change['new_val']:
-            block = change['new_val']['block']['transactions']
+    if db_table in ['backlog', 'bigchain'] and (change['old_val'] or change['new_val']):
+        block_data = change['old_val'] if change['old_val'] else change['new_val']
+        if db_table == 'bigchain':
+            block = block_data['block']['transactions']
+        else:
+            block.append(block_data)
     return block
 
 

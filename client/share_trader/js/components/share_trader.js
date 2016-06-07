@@ -35,7 +35,9 @@ const ShareTrader = React.createClass({
         AssetStore.listen(this.onChange);
         AccountStore.listen(this.onChange);
 
-        this.fetchAssetList();
+        this.fetchAssetList({
+            accountToFetch: null
+        });
     },
 
     componentWillUnmount() {
@@ -47,20 +49,11 @@ const ShareTrader = React.createClass({
         this.setState(state);
     },
 
-    fetchAssetList(account) {
+    fetchAssetList({ accountToFetch }) {
         AssetActions.flushAssetList();
-        const { activeAccount } = this.state;
-
-        /* fetch all assets */
-        let accountPublicKey = null;
-
-        if (account || activeAccount) {
-            accountPublicKey = account ? account.vk : activeAccount.vk;
-        }
-        accountPublicKey = account === null ? null : accountPublicKey;
 
         AssetActions.fetchAssetList({
-            accountToFetch: accountPublicKey
+            accountToFetch
         });
     },
 
@@ -76,11 +69,16 @@ const ShareTrader = React.createClass({
         if (ledger) {
             ledger.on('incoming', this.handleLedgerChanges);
         }
+        
         this.setState({
             activeAccount: account,
             activeLedger: ledger
         });
-        this.fetchAssetList(account);
+
+        const accountToFetch = account ? account.vk : null;
+        this.fetchAssetList({
+            accountToFetch
+        });
     },
 
     resetActiveAccount() {
@@ -89,7 +87,11 @@ const ShareTrader = React.createClass({
 
     handleLedgerChanges(changes) {
         console.log('incoming: ', changes);
-        this.fetchAssetList();
+        const { activeAccount } = this.state;
+
+        this.fetchAssetList({
+            accountToFetch: activeAccount.vk
+        });
     },
 
     handleAssetChange(asset) {

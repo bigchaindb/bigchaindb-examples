@@ -18,8 +18,7 @@ const Interledger = React.createClass({
             {
                 activeAccount: null,
                 activeAsset: null,
-                activeLedger: null,
-                search: null
+                activeLedger: null
             },
             assetStore
         );
@@ -27,7 +26,6 @@ const Interledger = React.createClass({
 
     componentDidMount() {
         AssetStore.listen(this.onChange);
-        this.fetchAssetList();
     },
 
     componentWillUnmount() {
@@ -39,12 +37,13 @@ const Interledger = React.createClass({
         this.setState(state);
     },
 
-    fetchAssetList() {
+    fetchAssetList({ accountToFetch }) {
         AssetActions.flushAssetList();
-        const { activeAccount, search } = this.state;
-        const accountToFetch = activeAccount ? activeAccount.vk : null;
-
-        AssetActions.fetchAssetList({ accountToFetch, search });
+        if (accountToFetch) {
+            AssetActions.fetchAssetList({
+                accountToFetch
+            });
+        }
     },
 
     disconnectLedger(ledger) {
@@ -52,28 +51,34 @@ const Interledger = React.createClass({
             ledger.disconnect();
         }
     },
-
-    handleLedgerChanges(changes) {
-        console.log('incoming: ', changes);
-        this.fetchAssetList();
-    },
-
+    
     handleAccountChange(account, ledger) {
         this.disconnectLedger(this.state.activeLedger);
-        ledger.on('incoming', this.handleLedgerChanges);
 
+        if (ledger) {
+            ledger.on('incoming', this.handleLedgerChanges);
+        }
         this.setState({
             activeAccount: account,
             activeLedger: ledger
         });
 
-        console.log('switched accounts:', account);
-        this.fetchAssetList(account);
+        const accountToFetch = account ? account.vk : null;
+        this.fetchAssetList({
+            accountToFetch
+        });
+    },
+    
+    resetActiveAccount() {
+        this.handleAccountChange(null, null);
     },
 
-    resetActiveAccount() {
-        this.setState({
-            activeAccount: null
+    handleLedgerChanges(changes) {
+        console.log('incoming: ', changes);
+        const { activeAccount } = this.state;
+
+        this.fetchAssetList({
+            accountToFetch: activeAccount.vk
         });
     },
 
