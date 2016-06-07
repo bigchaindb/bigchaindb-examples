@@ -1,3 +1,5 @@
+import functools
+
 from tornado import websocket, web, ioloop
 from tornado.gen import coroutine
 
@@ -13,30 +15,41 @@ r.set_loop_type("tornado")
 
 
 @coroutine
-def print_changes():
+def print_changes(db_table):
     conn = yield bigchain.conn
-    feed = yield r.table('backlog').changes().run(conn)
+    feed = yield r.table(db_table).changes().run(conn)
     while (yield feed.fetch_next()):
         change = yield feed.next()
-        tx = None
-        if change['old_val']:
-            tx = change['old_val']['transaction']
-        elif change['new_val']:
-            tx = change['new_val']['transaction']
+        block = get_block_from_change(change, db_table)
         for client in clients:
-            if tx:
-                msg_sent = False
-                for condition in tx['conditions']:
-                    if client.username in condition['new_owners']:
-                        client.write_message(change)
-                        msg_sent = True
-                        break
-                if msg_sent:
-                    continue
-                for fullfillment in tx['fulfillments']:
-                    if client.username in fullfillment['current_owners']:
-                        client.write_message(change)
-                        break
+            for tx in block:
+                if tx_contains_vk(tx['transaction'], client.username):
+                    client.write_message(change)
+                    break
+
+
+def get_block_from_change(change, db_table):
+    block = []
+    if db_table == 'backlog':
+        if change['old_val']:
+            block.append(change['old_val'])
+        elif change['new_val']:
+            block.append(change['new_val'])
+    elif db_table == 'bigchain':
+        if change['old_val']:
+            block = change['old_val']['block']['transactions']
+        elif change['new_val']:
+            block = change['new_val']['block']['transactions']
+    return block
+
+
+def tx_contains_vk(tx, vk):
+    for condition in tx['conditions']:
+        if vk in condition['new_owners']:
+            return True
+    for fullfillment in tx['fulfillments']:
+        if vk in fullfillment['current_owners']:
+            return True
 
 
 class ChangeFeedWebSocket(websocket.WebSocketHandler):
@@ -69,5 +82,7 @@ app = web.Application([
 
 if __name__ == '__main__':
     app.listen(8888)
-    ioloop.IOLoop.current().add_callback(print_changes)
+    ioloop.IOLoop.current().add_callback(functools.partial(print_changes, 'backlog'))
+    ioloop.IOLoop.current().add_callback(functools.partial(print_changes, 'bigchain'))
+
     ioloop.IOLoop.instance().start()
