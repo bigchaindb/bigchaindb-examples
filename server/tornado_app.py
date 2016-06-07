@@ -23,6 +23,7 @@ def print_changes(db_table):
         block = get_block_from_change(change, db_table)
         for client in clients:
             for tx in block:
+                # TODO: use REQL for filtering
                 if tx_contains_vk(tx['transaction'], client.username):
                     client.write_message(change)
                     break
@@ -74,13 +75,14 @@ class ChangeFeedWebSocket(websocket.WebSocketHandler):
                 print('ws: close (Pool: {} connections)'.format(len(clients)))
                 return
 
-
+# TODO: use split changefeed for backlog and bigchain
 app = web.Application([
     (r'/users/(.*)/changes', ChangeFeedWebSocket)
 ])
 
 if __name__ == '__main__':
     app.listen(8888)
+    # TODO: use split changefeed for backlog and bigchain
     ioloop.IOLoop.current().add_callback(functools.partial(print_changes, 'backlog'))
     ioloop.IOLoop.current().add_callback(functools.partial(print_changes, 'bigchain'))
 

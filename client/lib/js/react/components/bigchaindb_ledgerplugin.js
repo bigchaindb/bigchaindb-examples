@@ -112,8 +112,7 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
             throw new Error('Unable to determine current balance');
         }
         if (res && res.assets && res.assets.bigchain && res.assets.bigchain.length){
-            res = res.assets.bigchain.length;
-            return res;
+            return res.assets.bigchain.length;
         } else {
             throw new Error('Unable to determine current balance');
         }
