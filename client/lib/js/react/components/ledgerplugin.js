@@ -120,12 +120,28 @@ class BigchainDBLedger extends EventEmitter2 {
     getConnectors() {
     }
 
+    /*
+    Initiates a ledger-local transfer.
+     */
     send(transfer) {
         return co.wrap(this._send).call(this, transfer);
     }
 
     * _send(transfer) {
-        
+        let res;
+        try {
+            res = yield request('assets_escrow', {
+                method: 'POST',
+                jsonBody: payloadToPost,
+                urlTemplateSpec: {
+                    assetId: transfer.asset.id,
+                    cid: transfer.asset.cid
+                }
+            });
+        } catch (e) {
+            throw new Error('Unable to escrow transfer');
+        }
+        return res;
     }
 
     fulfillCondition() {

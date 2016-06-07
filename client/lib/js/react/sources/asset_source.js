@@ -64,6 +64,21 @@ const AssetSource = {
 
         success: AssetActions.successPostAsset,
         error: AssetActions.errorAsset
+    },
+    
+    escrowAsset: {
+        remote(state) {
+            const { idToTransfer: { cid, txid: assetId }, payloadToPost } = state.assetMeta;
+
+            return request('assets_escrow', {
+                method: 'POST',
+                jsonBody: payloadToPost,
+                urlTemplateSpec: { assetId, cid }
+            });
+        },
+
+        success: AssetActions.successPostAsset,
+        error: AssetActions.errorAsset
     }
 
 };

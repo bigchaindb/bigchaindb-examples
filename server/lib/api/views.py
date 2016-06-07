@@ -78,3 +78,21 @@ def transfer_asset(asset_id, cid):
                                sk=source['sk'])
 
     return flask.jsonify(**tx)
+
+
+@api_views.route('/assets/<asset_id>/<cid>/escrow/', methods=['POST'])
+def escrow_asset(asset_id, cid):
+    json_payload = request.get_json(force=True)
+    source = json_payload.pop('source')
+    to = json_payload.pop('to')
+
+    tx = assets.escrow_asset(bigchain=bigchain,
+                             source=source['vk'],
+                             to=to['vk'],
+                             asset_id={
+                                 'txid': asset_id,
+                                 'cid': int(cid)
+                             },
+                             sk=source['sk'])
+
+    return flask.jsonify(**tx)
