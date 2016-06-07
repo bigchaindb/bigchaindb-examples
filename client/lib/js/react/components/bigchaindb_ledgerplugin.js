@@ -1,12 +1,12 @@
-import co from 'co/';
+import co from 'co';
 
-import reconnectCore from 'reconnect-core/';
-import EventEmitter2 from 'eventemitter2/';
-import SimpleWebsocket from 'simple-websocket/';
+import reconnectCore from 'reconnect-core';
+import EventEmitter2 from 'eventemitter2';
+import SimpleWebsocket from 'simple-websocket';
 
 import request from '../../utils/request';
 
-class BigchainDBLedger extends EventEmitter2 {
+class BigchainDBLedgerPlugin extends EventEmitter2 {
 
     constructor(options) {
         super();
@@ -111,9 +111,12 @@ class BigchainDBLedger extends EventEmitter2 {
         } catch (e) {
             throw new Error('Unable to determine current balance');
         }
-        res = res.assets.bigchain.length;
-        console.log('balance: ', res);
-        return res;
+        if (res && res.assets && res.assets.bigchain && res.assets.bigchain.length){
+            res = res.assets.bigchain.length;
+            return res;
+        } else {
+            throw new Error('Unable to determine current balance');
+        }
     }
 
 
@@ -139,4 +142,4 @@ class BigchainDBLedger extends EventEmitter2 {
     }
 }
 
-export default BigchainDBLedger;
+export default BigchainDBLedgerPlugin;

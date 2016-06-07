@@ -1,13 +1,13 @@
-import React from 'react/';
+import React from 'react';
 
-import { Row } from 'react-bootstrap/lib/';
+import { Row } from 'react-bootstrap/lib';
 
-import classnames from 'classnames/';
+import classnames from 'classnames';
 
 import AccountActions from '../actions/account_actions';
 import AccountStore from '../stores/account_store';
 
-import BigchainDBLedger from './ledgerplugin';
+import BigchainDBLedgerPlugin from './bigchaindb_ledgerplugin';
 
 import Spinner from './spinner';
 
@@ -83,7 +83,7 @@ const AccountRow = React.createClass({
     
     connectToLedger() {
         const { account } = this.props;
-        return new BigchainDBLedger({
+        return new BigchainDBLedgerPlugin({
             auth: {
                 account: {
                     id: account.vk,

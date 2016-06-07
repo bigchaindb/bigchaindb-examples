@@ -11,7 +11,7 @@ clients = []
 bigchain = get_bigchain()
 
 # from http://blog.hiphipjorge.com/django-and-realtime-using-django-with-tornado-and-rethinkdb/
-r.set_loop_type("tornado")
+r.set_loop_type('tornado')
 
 
 @coroutine
@@ -59,19 +59,18 @@ class ChangeFeedWebSocket(websocket.WebSocketHandler):
         return True
 
     def open(self, username):
-        # self.stream.set_nodelay(True)
         if self not in clients:
             self.username = username
             clients.append(self)
         print('ws: open (Pool: {} connections)'.format(len(clients)))
 
     def on_message(self, message):
-        self.write_message(u"You said: " + message)
+        pass
 
     def on_close(self):
         for i, client in enumerate(clients):
             if client is self:
-                del clients[i]
+                clients.remove(self)
                 print('ws: close (Pool: {} connections)'.format(len(clients)))
                 return
 
