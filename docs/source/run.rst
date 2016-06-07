@@ -29,7 +29,7 @@ necessary)
 
 The Hard Way
 ------------
-Have three terminal shells (in ``bigchaindb-examples/``)
+Have four terminal shells (in ``bigchaindb-examples/``)
 
 Running the javascript client
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -58,6 +58,12 @@ In another terminal, launch the ``flask`` server
 .. code-block:: bash
 
     $ python3 -m server.app
+
+In (yet) another terminal, launch the ``tornado`` server
+
+.. code-block:: bash
+
+    $ python3 -m server.tornado_app
 
 You should be able to view the "On the record" app at
 `<http://localhost:8000/ontherecord/>`_, and the "Share Trader" app at
