@@ -21,6 +21,7 @@ const FLASK_BASE_URL = process.env.FLASK_HOST && process.env.FLASK_PORT &&
 const PATHS = {
     ON_THE_RECORD: path.resolve(__dirname, 'on_the_record/js/app.js'),
     SHARE_TRADER: path.resolve(__dirname, 'share_trader/js/app.js'),
+    INTERLEDGER: path.resolve(__dirname, 'interledger/js/app.js'),
 
     BUILD: path.resolve(__dirname, 'build'),
     DIST: path.resolve(__dirname, 'dist'),
@@ -33,11 +34,13 @@ const ENTRY = {
     // Use one entry per app
     ontherecord: PATHS.ON_THE_RECORD,
     sharetrader: PATHS.SHARE_TRADER,
+    interledger: PATHS.INTERLEDGER,
 };
 
 const ENTRY_NAMES = {
     ontherecord: 'On the Record',
     sharetrader: 'Share Trader',
+    interledger: 'Interledger',
 };
 
 

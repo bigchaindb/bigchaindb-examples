@@ -1,11 +1,13 @@
-import React from 'react/';
+import React from 'react';
 
-import { Row } from 'react-bootstrap/lib/';
+import { Row } from 'react-bootstrap/lib';
 
-import classnames from 'classnames/';
+import classnames from 'classnames';
 
 import AccountActions from '../actions/account_actions';
 import AccountStore from '../stores/account_store';
+
+import BigchainDBLedgerPlugin from './bigchaindb_ledgerplugin';
 
 import Spinner from './spinner';
 
@@ -29,17 +31,17 @@ const AccountList = React.createClass({
     componentWillUnmount() {
         AccountStore.unlisten(this.onChange);
     },
+    
+    onChange(state) {
+        this.setState(state);
+    },
 
     fetchAccountList() {
         const { appName } = this.props;
         AccountActions.flushAccountList();
         AccountActions.fetchAccountList({ app: appName });
     },
-
-    onChange(state) {
-        this.setState(state);
-    },
-
+    
     render() {
         const { activeAccount, className, handleAccountClick } = this.props;
         const { accountList } = this.state;
@@ -78,9 +80,27 @@ const AccountRow = React.createClass({
         activeAccount: React.PropTypes.object,
         handleClick: React.PropTypes.func
     },
-
+    
+    connectToLedger() {
+        const { account } = this.props;
+        return new BigchainDBLedgerPlugin({
+            auth: {
+                account: {
+                    id: account.vk,
+                    uri: 'ws://localhost:8888/users/' + account.vk
+                }
+            },
+        });
+    },
+    
     handleClick() {
-        this.props.handleClick(this.props.account);
+        const { account, handleClick } = this.props;
+        const ledger = this.connectToLedger(account);
+        ledger.connect().catch((err) => {
+            console.error((err && err.stack) ? err.stack : err);
+        });
+
+        handleClick(account, ledger);
     },
 
     render() {

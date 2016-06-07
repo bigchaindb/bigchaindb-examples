@@ -11,6 +11,7 @@ class AssetStore {
         this.assetList = null;
         this.assetMeta = {
             err: null,
+            isFetchingList: false,
             payloadToPost: null,
             idToFetch: null,
             idToTransfer: null,
@@ -38,9 +39,12 @@ class AssetStore {
     }
 
     onFetchAssetList({ accountToFetch, search }) {
-        this.assetMeta.accountToFetch = accountToFetch;
-        this.assetMeta.search = search;
-        this.getInstance().lookupAssetList();
+        if (!this.assetMeta.isFetchingList) {
+            this.assetMeta.accountToFetch = accountToFetch;
+            this.assetMeta.search = search;
+            this.assetMeta.isFetchingList = true;
+            this.getInstance().lookupAssetList();
+        }
     }
 
     onSuccessFetchAssetList(assetList) {
@@ -63,6 +67,7 @@ class AssetStore {
         } else {
             this.assetMeta.err = new Error('Problem fetching the asset list');
         }
+        this.assetMeta.isFetchingList = false;
     }
 
     onPostAsset(payloadToPost) {
@@ -93,10 +98,12 @@ class AssetStore {
         this.assetMeta.payloadToPost = null;
         this.assetMeta.idToFetch = null;
         this.assetMeta.search = null;
+        this.assetMeta.isFetchingList = false;
     }
 
     onErrorAsset(err) {
         this.assetMeta.err = err;
+        this.assetMeta.isFetchingList = false;
     }
 }
 

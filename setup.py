@@ -59,10 +59,11 @@ setup(
     packages=find_packages(exclude=['tests*']),
 
     install_requires=[
-        "BigchainDB==0.3.0",
+        "BigchainDB==0.4.0",
         "decorator==4.0.9",
         "flask==0.10.1",
         "flask-cors==2.1.2",
+        "tornado"
     ],
 
     setup_requires=['pytest-runner'],

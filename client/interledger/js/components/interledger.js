@@ -2,18 +2,14 @@ import React from 'react';
 
 import { Navbar } from 'react-bootstrap/lib';
 
-import Scroll from 'react-scroll';
-
 import { safeMerge } from 'js-utility-belt/es6';
 
 import AccountList from '../../../lib/js/react/components/accounts';
-import Assets from './assets';
-import Search from '../../../lib/js/react/components/search';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 import AssetStore from '../../../lib/js/react/stores/asset_store';
 
-const OnTheRecord = React.createClass({
+const Interledger = React.createClass({
 
     getInitialState() {
         const assetStore = AssetStore.getState();
@@ -21,8 +17,8 @@ const OnTheRecord = React.createClass({
         return safeMerge(
             {
                 activeAccount: null,
-                activeLedger: null,
-                search: null
+                activeAsset: null,
+                activeLedger: null
             },
             assetStore
         );
@@ -41,15 +37,12 @@ const OnTheRecord = React.createClass({
         this.setState(state);
     },
 
-    fetchAssetList({ accountToFetch, search }) {
+    fetchAssetList({ accountToFetch }) {
         AssetActions.flushAssetList();
-
         if (accountToFetch) {
             AssetActions.fetchAssetList({
-                accountToFetch,
-                search
+                accountToFetch
             });
-            Scroll.animateScroll.scrollToBottom();
         }
     },
 
@@ -58,82 +51,62 @@ const OnTheRecord = React.createClass({
             ledger.disconnect();
         }
     },
-
+    
     handleAccountChange(account, ledger) {
         this.disconnectLedger(this.state.activeLedger);
-        ledger.on('incoming', this.handleLedgerChanges);
 
+        if (ledger) {
+            ledger.on('incoming', this.handleLedgerChanges);
+        }
         this.setState({
             activeAccount: account,
             activeLedger: ledger
         });
 
+        const accountToFetch = account ? account.vk : null;
         this.fetchAssetList({
-            accountToFetch: account.vk,
-            search: this.state.search
+            accountToFetch
         });
+    },
+    
+    resetActiveAccount() {
+        this.handleAccountChange(null, null);
     },
 
     handleLedgerChanges(changes) {
         console.log('incoming: ', changes);
-        const { activeAccount, search } = this.state;
+        const { activeAccount } = this.state;
 
         this.fetchAssetList({
-            accountToFetch: activeAccount.vk,
-            search
+            accountToFetch: activeAccount.vk
         });
     },
 
-    handleSearch(query) {
-        const { activeAccount } = this.state;
-
+    setActiveAsset(asset) {
         this.setState({
-            search: query
-        });
-
-        this.fetchAssetList({
-            accountToFetch: activeAccount.vk,
-            search: query
+            activeAsset: asset
         });
     },
 
     render() {
-        const { activeAccount, assetList, assetMeta } = this.state;
-
-        let content = (
-            <div className="content-text">
-                Select account from the list...
-            </div>
-        );
-
-        if (activeAccount) {
-            content = (
-                <Assets
-                    activeAccount={activeAccount}
-                    assetList={assetList} />
-            );
-        }
+        const { activeAccount } = this.state;
 
         return (
             <div>
                 <Navbar fixedTop inverse>
-                    <h1 style={{ textAlign: 'center', color: 'white' }}>"On the Record"</h1>
+                    <h1 style={{ textAlign: 'center', color: 'white' }}>Interledger</h1>
                 </Navbar>
                 <div id="wrapper">
                     <div id="sidebar-wrapper">
                         <div className="sidebar-nav">
-                            <Search
-                                handleSearch={this.handleSearch}
-                                initialQuery={assetMeta.search} />
                             <AccountList
                                 activeAccount={activeAccount}
-                                appName="ontherecord"
+                                appName="interledger"
                                 handleAccountClick={this.handleAccountChange} />
                         </div>
                     </div>
                     <div id="page-content-wrapper">
                         <div className="page-content">
-                            {content}
                         </div>
                     </div>
                 </div>
@@ -142,5 +115,4 @@ const OnTheRecord = React.createClass({
     }
 });
 
-
-export default OnTheRecord;
+export default Interledger;

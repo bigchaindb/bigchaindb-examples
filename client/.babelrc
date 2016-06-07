@@ -5,7 +5,7 @@
         'transform-react-display-name',
         [ 'transform-runtime', {
             'polyfill': false,
-            'regenerator': false
+            'regenerator': true
         } ]
     ],
     'sourceMaps': true,
