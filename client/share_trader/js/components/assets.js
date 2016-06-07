@@ -37,7 +37,6 @@ const Assets = React.createClass({
                                 const active = (activeAsset) ? activeAsset.id === asset.id : false;
                                 const assetClass = assetClasses[asset.transaction.conditions[0]
                                                        .new_owners[0]];
-
                                 return (
                                     <AssetRow
                                         key={asset.id}

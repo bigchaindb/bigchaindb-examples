@@ -33,7 +33,7 @@ const Interledger = React.createClass({
 
     componentWillUnmount() {
         AssetStore.unlisten(this.onChange);
-        this.disconnectLedger(this.state.ledger);
+        this.disconnectLedger(this.state.activeLedger);
     },
 
     onChange(state) {
@@ -60,12 +60,12 @@ const Interledger = React.createClass({
     },
 
     handleAccountChange(account, ledger) {
-        this.disconnectLedger(this.state.ledger);
+        this.disconnectLedger(this.state.activeLedger);
         ledger.on('incoming', this.handleLedgerChanges);
 
         this.setState({
             activeAccount: account,
-            ledger
+            activeLedger: ledger
         });
 
         console.log('switched accounts:', account);

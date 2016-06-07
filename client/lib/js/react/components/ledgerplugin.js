@@ -4,6 +4,8 @@ import reconnectCore from 'reconnect-core/';
 import EventEmitter2 from 'eventemitter2/';
 import SimpleWebsocket from 'simple-websocket/';
 
+import request from '../../utils/request';
+
 class BigchainDBLedger extends EventEmitter2 {
 
     constructor(options) {
@@ -22,15 +24,14 @@ class BigchainDBLedger extends EventEmitter2 {
     }
 
     * _connect() {
-        const accountUri = this.credentials.account;
+        const accountUri = this.credentials.account.uri;
 
         if (this.connection) {
             console.warn('already connected, ignoring connection request');
             return Promise.resolve(null);
         }
 
-        console.log('connecting to account ' + accountUri);
-        const streamUri = accountUri;
+        const streamUri = accountUri + '/changes';
         console.log('subscribing to ' + streamUri);
 
         const reconnect = reconnectCore(() => {
@@ -83,17 +84,48 @@ class BigchainDBLedger extends EventEmitter2 {
         return this.connected;
     }
 
+    validateTransfer(transfer) {
+        // validator.validate('TransferTemplate', transfer)
+    }
 
     getInfo() {
     }
 
-    getBalance() {
+    getAccount() {
+        return this.credentials.account;
     }
+
+    getBalance() {
+        return co.wrap(this._getBalance).call(this);
+    }
+
+    * _getBalance() {
+        const creds = this.credentials;
+        let res;
+        try {
+            res = yield request('assets_for_account', {
+                urlTemplateSpec: {
+                    accountId: creds.account.id
+                }
+            });
+        } catch (e) {
+            throw new Error('Unable to determine current balance');
+        }
+        res = res.assets.bigchain.length;
+        console.log('balance: ', res);
+        return res;
+    }
+
 
     getConnectors() {
     }
 
-    send() {
+    send(transfer) {
+        return co.wrap(this._send).call(this, transfer);
+    }
+
+    * _send(transfer) {
+        
     }
 
     fulfillCondition() {

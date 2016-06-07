@@ -85,7 +85,10 @@ const AccountRow = React.createClass({
         const { account } = this.props;
         return new BigchainDBLedger({
             auth: {
-                account: 'ws://localhost:8888/users/' + account.vk + '/changes'
+                account: {
+                    id: account.vk,
+                    uri: 'ws://localhost:8888/users/' + account.vk
+                }
             },
         });
     },

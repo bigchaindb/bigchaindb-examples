@@ -21,8 +21,8 @@ const OnTheRecord = React.createClass({
         return safeMerge(
             {
                 activeAccount: null,
-                searchQuery: null,
-                ledger: null
+                activeLedger: null,
+                searchQuery: null
             },
             assetStore
         );
@@ -35,42 +35,44 @@ const OnTheRecord = React.createClass({
 
     componentWillUnmount() {
         AssetStore.unlisten(this.onChange);
-        this.disconnectLedger(this.state.ledger);
+        this.disconnectLedger(this.state.activeLedger);
     },
-    
+
     onChange(state) {
         this.setState(state);
     },
-    
+
     fetchAssetList(account) {
         AssetActions.flushAssetList();
         const { activeAccount, searchQuery } = this.state;
 
         if (account || activeAccount) {
-            AssetActions.fetchAssetList({ accountToFetch: account ? account.vk : activeAccount.vk, search: searchQuery });
+            AssetActions.fetchAssetList({
+                accountToFetch: account ? account.vk : activeAccount.vk,
+                search: searchQuery
+            });
             Scroll.animateScroll.scrollToBottom();
         }
     },
-    
+
     disconnectLedger(ledger) {
         if (ledger) {
             ledger.disconnect();
         }
     },
-    
+
     handleAccountChange(account, ledger) {
-        this.disconnectLedger(this.state.ledger);
+        this.disconnectLedger(this.state.activeLedger);
         ledger.on('incoming', this.handleLedgerChanges);
 
         this.setState({
             activeAccount: account,
-            ledger
+            activeLedger: ledger
         });
 
-        console.log('switched accounts:', account);
         this.fetchAssetList(account);
     },
-    
+
     handleLedgerChanges(changes) {
         console.log('incoming: ', changes);
         this.fetchAssetList();
