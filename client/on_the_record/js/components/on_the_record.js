@@ -1,6 +1,6 @@
-import React from 'react/';
+import React from 'react';
 
-import { Navbar } from 'react-bootstrap/lib/';
+import { Navbar } from 'react-bootstrap/lib';
 
 import Scroll from 'react-scroll';
 

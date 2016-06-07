@@ -1,11 +1,10 @@
-import React from 'react/';
+import React from 'react';
 
-import { Navbar, Row, Col, Button } from 'react-bootstrap/lib/';
+import { Navbar } from 'react-bootstrap/lib';
 
 import { safeMerge } from 'js-utility-belt/es6';
 
 import AccountList from '../../../lib/js/react/components/accounts';
-// import Assets from './assets';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 import AssetStore from '../../../lib/js/react/stores/asset_store';
@@ -20,7 +19,7 @@ const Interledger = React.createClass({
                 activeAccount: null,
                 activeAsset: null,
                 activeLedger: null,
-                searchQuery: null
+                search: null
             },
             assetStore
         );
@@ -42,10 +41,10 @@ const Interledger = React.createClass({
 
     fetchAssetList() {
         AssetActions.flushAssetList();
-        const { activeAccount, searchQuery } = this.state;
-        const accountPublicKey = activeAccount ? activeAccount.vk : null;
+        const { activeAccount, search } = this.state;
+        const accountToFetch = activeAccount ? activeAccount.vk : null;
 
-        AssetActions.fetchAssetList({ accountToFetch: accountPublicKey, search: searchQuery });
+        AssetActions.fetchAssetList({ accountToFetch, search });
     },
 
     disconnectLedger(ledger) {

@@ -11,7 +11,7 @@ clients = []
 bigchain = get_bigchain()
 
 # from http://blog.hiphipjorge.com/django-and-realtime-using-django-with-tornado-and-rethinkdb/
-r.set_loop_type("tornado")
+r.set_loop_type('tornado')
 
 
 @coroutine
@@ -23,6 +23,7 @@ def print_changes(db_table):
         block = get_block_from_change(change, db_table)
         for client in clients:
             for tx in block:
+                # TODO: use REQL for filtering
                 if tx_contains_vk(tx['transaction'], client.username):
                     client.write_message(change)
                     break
@@ -59,29 +60,29 @@ class ChangeFeedWebSocket(websocket.WebSocketHandler):
         return True
 
     def open(self, username):
-        # self.stream.set_nodelay(True)
         if self not in clients:
             self.username = username
             clients.append(self)
         print('ws: open (Pool: {} connections)'.format(len(clients)))
 
     def on_message(self, message):
-        self.write_message(u"You said: " + message)
+        pass
 
     def on_close(self):
         for i, client in enumerate(clients):
             if client is self:
-                del clients[i]
+                clients.remove(self)
                 print('ws: close (Pool: {} connections)'.format(len(clients)))
                 return
 
-
+# TODO: use split changefeed for backlog and bigchain
 app = web.Application([
     (r'/users/(.*)/changes', ChangeFeedWebSocket)
 ])
 
 if __name__ == '__main__':
     app.listen(8888)
+    # TODO: use split changefeed for backlog and bigchain
     ioloop.IOLoop.current().add_callback(functools.partial(print_changes, 'backlog'))
     ioloop.IOLoop.current().add_callback(functools.partial(print_changes, 'bigchain'))
 

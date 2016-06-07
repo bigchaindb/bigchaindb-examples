@@ -1,7 +1,7 @@
-import React from 'react/';
+import React from 'react';
 import classNames from 'classnames';
 
-import { Row, Button, Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap/lib/';
+import { Row, Button, Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap/lib';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 

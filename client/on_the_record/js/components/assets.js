@@ -1,6 +1,6 @@
-import React from 'react/';
+import React from 'react';
 
-import { Row, Glyphicon } from 'react-bootstrap/lib/';
+import { Row, Glyphicon } from 'react-bootstrap/lib';
 
 import Scroll from 'react-scroll';
 
