@@ -4,61 +4,20 @@ import { Navbar } from 'react-bootstrap/lib';
 
 import Scroll from 'react-scroll';
 
-import { safeMerge } from 'js-utility-belt/es6';
-
 import AccountList from '../../../lib/js/react/components/accounts';
 import AccountDetail from '../../../lib/js/react/components/account_detail';
 
 import Assets from './assets';
 import Search from '../../../lib/js/react/components/search';
 
-import AccountStore from '../../../lib/js/react/stores/account_store';
-
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
-import AssetStore from '../../../lib/js/react/stores/asset_store';
+
+import BigchainDBMixin from '../../../lib/js/react/mixins/bigchaindb_mixin';
+
 
 const OnTheRecord = React.createClass({
 
-    getInitialState() {
-        const accountStore = AccountStore.getState();
-        const assetStore = AssetStore.getState();
-
-        return safeMerge(
-            {
-                activeAccount: null,
-                search: null
-            },
-            accountStore,
-            assetStore
-        );
-    },
-
-    componentDidMount() {
-        AccountStore.listen(this.onAccountStoreChange);
-        AssetStore.listen(this.onChange);
-    },
-
-    componentWillUnmount() {
-        AccountStore.unlisten(this.onAccountStoreChange);
-        AssetStore.unlisten(this.onChange);
-    },
-
-    onChange(state) {
-        this.setState(state);
-    },
-
-    onAccountStoreChange(state) {
-        const oldAccountList = this.state.accountList;
-        state.accountList.forEach((account) => {
-            if (account.ledger &&
-                (!oldAccountList ||
-                 (oldAccountList && oldAccountList.indexOf(account) === -1))) {
-                account.ledger.on('incoming', this.handleLedgerChanges);
-            }
-        });
-
-        this.setState(state);
-    },
+    mixins: [BigchainDBMixin],
 
     fetchAssetList({ accountToFetch, search }) {
         if (accountToFetch) {
@@ -67,27 +26,12 @@ const OnTheRecord = React.createClass({
                 search,
                 blockWhenFetching: true
             });
+            Scroll.animateScroll.scrollToBottom();
         }
     },
 
-    handleAccountChange(account) {
-
-        this.setState({
-            activeAccount: account
-        });
-
-        Scroll.animateScroll.scrollToBottom();
-    },
-
-    handleLedgerChanges(changes) {
-        console.log('incoming: ', changes);
-        const { activeAccount, search } = this.state;
-
-        this.fetchAssetList({
-            accountToFetch: activeAccount.vk,
-            search
-        });
-        
+    handleAccountChangeAndScroll(account) {
+        this.handleAccountChange(account);
         Scroll.animateScroll.scrollToBottom();
     },
 
@@ -121,7 +65,7 @@ const OnTheRecord = React.createClass({
                             <AccountList
                                 activeAccount={activeAccount}
                                 appName="ontherecord"
-                                handleAccountClick={this.handleAccountChange} >
+                                handleAccountClick={this.handleAccountChangeAndScroll} >
                                 <AccountDetail />
                             </AccountList>
                         </div>

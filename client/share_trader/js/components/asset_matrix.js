@@ -98,7 +98,6 @@ const AssetMatrix = React.createClass({
         const y = parseInt(cellState.y, 10);
 
         const activeAsset = this.getAssetForCell(x, y);
-        console.log(activeAsset)
         handleAssetClick(activeAsset);
     },
 

@@ -4,7 +4,6 @@ import AccountActions from '../actions/account_actions';
 import AccountSource from '../sources/account_source';
 
 import AssetActions from '../actions/asset_actions';
-import AssetStore from './asset_store';
 
 import BigchainDBLedgerPlugin from '../components/bigchaindb_ledgerplugin';
 
@@ -27,7 +26,6 @@ class AccountStore {
         this.getInstance().lookupAccount();
     }
 
-
     onSuccessFetchAccount(account) {
         if (account) {
             account.ledger = this.connectToLedger(account);
@@ -44,7 +42,7 @@ class AccountStore {
         this.accountMeta.app = app;
         this.getInstance().lookupAccountList();
     }
-    
+
     onSuccessFetchAccountList(accountList) {
         if (accountList) {
             this.accountList = accountList.accounts.map((account) => {

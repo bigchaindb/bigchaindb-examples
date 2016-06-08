@@ -2,8 +2,6 @@ import React from 'react';
 
 import { Navbar, Row, Col, Button } from 'react-bootstrap/lib';
 
-import { safeMerge } from 'js-utility-belt/es6';
-
 import AccountList from '../../../lib/js/react/components/accounts';
 import AccountDetail from '../../../lib/js/react/components/account_detail';
 
@@ -11,85 +9,18 @@ import Assets from './assets';
 import AssetMatrix from './asset_matrix';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
-import AssetStore from '../../../lib/js/react/stores/asset_store';
 
-import AccountStore from '../../../lib/js/react/stores/account_store';
+import BigchainDBMixin from '../../../lib/js/react/mixins/bigchaindb_mixin';
 
 
 const ShareTrader = React.createClass({
 
-    getInitialState() {
-        const accountStore = AccountStore.getState();
-        const assetStore = AssetStore.getState();
-
-        return safeMerge(
-            {
-                activeAccount: null,
-                activeAsset: null
-            },
-            accountStore,
-            assetStore
-        );
-    },
-
-    componentDidMount() {
-        AccountStore.listen(this.onAccountStoreChange);
-        AssetStore.listen(this.onChange);
-    },
-
-    componentWillUnmount() {
-        AccountStore.unlisten(this.onAccountStoreChange);
-        AssetStore.unlisten(this.onChange);
-    },
-
-    onChange(state) {
-        this.setState(state);
-    },
-
-    onAccountStoreChange(state) {
-        const oldAccountList = this.state.accountList;
-        state.accountList.forEach((account) => {
-            if (account.ledger &&
-                (!oldAccountList ||
-                 (oldAccountList && oldAccountList.indexOf(account) === -1))) {
-                account.ledger.on('incoming', this.handleLedgerChanges);
-            }
-        });
-
-        this.setState(state);
-    },
-
+    mixins: [BigchainDBMixin],
 
     fetchAssetList({ accountToFetch }) {
         AssetActions.fetchAssetList({
             accountToFetch,
             blockWhenFetching: false
-        });
-    },
-
-    handleAccountChange(account) {
-        this.setState({
-            activeAccount: account
-        });
-    },
-
-    resetActiveAccount() {
-        this.handleAccountChange(null);
-    },
-
-    handleLedgerChanges(changes) {
-        console.log('incoming: ', changes);
-
-        if (changes && changes.client) {
-            this.fetchAssetList({
-                accountToFetch: changes.client
-            });
-        }
-    },
-
-    handleAssetChange(asset) {
-        this.setState({
-            activeAsset: asset
         });
     },
 
@@ -125,7 +56,7 @@ const ShareTrader = React.createClass({
         const assetListForAccount =
             activeAccount && Object.keys(assetList).indexOf(activeAccount.vk) > -1 ?
                 assetList[activeAccount.vk] : this.flattenAssetList(assetList);
-        
+
         return (
             <div>
                 <Navbar fixedTop inverse>
