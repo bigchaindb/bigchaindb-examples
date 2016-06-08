@@ -7,6 +7,8 @@ import Scroll from 'react-scroll';
 import { safeMerge } from 'js-utility-belt/es6';
 
 import AccountList from '../../../lib/js/react/components/accounts';
+import AccountRow from '../../../lib/js/react/components/account_row';
+
 import Assets from './assets';
 import Search from '../../../lib/js/react/components/search';
 
@@ -42,9 +44,8 @@ const OnTheRecord = React.createClass({
     },
 
     fetchAssetList({ accountToFetch, search }) {
-        AssetActions.flushAssetList();
-
         if (accountToFetch) {
+            AssetActions.flushAssetList(accountToFetch);
             AssetActions.fetchAssetList({
                 accountToFetch,
                 search
@@ -100,20 +101,6 @@ const OnTheRecord = React.createClass({
     render() {
         const { activeAccount, assetList, assetMeta } = this.state;
 
-        let content = (
-            <div className="content-text">
-                Select account from the list...
-            </div>
-        );
-
-        if (activeAccount) {
-            content = (
-                <Assets
-                    activeAccount={activeAccount}
-                    assetList={assetList} />
-            );
-        }
-
         return (
             <div>
                 <Navbar fixedTop inverse>
@@ -128,12 +115,16 @@ const OnTheRecord = React.createClass({
                             <AccountList
                                 activeAccount={activeAccount}
                                 appName="ontherecord"
-                                handleAccountClick={this.handleAccountChange} />
+                                handleAccountClick={this.handleAccountChange} >
+                                <AccountRow />
+                            </AccountList>
                         </div>
                     </div>
                     <div id="page-content-wrapper">
                         <div className="page-content">
-                            {content}
+                            <Assets
+                                activeAccount={activeAccount}
+                                assetList={assetList} />
                         </div>
                     </div>
                 </div>

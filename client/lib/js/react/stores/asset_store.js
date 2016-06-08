@@ -8,7 +8,7 @@ import AssetSource from '../sources/asset_source';
 class AssetStore {
     constructor() {
         this.asset = null;
-        this.assetList = null;
+        this.assetList = {};
         this.assetMeta = {
             err: null,
             isFetchingList: false,
@@ -50,23 +50,29 @@ class AssetStore {
     onSuccessFetchAssetList(assetList) {
         if (assetList) {
             const { assets } = assetList;
-
-            if (this.assetMeta.accountToFetch) {
-                if (assets && Object.keys(assets).indexOf('bigchain') > -1) {
-                    this.assetList = assets.bigchain.concat(assets.backlog);
+            const { accountToFetch } = this.assetMeta;
+            if (accountToFetch && assets) {
+                if (Object.keys(assets).indexOf('bigchain') > -1) {
+                    this.assetList[accountToFetch] = assets.bigchain.concat(assets.backlog);
+                } else if (accountToFetch === 'all') {
+                    this.assetList[accountToFetch] = assets.filter((asset) => (
+                        asset.transaction.data.payload.app === 'sharetrader'
+                    ));
                 }
-            } else {
-                this.assetList = assets.filter((asset) => (
-                    asset.transaction.data.payload.app === 'sharetrader'
-                ));
             }
 
             this.assetMeta.err = null;
             this.assetMeta.accountToFetch = null;
-            this.assetMeta.search = null;
         } else {
             this.assetMeta.err = new Error('Problem fetching the asset list');
         }
+        this.assetMeta.isFetchingList = false;
+    }
+    
+    onFlushAssetList(accountToFetch) {
+        this.assetList[accountToFetch] = [];
+        this.assetMeta.accountToFetch = null;
+        this.assetMeta.search = null;
         this.assetMeta.isFetchingList = false;
     }
 

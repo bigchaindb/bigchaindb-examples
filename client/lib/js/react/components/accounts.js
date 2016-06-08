@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { Row } from 'react-bootstrap/lib';
-
 import classnames from 'classnames';
 
 import AccountActions from '../actions/account_actions';
@@ -56,11 +54,13 @@ const AccountList = React.createClass({
                             return 0;
                         })
                         .map(account => (
-                            <AccountRow
+                            <AccountWrapper
                                 key={account.name}
                                 account={account}
                                 activeAccount={activeAccount}
-                                handleClick={handleAccountClick} />
+                                handleClick={handleAccountClick}>
+                                {this.props.children}
+                            </AccountWrapper>
                         ))}
                 </div>
             );
@@ -74,7 +74,7 @@ const AccountList = React.createClass({
     }
 });
 
-const AccountRow = React.createClass({
+const AccountWrapper = React.createClass({
     propTypes: {
         account: React.PropTypes.object,
         activeAccount: React.PropTypes.object,
@@ -104,24 +104,21 @@ const AccountRow = React.createClass({
     },
 
     render() {
-        const { account, activeAccount } = this.props;
+        const { account, activeAccount, children } = this.props;
 
+        const childrenWithProps = React.Children.map(children, (child) => {
+            return React.cloneElement(child, this.props);
+        });
         return (
             <div
                 className={classnames('list-row', { 'active': activeAccount === account })}
                 onClick={this.handleClick}
                 tabIndex={0} >
-                <Row>
-                    <div className="list-row-name">
-                        {account.name}
-                    </div>
-                    <div className="list-row-detail">
-                        {account.vk}
-                    </div>
-                </Row>
+                {childrenWithProps}
             </div>
         );
     }
 });
+
 
 export default AccountList;

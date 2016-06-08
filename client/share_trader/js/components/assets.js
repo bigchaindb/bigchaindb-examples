@@ -14,7 +14,7 @@ const Assets = React.createClass({
         activeAccount: React.PropTypes.object,
         activeAsset: React.PropTypes.object,
         assetClasses: React.PropTypes.object,
-        assetList: React.PropTypes.array,
+        assetList: React.PropTypes.object,
         handleAssetClick: React.PropTypes.func
     },
 
@@ -28,11 +28,12 @@ const Assets = React.createClass({
             handleAssetClick
         } = this.props;
 
-        if (assetList) {
-            if (assetList.length) {
+        if (assetList && Object.keys(assetList).indexOf(activeAccount.vk) > -1) {
+            const assetListForAccount = assetList[activeAccount.vk];
+            if (assetListForAccount.length) {
                 return (
                     <div>
-                        {assetList.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
+                        {assetListForAccount.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
                             .map((asset) => {
                                 const active = (activeAsset) ? activeAsset.id === asset.id : false;
                                 const assetClass = assetClasses[asset.transaction.conditions[0]
@@ -125,7 +126,7 @@ const AssetRow = React.createClass({
                                                             : <Glyphicon glyph="ok" />;
 
         let actionsPanel = null;
-        if (active && activeAccount && accountList && !transfered) {
+        if (active && activeAccount && activeAccount.vk !== 'all' && accountList && !transfered) {
             actionsPanel = (
                 <AssetActionPanel
                     accountList={accountList}

@@ -13,7 +13,7 @@ const Assets = React.createClass({
 
     propTypes: {
         activeAccount: React.PropTypes.object,
-        assetList: React.PropTypes.array
+        assetList: React.PropTypes.object
     },
 
     getInitialState() {
@@ -38,12 +38,21 @@ const Assets = React.createClass({
     },
 
     render() {
-        const { assetList } = this.props;
+        const { activeAccount, assetList } = this.props;
         const { value } = this.state;
 
+        if (!activeAccount) {
+            return (
+                <div className="content-text">
+                    Select account from the list...
+                </div>
+            );
+        }
         return (
             <div>
-                <AssetHistory assetList={assetList} />
+                <AssetHistory
+                    activeAccount={activeAccount}
+                    assetList={assetList} />
                 <form onSubmit={this.handleInputSubmit}>
                     <input
                         autoFocus
@@ -60,20 +69,24 @@ const Assets = React.createClass({
 
 const AssetHistory = React.createClass({
     propTypes: {
-        assetList: React.PropTypes.array
+        activeAccount: React.PropTypes.object,
+        assetList: React.PropTypes.object
     },
 
     render() {
-        const { assetList } = this.props;
+        const { activeAccount, assetList } = this.props;
 
-        if (assetList) {
-            if (assetList.length) {
+        if (assetList && Object.keys(assetList).indexOf(activeAccount.vk) > -1) {
+            const assetListForAccount = assetList[activeAccount.vk];
+            if (assetListForAccount.length) {
                 return (
                     <div>
-                        {assetList
+                        {assetListForAccount
                             .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
                             .map(asset => (
-                                <AssetRow key={asset.id} asset={asset} />
+                                <AssetRow
+                                    key={asset.id}
+                                    asset={asset} />
                             ))}
                     </div>
                 );

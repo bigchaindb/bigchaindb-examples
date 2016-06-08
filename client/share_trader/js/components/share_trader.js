@@ -5,6 +5,8 @@ import { Navbar, Row, Col, Button } from 'react-bootstrap/lib';
 import { safeMerge } from 'js-utility-belt/es6';
 
 import AccountList from '../../../lib/js/react/components/accounts';
+import AccountRow from '../../../lib/js/react/components/account_row';
+
 import Assets from './assets';
 import AssetMatrix from './asset_matrix';
 
@@ -22,7 +24,9 @@ const ShareTrader = React.createClass({
 
         return safeMerge(
             {
-                activeAccount: null,
+                activeAccount: {
+                    vk: 'all'
+                },
                 activeAsset: null,
                 activeLedger: null
             },
@@ -36,7 +40,7 @@ const ShareTrader = React.createClass({
         AccountStore.listen(this.onChange);
 
         this.fetchAssetList({
-            accountToFetch: null
+            accountToFetch: 'all'
         });
     },
 
@@ -50,7 +54,7 @@ const ShareTrader = React.createClass({
     },
 
     fetchAssetList({ accountToFetch }) {
-        AssetActions.flushAssetList();
+        // AssetActions.flushAssetList(accountToFetch);
 
         AssetActions.fetchAssetList({
             accountToFetch
@@ -82,7 +86,7 @@ const ShareTrader = React.createClass({
     },
 
     resetActiveAccount() {
-        this.handleAccountChange(null, null);
+        this.handleAccountChange({ vk: 'all' }, null);
     },
 
     handleLedgerChanges(changes) {
@@ -135,10 +139,13 @@ const ShareTrader = React.createClass({
                                     Select All
                                 </Button>
                             </div>
+                            <br />
                             <AccountList
                                 activeAccount={activeAccount}
                                 appName="sharetrader"
-                                handleAccountClick={this.handleAccountChange} />
+                                handleAccountClick={this.handleAccountChange}>
+                                <AccountRow />
+                            </AccountList>
                         </div>
                     </div>
                     <div id="page-content-wrapper">
@@ -148,6 +155,7 @@ const ShareTrader = React.createClass({
                                     <div className="vertical-align-outer">
                                         <div className="vertical-align-inner">
                                             <AssetMatrix
+                                                activeAccount={activeAccount}
                                                 cols={8}
                                                 handleAssetClick={this.handleAssetChange}
                                                 rows={8}
