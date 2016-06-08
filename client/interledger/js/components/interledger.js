@@ -5,6 +5,7 @@ import { Navbar } from 'react-bootstrap/lib';
 import { safeMerge } from 'js-utility-belt/es6';
 
 import AccountList from '../../../lib/js/react/components/accounts';
+import AccountDetail from './account_detail';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 import AssetStore from '../../../lib/js/react/stores/asset_store';
@@ -17,8 +18,7 @@ const Interledger = React.createClass({
         return safeMerge(
             {
                 activeAccount: null,
-                activeAsset: null,
-                activeLedger: null
+                activeAsset: null
             },
             assetStore
         );
@@ -38,29 +38,19 @@ const Interledger = React.createClass({
     },
 
     fetchAssetList({ accountToFetch }) {
-        AssetActions.flushAssetList();
         if (accountToFetch) {
             AssetActions.fetchAssetList({
                 accountToFetch
             });
         }
     },
-
-    disconnectLedger(ledger) {
-        if (ledger) {
-            ledger.disconnect();
-        }
-    },
     
-    handleAccountChange(account, ledger) {
-        this.disconnectLedger(this.state.activeLedger);
-
-        if (ledger) {
-            ledger.on('incoming', this.handleLedgerChanges);
+    handleAccountChange(account) {
+        if (account.ledger) {
+            account.ledger.on('incoming', this.handleLedgerChanges);
         }
         this.setState({
-            activeAccount: account,
-            activeLedger: ledger
+            activeAccount: account
         });
 
         const accountToFetch = account ? account.vk : null;
@@ -89,7 +79,7 @@ const Interledger = React.createClass({
     },
 
     render() {
-        const { activeAccount } = this.state;
+        const { activeAccount, assetList } = this.state;
 
         return (
             <div>
@@ -97,16 +87,16 @@ const Interledger = React.createClass({
                     <h1 style={{ textAlign: 'center', color: 'white' }}>Interledger</h1>
                 </Navbar>
                 <div id="wrapper">
-                    <div id="sidebar-wrapper">
-                        <div className="sidebar-nav">
+                    <div id="page-content-wrapper">
+                        <div className="page-content">
                             <AccountList
                                 activeAccount={activeAccount}
                                 appName="interledger"
-                                handleAccountClick={this.handleAccountChange} />
-                        </div>
-                    </div>
-                    <div id="page-content-wrapper">
-                        <div className="page-content">
+                                className="row"
+                                handleAccountClick={this.handleAccountChange} >
+                                <AccountDetail
+                                    assetList={assetList} />
+                            </AccountList>
                         </div>
                     </div>
                 </div>

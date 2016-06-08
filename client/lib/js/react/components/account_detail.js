@@ -1,19 +1,23 @@
 import React from 'react';
 
+import classnames from 'classnames';
 import { Row } from 'react-bootstrap/lib';
 
 
-const AccountRow = React.createClass({
+const AccountDetail = React.createClass({
     propTypes: {
         account: React.PropTypes.object,
-        activeAccount: React.PropTypes.object
+        activeAccount: React.PropTypes.object,
+        handleClick: React.PropTypes.func
     },
 
     render() {
-        const { account, activeAccount } = this.props;
+        const { account, activeAccount, handleClick } = this.props;
 
         return (
-            <Row>
+            <Row
+                className={classnames('list-row', { 'active': activeAccount === account })}
+                onClick={handleClick}>
                 <div className="list-row-name">
                     {account.name}
                 </div>
@@ -25,4 +29,4 @@ const AccountRow = React.createClass({
     }
 });
 
-export default AccountRow;
+export default AccountDetail;

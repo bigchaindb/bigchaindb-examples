@@ -7,7 +7,7 @@ import Scroll from 'react-scroll';
 import { safeMerge } from 'js-utility-belt/es6';
 
 import AccountList from '../../../lib/js/react/components/accounts';
-import AccountRow from '../../../lib/js/react/components/account_row';
+import AccountDetail from '../../../lib/js/react/components/account_detail';
 
 import Assets from './assets';
 import Search from '../../../lib/js/react/components/search';
@@ -36,7 +36,6 @@ const OnTheRecord = React.createClass({
 
     componentWillUnmount() {
         AssetStore.unlisten(this.onChange);
-        this.disconnectLedger(this.state.activeLedger);
     },
 
     onChange(state) {
@@ -45,7 +44,6 @@ const OnTheRecord = React.createClass({
 
     fetchAssetList({ accountToFetch, search }) {
         if (accountToFetch) {
-            AssetActions.flushAssetList(accountToFetch);
             AssetActions.fetchAssetList({
                 accountToFetch,
                 search
@@ -54,19 +52,11 @@ const OnTheRecord = React.createClass({
         }
     },
 
-    disconnectLedger(ledger) {
-        if (ledger) {
-            ledger.disconnect();
-        }
-    },
-
-    handleAccountChange(account, ledger) {
-        this.disconnectLedger(this.state.activeLedger);
-        ledger.on('incoming', this.handleLedgerChanges);
+    handleAccountChange(account) {
+        account.ledger.on('incoming', this.handleLedgerChanges);
 
         this.setState({
-            activeAccount: account,
-            activeLedger: ledger
+            activeAccount: account
         });
 
         this.fetchAssetList({
@@ -116,7 +106,7 @@ const OnTheRecord = React.createClass({
                                 activeAccount={activeAccount}
                                 appName="ontherecord"
                                 handleAccountClick={this.handleAccountChange} >
-                                <AccountRow />
+                                <AccountDetail />
                             </AccountList>
                         </div>
                     </div>

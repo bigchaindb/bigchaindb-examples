@@ -29,7 +29,7 @@ const AccountList = React.createClass({
     componentWillUnmount() {
         AccountStore.unlisten(this.onChange);
     },
-    
+
     onChange(state) {
         this.setState(state);
     },
@@ -39,7 +39,7 @@ const AccountList = React.createClass({
         AccountActions.flushAccountList();
         AccountActions.fetchAccountList({ app: appName });
     },
-    
+
     render() {
         const { activeAccount, className, handleAccountClick } = this.props;
         const { accountList } = this.state;
@@ -81,40 +81,26 @@ const AccountWrapper = React.createClass({
         handleClick: React.PropTypes.func
     },
     
-    connectToLedger() {
-        const { account } = this.props;
-        return new BigchainDBLedgerPlugin({
-            auth: {
-                account: {
-                    id: account.vk,
-                    uri: 'ws://localhost:8888/users/' + account.vk
-                }
-            },
-        });
-    },
-    
     handleClick() {
         const { account, handleClick } = this.props;
-        const ledger = this.connectToLedger(account);
-        ledger.connect().catch((err) => {
-            console.error((err && err.stack) ? err.stack : err);
-        });
-
-        handleClick(account, ledger);
+        handleClick(account);
     },
 
     render() {
         const { account, activeAccount, children } = this.props;
 
-        const childrenWithProps = React.Children.map(children, (child) => {
-            return React.cloneElement(child, this.props);
-        });
         return (
-            <div
-                className={classnames('list-row', { 'active': activeAccount === account })}
-                onClick={this.handleClick}
-                tabIndex={0} >
-                {childrenWithProps}
+            <div>
+                {
+                    React.Children.map(children, (child) => {
+                        return React.cloneElement(child, {
+                            account,
+                            activeAccount,
+                            handleClick: this.handleClick
+                        });
+
+                    })
+                }
             </div>
         );
     }

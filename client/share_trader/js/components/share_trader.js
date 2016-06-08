@@ -5,7 +5,7 @@ import { Navbar, Row, Col, Button } from 'react-bootstrap/lib';
 import { safeMerge } from 'js-utility-belt/es6';
 
 import AccountList from '../../../lib/js/react/components/accounts';
-import AccountRow from '../../../lib/js/react/components/account_row';
+import AccountDetail from '../../../lib/js/react/components/account_detail';
 
 import Assets from './assets';
 import AssetMatrix from './asset_matrix';
@@ -27,8 +27,7 @@ const ShareTrader = React.createClass({
                 activeAccount: {
                     vk: 'all'
                 },
-                activeAsset: null,
-                activeLedger: null
+                activeAsset: null
             },
             assetStore,
             accountStore
@@ -54,29 +53,19 @@ const ShareTrader = React.createClass({
     },
 
     fetchAssetList({ accountToFetch }) {
-        // AssetActions.flushAssetList(accountToFetch);
-
         AssetActions.fetchAssetList({
             accountToFetch
         });
     },
 
-    disconnectLedger(ledger) {
-        if (ledger) {
-            ledger.disconnect();
-        }
-    },
 
-    handleAccountChange(account, ledger) {
-        this.disconnectLedger(this.state.activeLedger);
-
-        if (ledger) {
-            ledger.on('incoming', this.handleLedgerChanges);
+    handleAccountChange(account) {
+        if (account.ledger) {
+            account.ledger.on('incoming', this.handleLedgerChanges);
         }
         
         this.setState({
-            activeAccount: account,
-            activeLedger: ledger
+            activeAccount: account
         });
 
         const accountToFetch = account ? account.vk : null;
@@ -144,7 +133,7 @@ const ShareTrader = React.createClass({
                                 activeAccount={activeAccount}
                                 appName="sharetrader"
                                 handleAccountClick={this.handleAccountChange}>
-                                <AccountRow />
+                                <AccountDetail />
                             </AccountList>
                         </div>
                     </div>
