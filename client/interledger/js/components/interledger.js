@@ -5,40 +5,18 @@ import { Navbar } from 'react-bootstrap/lib';
 import { safeMerge } from 'js-utility-belt/es6';
 
 import AccountList from '../../../lib/js/react/components/accounts';
+import AccountDetail from './account_detail';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
-import AssetStore from '../../../lib/js/react/stores/asset_store';
+
+import BigchainDBMixin from '../../../lib/js/react/mixins/bigchaindb_mixin';
+
 
 const Interledger = React.createClass({
 
-    getInitialState() {
-        const assetStore = AssetStore.getState();
-
-        return safeMerge(
-            {
-                activeAccount: null,
-                activeAsset: null,
-                activeLedger: null
-            },
-            assetStore
-        );
-    },
-
-    componentDidMount() {
-        AssetStore.listen(this.onChange);
-    },
-
-    componentWillUnmount() {
-        AssetStore.unlisten(this.onChange);
-        this.disconnectLedger(this.state.activeLedger);
-    },
-
-    onChange(state) {
-        this.setState(state);
-    },
+    mixins: [BigchainDBMixin],
 
     fetchAssetList({ accountToFetch }) {
-        AssetActions.flushAssetList();
         if (accountToFetch) {
             AssetActions.fetchAssetList({
                 accountToFetch
@@ -46,50 +24,8 @@ const Interledger = React.createClass({
         }
     },
 
-    disconnectLedger(ledger) {
-        if (ledger) {
-            ledger.disconnect();
-        }
-    },
-    
-    handleAccountChange(account, ledger) {
-        this.disconnectLedger(this.state.activeLedger);
-
-        if (ledger) {
-            ledger.on('incoming', this.handleLedgerChanges);
-        }
-        this.setState({
-            activeAccount: account,
-            activeLedger: ledger
-        });
-
-        const accountToFetch = account ? account.vk : null;
-        this.fetchAssetList({
-            accountToFetch
-        });
-    },
-    
-    resetActiveAccount() {
-        this.handleAccountChange(null, null);
-    },
-
-    handleLedgerChanges(changes) {
-        console.log('incoming: ', changes);
-        const { activeAccount } = this.state;
-
-        this.fetchAssetList({
-            accountToFetch: activeAccount.vk
-        });
-    },
-
-    setActiveAsset(asset) {
-        this.setState({
-            activeAsset: asset
-        });
-    },
-
     render() {
-        const { activeAccount } = this.state;
+        const { activeAccount, assetList } = this.state;
 
         return (
             <div>
@@ -97,16 +33,16 @@ const Interledger = React.createClass({
                     <h1 style={{ textAlign: 'center', color: 'white' }}>Interledger</h1>
                 </Navbar>
                 <div id="wrapper">
-                    <div id="sidebar-wrapper">
-                        <div className="sidebar-nav">
+                    <div id="page-content-wrapper">
+                        <div className="page-content">
                             <AccountList
                                 activeAccount={activeAccount}
                                 appName="interledger"
-                                handleAccountClick={this.handleAccountChange} />
-                        </div>
-                    </div>
-                    <div id="page-content-wrapper">
-                        <div className="page-content">
+                                className="row"
+                                handleAccountClick={this.handleAccountChange} >
+                                <AccountDetail
+                                    assetList={assetList} />
+                            </AccountList>
                         </div>
                     </div>
                 </div>

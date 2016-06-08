@@ -2,101 +2,25 @@ import React from 'react';
 
 import { Navbar, Row, Col, Button } from 'react-bootstrap/lib';
 
-import { safeMerge } from 'js-utility-belt/es6';
-
 import AccountList from '../../../lib/js/react/components/accounts';
+import AccountDetail from '../../../lib/js/react/components/account_detail';
+
 import Assets from './assets';
 import AssetMatrix from './asset_matrix';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
-import AssetStore from '../../../lib/js/react/stores/asset_store';
 
-import AccountStore from '../../../lib/js/react/stores/account_store';
+import BigchainDBMixin from '../../../lib/js/react/mixins/bigchaindb_mixin';
 
 
 const ShareTrader = React.createClass({
 
-    getInitialState() {
-        const assetStore = AssetStore.getState();
-        const accountStore = AccountStore.getState();
-
-        return safeMerge(
-            {
-                activeAccount: null,
-                activeAsset: null,
-                activeLedger: null
-            },
-            assetStore,
-            accountStore
-        );
-    },
-
-    componentDidMount() {
-        AssetStore.listen(this.onChange);
-        AccountStore.listen(this.onChange);
-
-        this.fetchAssetList({
-            accountToFetch: null
-        });
-    },
-
-    componentWillUnmount() {
-        AssetStore.unlisten(this.onChange);
-        AccountStore.unlisten(this.onChange);
-    },
-
-    onChange(state) {
-        this.setState(state);
-    },
+    mixins: [BigchainDBMixin],
 
     fetchAssetList({ accountToFetch }) {
-        AssetActions.flushAssetList();
-
         AssetActions.fetchAssetList({
-            accountToFetch
-        });
-    },
-
-    disconnectLedger(ledger) {
-        if (ledger) {
-            ledger.disconnect();
-        }
-    },
-
-    handleAccountChange(account, ledger) {
-        this.disconnectLedger(this.state.activeLedger);
-
-        if (ledger) {
-            ledger.on('incoming', this.handleLedgerChanges);
-        }
-        
-        this.setState({
-            activeAccount: account,
-            activeLedger: ledger
-        });
-
-        const accountToFetch = account ? account.vk : null;
-        this.fetchAssetList({
-            accountToFetch
-        });
-    },
-
-    resetActiveAccount() {
-        this.handleAccountChange(null, null);
-    },
-
-    handleLedgerChanges(changes) {
-        console.log('incoming: ', changes);
-        const { activeAccount } = this.state;
-
-        this.fetchAssetList({
-            accountToFetch: activeAccount.vk
-        });
-    },
-
-    handleAssetChange(asset) {
-        this.setState({
-            activeAsset: asset
+            accountToFetch,
+            blockWhenFetching: false
         });
     },
 
@@ -116,10 +40,22 @@ const ShareTrader = React.createClass({
         return states;
     },
 
+    flattenAssetList(assetList) {
+        let flattenedAssetList = [];
+        Object.keys(assetList).forEach((account) => {
+            flattenedAssetList = flattenedAssetList.concat(
+                assetList[account]
+            );
+        });
+        return flattenedAssetList;
+    },
 
     render() {
         const { activeAccount, accountList, activeAsset, assetList } = this.state;
         const states = this.mapAccountsOnStates(accountList);
+        const assetListForAccount =
+            activeAccount && Object.keys(assetList).indexOf(activeAccount.vk) > -1 ?
+                assetList[activeAccount.vk] : this.flattenAssetList(assetList);
 
         return (
             <div>
@@ -135,10 +71,13 @@ const ShareTrader = React.createClass({
                                     Select All
                                 </Button>
                             </div>
+                            <br />
                             <AccountList
                                 activeAccount={activeAccount}
                                 appName="sharetrader"
-                                handleAccountClick={this.handleAccountChange} />
+                                handleAccountClick={this.handleAccountChange}>
+                                <AccountDetail />
+                            </AccountList>
                         </div>
                     </div>
                     <div id="page-content-wrapper">
@@ -148,6 +87,7 @@ const ShareTrader = React.createClass({
                                     <div className="vertical-align-outer">
                                         <div className="vertical-align-inner">
                                             <AssetMatrix
+                                                assetList={assetListForAccount}
                                                 cols={8}
                                                 handleAssetClick={this.handleAssetChange}
                                                 rows={8}
@@ -161,7 +101,7 @@ const ShareTrader = React.createClass({
                                         activeAccount={activeAccount}
                                         activeAsset={activeAsset}
                                         assetClasses={states}
-                                        assetList={assetList}
+                                        assetList={assetListForAccount}
                                         handleAssetClick={this.handleAssetChange} />
                                 </Col>
                             </Row>

@@ -21,16 +21,16 @@ const AssetSource = {
     lookupAssetList: {
         remote(state) {
             const { accountToFetch, search } = state.assetMeta;
-            if (accountToFetch) {
+            if (accountToFetch === 'all') {
+                return request('assets', {
+                    query: { search }
+                });
+            } else {
                 return request('assets_for_account', {
                     query: { search },
                     urlTemplateSpec: {
                         accountId: accountToFetch
                     }
-                });
-            } else {
-                return request('assets', {
-                    query: { search }
                 });
             }
         },
@@ -56,6 +56,21 @@ const AssetSource = {
             const { idToTransfer: { cid, txid: assetId }, payloadToPost } = state.assetMeta;
 
             return request('assets_transfer', {
+                method: 'POST',
+                jsonBody: payloadToPost,
+                urlTemplateSpec: { assetId, cid }
+            });
+        },
+
+        success: AssetActions.successPostAsset,
+        error: AssetActions.errorAsset
+    },
+    
+    escrowAsset: {
+        remote(state) {
+            const { idToTransfer: { cid, txid: assetId }, payloadToPost } = state.assetMeta;
+
+            return request('assets_escrow', {
                 method: 'POST',
                 jsonBody: payloadToPost,
                 urlTemplateSpec: { assetId, cid }

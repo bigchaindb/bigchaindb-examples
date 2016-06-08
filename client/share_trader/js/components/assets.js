@@ -14,7 +14,10 @@ const Assets = React.createClass({
         activeAccount: React.PropTypes.object,
         activeAsset: React.PropTypes.object,
         assetClasses: React.PropTypes.object,
-        assetList: React.PropTypes.array,
+        assetList: React.PropTypes.oneOfType([
+            React.PropTypes.object,
+            React.PropTypes.array
+        ]),
         handleAssetClick: React.PropTypes.func
     },
 
@@ -27,36 +30,28 @@ const Assets = React.createClass({
             assetClasses,
             handleAssetClick
         } = this.props;
-
-        if (assetList) {
-            if (assetList.length) {
-                return (
-                    <div>
-                        {assetList.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
-                            .map((asset) => {
-                                const active = (activeAsset) ? activeAsset.id === asset.id : false;
-                                const assetClass = assetClasses[asset.transaction.conditions[0]
-                                                       .new_owners[0]];
-                                return (
-                                    <AssetRow
-                                        key={asset.id}
-                                        accountList={active ? accountList : null}
-                                        active={active}
-                                        activeAccount={active ? activeAccount : null}
-                                        asset={asset}
-                                        assetClass={assetClass}
-                                        handleAssetClick={handleAssetClick} />
-                                );
-                            })}
-                    </div>
-                );
-            } else {
-                return (
-                    <div className="content-text">
-                        No shares found on BigchainDB. Start trading...
-                    </div>
-                );
-            }
+        
+        if (assetList && assetList.length) {
+            return (
+                <div>
+                    {assetList.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
+                        .map((asset) => {
+                            const active = (activeAsset) ? activeAsset.id === asset.id : false;
+                            const assetClass = assetClasses[asset.transaction.conditions[0]
+                                                   .new_owners[0]];
+                            return (
+                                <AssetRow
+                                    key={asset.id}
+                                    accountList={active ? accountList : null}
+                                    active={active}
+                                    activeAccount={active ? activeAccount : null}
+                                    asset={asset}
+                                    assetClass={assetClass}
+                                    handleAssetClick={handleAssetClick} />
+                            );
+                        })}
+                </div>
+            );
         } else {
             return (
                 <div style={{ margin: '2em' }}>
@@ -125,7 +120,7 @@ const AssetRow = React.createClass({
                                                             : <Glyphicon glyph="ok" />;
 
         let actionsPanel = null;
-        if (active && activeAccount && accountList && !transfered) {
+        if (active && activeAccount && activeAccount.vk !== 'all' && accountList && !transfered) {
             actionsPanel = (
                 <AssetActionPanel
                     accountList={accountList}

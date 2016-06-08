@@ -1,9 +1,11 @@
 import alt from '../alt';
 
 import AccountActions from '../actions/account_actions';
-
 import AccountSource from '../sources/account_source';
 
+import AssetActions from '../actions/asset_actions';
+
+import BigchainDBLedgerPlugin from '../components/bigchaindb_ledgerplugin';
 
 class AccountStore {
     constructor() {
@@ -26,6 +28,7 @@ class AccountStore {
 
     onSuccessFetchAccount(account) {
         if (account) {
+            account.ledger = this.connectToLedger(account);
             this.account = account;
             this.accountMeta.err = null;
             this.accountMeta.idToFetch = null;
@@ -42,12 +45,34 @@ class AccountStore {
 
     onSuccessFetchAccountList(accountList) {
         if (accountList) {
-            this.accountList = accountList.accounts;
+            this.accountList = accountList.accounts.map((account) => {
+                account.ledger = this.connectToLedger(account);
+                AssetActions.fetchAssetList.defer({
+                    accountToFetch: account.vk
+                });
+                return account;
+            });
             this.accountMeta.err = null;
             this.accountMeta.app = null;
         } else {
             this.accountMeta.err = new Error('Problem fetching the account list');
         }
+    }
+
+    connectToLedger(account) {
+        const ledger = new BigchainDBLedgerPlugin({
+            auth: {
+                account: {
+                    id: account.vk,
+                    uri: 'ws://localhost:8888/users/' + account.vk
+                }
+            },
+        });
+
+        ledger.connect().catch((err) => {
+            console.error((err && err.stack) ? err.stack : err);
+        });
+        return ledger;
     }
 
     onPostAccount(payloadToPost) {

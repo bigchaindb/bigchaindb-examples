@@ -4,84 +4,35 @@ import { Navbar } from 'react-bootstrap/lib';
 
 import Scroll from 'react-scroll';
 
-import { safeMerge } from 'js-utility-belt/es6';
-
 import AccountList from '../../../lib/js/react/components/accounts';
+import AccountDetail from '../../../lib/js/react/components/account_detail';
+
 import Assets from './assets';
 import Search from '../../../lib/js/react/components/search';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
-import AssetStore from '../../../lib/js/react/stores/asset_store';
+
+import BigchainDBMixin from '../../../lib/js/react/mixins/bigchaindb_mixin';
+
 
 const OnTheRecord = React.createClass({
 
-    getInitialState() {
-        const assetStore = AssetStore.getState();
-
-        return safeMerge(
-            {
-                activeAccount: null,
-                activeLedger: null,
-                search: null
-            },
-            assetStore
-        );
-    },
-
-    componentDidMount() {
-        AssetStore.listen(this.onChange);
-    },
-
-    componentWillUnmount() {
-        AssetStore.unlisten(this.onChange);
-        this.disconnectLedger(this.state.activeLedger);
-    },
-
-    onChange(state) {
-        this.setState(state);
-    },
+    mixins: [BigchainDBMixin],
 
     fetchAssetList({ accountToFetch, search }) {
-        AssetActions.flushAssetList();
-
         if (accountToFetch) {
             AssetActions.fetchAssetList({
                 accountToFetch,
-                search
+                search,
+                blockWhenFetching: true
             });
             Scroll.animateScroll.scrollToBottom();
         }
     },
 
-    disconnectLedger(ledger) {
-        if (ledger) {
-            ledger.disconnect();
-        }
-    },
-
-    handleAccountChange(account, ledger) {
-        this.disconnectLedger(this.state.activeLedger);
-        ledger.on('incoming', this.handleLedgerChanges);
-
-        this.setState({
-            activeAccount: account,
-            activeLedger: ledger
-        });
-
-        this.fetchAssetList({
-            accountToFetch: account.vk,
-            search: this.state.search
-        });
-    },
-
-    handleLedgerChanges(changes) {
-        console.log('incoming: ', changes);
-        const { activeAccount, search } = this.state;
-
-        this.fetchAssetList({
-            accountToFetch: activeAccount.vk,
-            search
-        });
+    handleAccountChangeAndScroll(account) {
+        this.handleAccountChange(account);
+        Scroll.animateScroll.scrollToBottom();
     },
 
     handleSearch(query) {
@@ -100,20 +51,6 @@ const OnTheRecord = React.createClass({
     render() {
         const { activeAccount, assetList, assetMeta } = this.state;
 
-        let content = (
-            <div className="content-text">
-                Select account from the list...
-            </div>
-        );
-
-        if (activeAccount) {
-            content = (
-                <Assets
-                    activeAccount={activeAccount}
-                    assetList={assetList} />
-            );
-        }
-
         return (
             <div>
                 <Navbar fixedTop inverse>
@@ -128,12 +65,16 @@ const OnTheRecord = React.createClass({
                             <AccountList
                                 activeAccount={activeAccount}
                                 appName="ontherecord"
-                                handleAccountClick={this.handleAccountChange} />
+                                handleAccountClick={this.handleAccountChangeAndScroll} >
+                                <AccountDetail />
+                            </AccountList>
                         </div>
                     </div>
                     <div id="page-content-wrapper">
                         <div className="page-content">
-                            {content}
+                            <Assets
+                                activeAccount={activeAccount}
+                                assetList={assetList} />
                         </div>
                     </div>
                 </div>
