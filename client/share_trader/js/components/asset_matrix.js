@@ -8,7 +8,10 @@ import AssetStore from '../../../lib/js/react/stores/asset_store';
 const AssetMatrix = React.createClass({
 
     propTypes: {
-        activeAccount: React.PropTypes.object,
+        assetList: React.PropTypes.oneOfType([
+            React.PropTypes.object,
+            React.PropTypes.array
+        ]),
         cols: React.PropTypes.number,
         handleAssetClick: React.PropTypes.func,
         rows: React.PropTypes.number,
@@ -35,22 +38,6 @@ const AssetMatrix = React.createClass({
         };
     },
 
-    getInitialState() {
-        return AssetStore.getState();
-    },
-
-    componentDidMount() {
-        AssetStore.listen(this.onChange);
-    },
-
-    componentWillUnmount() {
-        AssetStore.unlisten(this.onChange);
-    },
-
-    onChange(state) {
-        this.setState(state);
-    },
-
     initializeMatrix(rows, cols) {
         const matrix = new Array(cols);
 
@@ -75,30 +62,24 @@ const AssetMatrix = React.createClass({
         return matrix;
     },
 
-
     getAssetListContent() {
-        const { activeAccount } = this.props;
-        const { assetList } = this.state;
+        const { assetList } = this.props;
 
-        if (!assetList || !activeAccount || Object.keys(assetList).indexOf(activeAccount.vk) < 0) {
-            return [];
-        } else {
-            return assetList[activeAccount.vk].map((asset) => ({
+        if (assetList) {
+            return assetList.map((asset) => ({
                 vk: asset.transaction.conditions[0].new_owners[0],
                 x: asset.transaction.data.payload.content.x,
                 y: asset.transaction.data.payload.content.y
             }));
         }
+        return [];
     },
 
     getAssetForCell(x, y) {
-        const { activeAccount } = this.props;
-        const { assetList } = this.state;
+        const { assetList } = this.props;
 
-        if (!assetList || !activeAccount || Object.keys(assetList).indexOf(activeAccount.vk) < 0) {
-            return null;
-        } else {
-            for (const asset of assetList[activeAccount.vk]) {
+        if (assetList) {
+            for (const asset of assetList) {
                 const content = asset.transaction.data.payload.content;
 
                 if (content.x === x && content.y === y) {
@@ -117,6 +98,7 @@ const AssetMatrix = React.createClass({
         const y = parseInt(cellState.y, 10);
 
         const activeAsset = this.getAssetForCell(x, y);
+        console.log(activeAsset)
         handleAssetClick(activeAsset);
     },
 

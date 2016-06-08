@@ -25,7 +25,9 @@ def print_changes(db_table):
             for tx in block:
                 # TODO: use REQL for filtering
                 if tx_contains_vk(tx['transaction'], client.username):
-                    client.write_message(change)
+                    msg = {'change': change,
+                           'client': client.username}
+                    client.write_message(msg)
                     break
 
 

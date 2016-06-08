@@ -41,7 +41,7 @@ def get_assets_for_account(account_vk):
         'bigchain': assets.get_owned_assets(bigchain, vk=account_vk, query=query),
         'backlog': assets.get_owned_assets(bigchain, vk=account_vk, query=query, table='backlog')
     }
-    return flask.jsonify({'assets': result})
+    return flask.jsonify({'assets': result, 'account': account_vk})
 
 
 @api_views.route('/assets/')

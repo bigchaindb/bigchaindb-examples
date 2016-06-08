@@ -12,29 +12,34 @@ import AccountDetail from '../../../lib/js/react/components/account_detail';
 import Assets from './assets';
 import Search from '../../../lib/js/react/components/search';
 
+import AccountStore from '../../../lib/js/react/stores/account_store';
+
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 import AssetStore from '../../../lib/js/react/stores/asset_store';
 
 const OnTheRecord = React.createClass({
 
     getInitialState() {
+        const accountStore = AccountStore.getState();
         const assetStore = AssetStore.getState();
 
         return safeMerge(
             {
                 activeAccount: null,
-                activeLedger: null,
                 search: null
             },
+            accountStore,
             assetStore
         );
     },
 
     componentDidMount() {
+        AccountStore.listen(this.onAccountStoreChange);
         AssetStore.listen(this.onChange);
     },
 
     componentWillUnmount() {
+        AccountStore.unlisten(this.onAccountStoreChange);
         AssetStore.unlisten(this.onChange);
     },
 
@@ -42,27 +47,36 @@ const OnTheRecord = React.createClass({
         this.setState(state);
     },
 
+    onAccountStoreChange(state) {
+        const oldAccountList = this.state.accountList;
+        state.accountList.forEach((account) => {
+            if (account.ledger &&
+                (!oldAccountList ||
+                 (oldAccountList && oldAccountList.indexOf(account) === -1))) {
+                account.ledger.on('incoming', this.handleLedgerChanges);
+            }
+        });
+
+        this.setState(state);
+    },
+
     fetchAssetList({ accountToFetch, search }) {
         if (accountToFetch) {
             AssetActions.fetchAssetList({
                 accountToFetch,
-                search
+                search,
+                blockWhenFetching: true
             });
-            Scroll.animateScroll.scrollToBottom();
         }
     },
 
     handleAccountChange(account) {
-        account.ledger.on('incoming', this.handleLedgerChanges);
 
         this.setState({
             activeAccount: account
         });
 
-        this.fetchAssetList({
-            accountToFetch: account.vk,
-            search: this.state.search
-        });
+        Scroll.animateScroll.scrollToBottom();
     },
 
     handleLedgerChanges(changes) {
@@ -73,6 +87,8 @@ const OnTheRecord = React.createClass({
             accountToFetch: activeAccount.vk,
             search
         });
+        
+        Scroll.animateScroll.scrollToBottom();
     },
 
     handleSearch(query) {

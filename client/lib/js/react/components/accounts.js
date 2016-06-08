@@ -5,8 +5,6 @@ import classnames from 'classnames';
 import AccountActions from '../actions/account_actions';
 import AccountStore from '../stores/account_store';
 
-import BigchainDBLedgerPlugin from './bigchaindb_ledgerplugin';
-
 import Spinner from './spinner';
 
 const AccountList = React.createClass({

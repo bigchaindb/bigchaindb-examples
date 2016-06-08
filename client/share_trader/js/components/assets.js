@@ -14,7 +14,10 @@ const Assets = React.createClass({
         activeAccount: React.PropTypes.object,
         activeAsset: React.PropTypes.object,
         assetClasses: React.PropTypes.object,
-        assetList: React.PropTypes.object,
+        assetList: React.PropTypes.oneOfType([
+            React.PropTypes.object,
+            React.PropTypes.array
+        ]),
         handleAssetClick: React.PropTypes.func
     },
 
@@ -27,13 +30,11 @@ const Assets = React.createClass({
             assetClasses,
             handleAssetClick
         } = this.props;
-
-        if (assetList && Object.keys(assetList).indexOf(activeAccount.vk) > -1) {
-            const assetListForAccount = assetList[activeAccount.vk];
-            if (assetListForAccount.length) {
+        if (assetList) {
+            if (assetList.length) {
                 return (
                     <div>
-                        {assetListForAccount.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
+                        {assetList.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
                             .map((asset) => {
                                 const active = (activeAsset) ? activeAsset.id === asset.id : false;
                                 const assetClass = assetClasses[asset.transaction.conditions[0]

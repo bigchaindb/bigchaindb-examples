@@ -45,7 +45,7 @@ APPS = [
     {
         'name': 'interledger',
         'num_accounts': 3,
-        'num_assets': 0,
+        'num_assets': 9,
         'payload_func': (
             lambda x: {
                 'app': 'interledger',

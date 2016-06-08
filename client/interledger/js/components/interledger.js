@@ -30,7 +30,6 @@ const Interledger = React.createClass({
 
     componentWillUnmount() {
         AssetStore.unlisten(this.onChange);
-        this.disconnectLedger(this.state.activeLedger);
     },
 
     onChange(state) {

@@ -1,9 +1,7 @@
 import alt from '../alt';
 
 import AssetActions from '../actions/asset_actions';
-
 import AssetSource from '../sources/asset_source';
-
 
 class AssetStore {
     constructor() {
@@ -38,8 +36,9 @@ class AssetStore {
         }
     }
 
-    onFetchAssetList({ accountToFetch, search }) {
-        if (!this.assetMeta.isFetchingList) {
+    onFetchAssetList({ accountToFetch, search, blockWhenFetching }) {
+        if (!blockWhenFetching ||
+            (blockWhenFetching && !this.assetMeta.isFetchingList)) {
             this.assetMeta.accountToFetch = accountToFetch;
             this.assetMeta.search = search;
             this.assetMeta.isFetchingList = true;
@@ -49,18 +48,12 @@ class AssetStore {
 
     onSuccessFetchAssetList(assetList) {
         if (assetList) {
-            const { assets } = assetList;
-            const { accountToFetch } = this.assetMeta;
-            if (accountToFetch && assets) {
+            const { assets, account } = assetList;
+            if (account && assets) {
                 if (Object.keys(assets).indexOf('bigchain') > -1) {
-                    this.assetList[accountToFetch] = assets.bigchain.concat(assets.backlog);
-                } else if (accountToFetch === 'all') {
-                    this.assetList[accountToFetch] = assets.filter((asset) => (
-                        asset.transaction.data.payload.app === 'sharetrader'
-                    ));
+                    this.assetList[account] = assets.bigchain.concat(assets.backlog);
                 }
             }
-
             this.assetMeta.err = null;
             this.assetMeta.accountToFetch = null;
         } else {
