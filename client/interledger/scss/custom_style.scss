@@ -1,6 +1,42 @@
+@import "../../lib/css/scss/variables";
+
 .interledger {
+
   #wrapper {
     padding-left: 0!important;
     margin-top: 80px;
+  }
+
+  .asset-container {
+    width: 100%;
+    cursor: pointer;
+    padding: 0.5em;
+    margin: 0.3em 0;
+
+    border: 1px solid lighten($fg-color, 70%);
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+
+    &:hover {
+      background: $bg-color--hover;
+      color: $bg-color;
+      .asset-container-timestamp,
+      .asset-container-id {
+        color: $bg-color;
+      }
+    }
+  }
+
+  .asset-container-timestamp,
+  .asset-container-id {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.8em;
+    color: lighten($fg-color, 50%);
+    text-transform: uppercase;
+  }
+
+  .asset-container-detail {
+    text-align: center;
+    font-size: 1em;
   }
 }

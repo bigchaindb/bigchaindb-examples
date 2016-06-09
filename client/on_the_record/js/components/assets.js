@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Row, Glyphicon } from 'react-bootstrap/lib';
-
 import Scroll from 'react-scroll';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
+
+import AssetDetail from '../../../lib/js/react/components/asset_detail';
 
 import Spinner from '../../../lib/js/react/components/spinner';
 
@@ -84,7 +84,7 @@ const AssetHistory = React.createClass({
                         {assetListForAccount
                             .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
                             .map(asset => (
-                                <AssetRow
+                                <AssetDetail
                                     key={asset.id}
                                     asset={asset} />
                             ))}
@@ -104,37 +104,6 @@ const AssetHistory = React.createClass({
                 </div>
             );
         }
-    }
-});
-
-
-const AssetRow = React.createClass({
-    propTypes: {
-        asset: React.PropTypes.object
-    },
-
-    render() {
-        const { asset } = this.props;
-        const assetContent = asset.transaction.data ? asset.transaction.data.payload.content : '-';
-        const validGlyph = asset.hasOwnProperty('assignee') ? <Glyphicon glyph="cog" />
-                                                            : <Glyphicon glyph="ok" />;
-
-        return (
-            <Row>
-                <div className="asset-container pull-right">
-                    <div className="asset-container-id">
-                        {asset.id}
-                    </div>
-                    <div className="asset-container-detail">
-                        {assetContent}
-                    </div>
-                    <div className="asset-container-timestamp pull-right">
-                        {new Date(parseInt(asset.transaction.timestamp, 10) * 1000).toGMTString() + '   '}
-                        {validGlyph}
-                    </div>
-                </div>
-            </Row>
-        );
     }
 });
 

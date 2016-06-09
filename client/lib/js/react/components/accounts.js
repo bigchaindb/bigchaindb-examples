@@ -76,9 +76,13 @@ const AccountWrapper = React.createClass({
     propTypes: {
         account: React.PropTypes.object,
         activeAccount: React.PropTypes.object,
+        children: React.PropTypes.oneOfType([
+            React.PropTypes.arrayOf(React.PropTypes.node),
+            React.PropTypes.node
+        ]),
         handleClick: React.PropTypes.func
     },
-    
+
     handleClick() {
         const { account, handleClick } = this.props;
         handleClick(account);
@@ -90,19 +94,17 @@ const AccountWrapper = React.createClass({
         return (
             <div>
                 {
-                    React.Children.map(children, (child) => {
-                        return React.cloneElement(child, {
+                    React.Children.map(children, (child) =>
+                        React.cloneElement(child, {
                             account,
                             activeAccount,
                             handleClick: this.handleClick
-                        });
-
-                    })
+                        })
+                    )
                 }
             </div>
         );
     }
 });
-
 
 export default AccountList;

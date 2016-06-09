@@ -21,7 +21,7 @@ const AccountDetail = React.createClass({
             return (
                 <Col
                     className={classnames({ 'active': activeAccount === account })}
-                    md={4}
+                    md={6} lg={4} xl={3}
                     onClick={handleClick}>
                     <div className="card">
                         <div className="list-row-name">

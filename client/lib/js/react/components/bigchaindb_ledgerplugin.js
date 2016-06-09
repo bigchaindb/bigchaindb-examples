@@ -31,29 +31,29 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
             return Promise.resolve(null);
         }
 
-        const streamUri = accountUri + '/changes';
-        console.log('subscribing to ' + streamUri);
+        const streamUri = `${accountUri}/changes`;
+        console.log(`subscribing to ${streamUri}`);
 
         const reconnect = reconnectCore(() => {
             return new SimpleWebsocket(streamUri);
         });
 
         return new Promise((resolve, reject) => {
-            this.connection = reconnect({immediate: true}, (ws) => {
+            this.connection = reconnect({ immediate: true }, (ws) => {
                 ws.on('open', () => {
-                    console.log('ws connected to ' + streamUri);
-                })
+                    console.log(`ws connected to ${streamUri}`);
+                });
                 ws.on('data', (msg) => {
                     const notification = JSON.parse(msg);
                     co.wrap(this._handleNotification)
                         .call(this, notification)
                         .catch((err) => {
-                            console.warn('failure while processing notification: ' +
-                            (err && err.stack) ? err.stack : err)
+                            const errString = (err && err.stack) ? err.stack : err;
+                            console.warn(`failure while processing notification: ${errString}`);
                         });
                 });
                 ws.on('close', () => {
-                    console.log('ws disconnected from ' + streamUri);
+                    console.log(`ws disconnected from ${streamUri}`);
                 });
             })
                 .once('connect', () => resolve(null))
@@ -66,7 +66,7 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
                     this.emit('disconnect');
                 })
                 .on('error', (err) => {
-                    console.warn('ws error on ' + streamUri + ': ' + err);
+                    console.warn(`ws error on ${streamUri}:  ${err}`);
                     reject(err);
                 })
                 .connect();
@@ -111,7 +111,7 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
         } catch (e) {
             throw new Error('Unable to determine current balance');
         }
-        if (res && res.assets && res.assets.bigchain && res.assets.bigchain.length){
+        if (res && res.assets && res.assets.bigchain && res.assets.bigchain.length) {
             return res.assets.bigchain.length;
         } else {
             throw new Error('Unable to determine current balance');
@@ -134,7 +134,7 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
         try {
             res = yield request('assets_escrow', {
                 method: 'POST',
-                jsonBody: payloadToPost,
+                jsonBody: transfer.payloadToPost,
                 urlTemplateSpec: {
                     assetId: transfer.asset.id,
                     cid: transfer.asset.cid

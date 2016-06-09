@@ -2,8 +2,6 @@ import React from 'react';
 
 import { Navbar } from 'react-bootstrap/lib';
 
-import { safeMerge } from 'js-utility-belt/es6';
-
 import AccountList from '../../../lib/js/react/components/accounts';
 import AccountDetail from './account_detail';
 

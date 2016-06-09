@@ -1,9 +1,10 @@
 import React from 'react';
-import classNames from 'classnames';
-
-import { Row, Button, Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap/lib';
+import classnames from 'classnames';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
+
+import AssetActionPanel from '../../../lib/js/react/components/asset_action_panel';
+import AssetDetail from '../../../lib/js/react/components/asset_detail';
 
 import Spinner from '../../../lib/js/react/components/spinner';
 
@@ -30,7 +31,7 @@ const Assets = React.createClass({
             assetClasses,
             handleAssetClick
         } = this.props;
-        
+
         if (assetList && assetList.length) {
             return (
                 <div>
@@ -116,8 +117,6 @@ const AssetRow = React.createClass({
         const { selectedAccount, transfered } = this.state;
 
         const { data: { payload: { content } } = {} } = asset.transaction;
-        const validGlyph = asset.hasOwnProperty('assignee') ? <Glyphicon glyph="cog" />
-                                                            : <Glyphicon glyph="ok" />;
 
         let actionsPanel = null;
         if (active && activeAccount && activeAccount.vk !== 'all' && accountList && !transfered) {
@@ -132,73 +131,13 @@ const AssetRow = React.createClass({
         }
 
         return (
-            <Row onClick={this.handleAssetClick}>
-                <div
-                    className={classNames('asset-container', assetClass, {
-                        transfered,
-                        active: active && !transfered
-                    })}>
-                    <div className="asset-container-id">
-                        {asset.id}
-                    </div>
-                    <div className="asset-container-detail">
-                        {content ? `Row: ${content.y + 1}, Col: ${content.x + 1}` : '-'}
-                    </div>
-                    <div className="asset-container-timestamp">
-                        {new Date(parseInt(asset.transaction.timestamp, 10) * 1000).toGMTString() + '   '}
-                        {validGlyph}
-                    </div>
-                    {actionsPanel}
-                </div>
-            </Row>
-        );
-    }
-});
-
-
-const AssetActionPanel = React.createClass({
-    propTypes: {
-        accountList: React.PropTypes.array,
-        activeAccount: React.PropTypes.object,
-        handleAccountClick: React.PropTypes.func,
-        handleTransferClick: React.PropTypes.func,
-        selectedAccount: React.PropTypes.object
-    },
-
-    handleAccountClick(account) {
-        this.props.handleAccountClick(account);
-    },
-
-    render() {
-        const { activeAccount, selectedAccount, accountList, handleTransferClick } = this.props;
-
-        let transferButton = null;
-        if (selectedAccount) {
-            transferButton = (
-                <Button onClick={handleTransferClick}>
-                    TRANSFER
-                </Button>
-            );
-        }
-
-        return (
-            <div className="asset-container-actions">
-                <div>Transfer asset from {activeAccount.name} to:</div>
-                <DropdownButton
-                    active
-                    className="filter-dropdown-button"
-                    id="bg-nested-dropdown"
-                    title={selectedAccount ? selectedAccount.name : 'Select account'}>
-                    {accountList.map((account) => (
-                        <MenuItem
-                            key={account.name}
-                            onClick={() => this.handleAccountClick(account)}>
-                            {account.name}
-                        </MenuItem>
-                    ))}
-                </DropdownButton>
-                {transferButton}
-            </div>
+            <AssetDetail
+                asset={asset}
+                assetContent={content ? `Row: ${content.y + 1}, Col: ${content.x + 1}` : '-'}
+                className={classnames(assetClass, { transfered, active: active && !transfered })}
+                onClick={this.handleAssetClick}>
+                {actionsPanel}
+            </AssetDetail>
         );
     }
 });
