@@ -4,16 +4,14 @@ import AssetRow from './asset_row';
 import Spinner from '../../../lib/js/react/components/spinner';
 
 
-export default function Assets(props) {
-    const {
+const Assets = ({
         activeAccount,
         accountList,
         assetListForAccount,
         activeAsset,
         handleAccountClick,
         handleAssetClick
-    } = props;
-
+    }) => {
     if (assetListForAccount && assetListForAccount.length) {
         return (
             <div>
@@ -41,17 +39,16 @@ export default function Assets(props) {
             </div>
         );
     }
-}
+};
 
 Assets.propTypes = {
     accountList: React.PropTypes.array,
     activeAccount: React.PropTypes.object,
     activeAsset: React.PropTypes.object,
     assetClasses: React.PropTypes.object,
-    assetListForAccount: React.PropTypes.oneOfType([
-        React.PropTypes.object,
-        React.PropTypes.array
-    ]),
+    assetListForAccount: React.PropTypes.array,
     handleAccountClick: React.PropTypes.func,
     handleAssetClick: React.PropTypes.func
 };
+
+export default Assets;

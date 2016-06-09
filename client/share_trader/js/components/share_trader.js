@@ -1,5 +1,5 @@
 import React from 'react';
-
+import 'core-js/stage/4';
 import { Navbar, Row, Col, Button } from 'react-bootstrap/lib';
 
 import AccountList from '../../../lib/js/react/components/accounts';
@@ -41,17 +41,12 @@ const ShareTrader = React.createClass({
     },
 
     flattenAssetList(assetList) {
-        let flattenedAssetList = [];
-        Object.keys(assetList).forEach((account) => {
-            flattenedAssetList = flattenedAssetList.concat(
-                assetList[account]
-            );
-        });
-        return flattenedAssetList;
+        return [].concat(...Object.values(assetList));
     },
 
     render() {
-        const { activeAccount,
+        const {
+            activeAccount,
             accountList,
             activeAsset,
             assetList
@@ -59,7 +54,7 @@ const ShareTrader = React.createClass({
 
         const states = this.mapAccountsOnStates(accountList);
         const assetListForAccount =
-            activeAccount && Object.keys(assetList).indexOf(activeAccount.vk) > -1 ?
+            activeAccount && assetList.hasOwnProperty(activeAccount.vk) ?
                 assetList[activeAccount.vk] : this.flattenAssetList(assetList);
 
         return (

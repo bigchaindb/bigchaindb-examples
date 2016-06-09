@@ -1,5 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
+import { safeInvoke } from 'js-utility-belt/es6';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 
@@ -20,22 +21,33 @@ const AssetRow = React.createClass({
     getInitialState() {
         return {
             selectedAccount: null,
-            transfered: false
+            transferred: false
         };
     },
 
     setSelectedAccount(account) {
-        this.setState({ selectedAccount: account });
+        this.setState({
+            selectedAccount: account
+        });
     },
 
     handleAssetClick() {
-        const { asset, handleAssetClick } = this.props;
-        handleAssetClick(asset);
+        const {
+            asset,
+            handleAssetClick
+        } = this.props;
+        safeInvoke(handleAssetClick, asset);
     },
 
     handleTransferClick() {
-        const { asset, activeAccount } = this.props;
-        const { selectedAccount } = this.state;
+        const {
+            asset,
+            activeAccount
+        } = this.props;
+
+        const {
+            selectedAccount
+        } = this.state;
 
         const idToTransfer = {
             txid: asset.id,
@@ -43,8 +55,8 @@ const AssetRow = React.createClass({
         };
 
         const payloadToPost = {
-            'source': activeAccount,
-            'to': selectedAccount
+            source: activeAccount,
+            to: selectedAccount
         };
 
         AssetActions.transferAsset({
@@ -52,7 +64,7 @@ const AssetRow = React.createClass({
             payloadToPost
         });
 
-        this.setState({ transfered: true });
+        this.setState({ transferred: true });
     },
 
     render() {
@@ -63,15 +75,16 @@ const AssetRow = React.createClass({
             accountList,
             assetClass
         } = this.props;
+
         const {
             selectedAccount,
-            transfered
+            transferred
         } = this.state;
 
         const { data: { payload: { content } } = {} } = asset.transaction;
 
         let actionsPanel = null;
-        if (active && activeAccount && accountList && !transfered) {
+        if (active && activeAccount && activeAccount.vk !== 'all' && accountList && !transferred) {
             actionsPanel = (
                 <AssetActionPanel
                     accountList={accountList}
@@ -86,7 +99,7 @@ const AssetRow = React.createClass({
             <AssetDetail
                 asset={asset}
                 assetContent={content ? `Row: ${content.y + 1}, Col: ${content.x + 1}` : '-'}
-                className={classnames(assetClass, { transfered, active: active && !transfered })}
+                className={classnames(assetClass, { transferred, active: active && !transferred })}
                 onClick={this.handleAssetClick}>
                 {actionsPanel}
             </AssetDetail>

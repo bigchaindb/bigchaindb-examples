@@ -64,13 +64,13 @@ class AccountStore {
             auth: {
                 account: {
                     id: account.vk,
-                    uri: 'ws://localhost:8888/users/' + account.vk
+                    uri: `ws://localhost:8888/users/${account.vk}`
                 }
             },
         });
 
         ledger.connect().catch((err) => {
-            console.error((err && err.stack) ? err.stack : err);
+            console.error(err);
         });
         return ledger;
     }

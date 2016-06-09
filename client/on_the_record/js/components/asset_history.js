@@ -5,19 +5,16 @@ import AssetDetail from '../../../lib/js/react/components/asset_detail';
 import Spinner from '../../../lib/js/react/components/spinner';
 
 
-export default function AssetHistory(props) {
-    const {
+const AssetHistory = ({
         activeAccount,
         assetList
-    } = props;
-
-    if (assetList && Object.keys(assetList).indexOf(activeAccount.vk) > -1) {
+    }) => {
+    if (assetList && Array.isArray(assetList[activeAccount.vk])) {
         const assetListForAccount = assetList[activeAccount.vk];
         if (assetListForAccount.length) {
             return (
                 <div>
                     {assetListForAccount
-                        .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
                         .map(asset => (
                             <AssetDetail
                                 key={asset.id}
@@ -39,9 +36,11 @@ export default function AssetHistory(props) {
             </div>
         );
     }
-}
+};
 
 AssetHistory.propTypes = {
     activeAccount: React.PropTypes.object,
     assetList: React.PropTypes.object
 };
+
+export default AssetHistory;

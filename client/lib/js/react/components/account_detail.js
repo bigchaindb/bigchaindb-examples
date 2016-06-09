@@ -4,13 +4,11 @@ import classnames from 'classnames';
 import { Row } from 'react-bootstrap/lib';
 
 
-export default function AccountDetail(props) {
-    const {
+const AccountDetail = ({
         account,
         activeAccount,
         handleClick
-    } = props;
-
+    }) => {
     return (
         <Row
             className={classnames('list-row', { 'active': activeAccount === account })}
@@ -23,10 +21,12 @@ export default function AccountDetail(props) {
             </div>
         </Row>
     );
-}
+};
 
 AccountDetail.propTypes = {
     account: React.PropTypes.object,
     activeAccount: React.PropTypes.object,
     handleClick: React.PropTypes.func
 };
+
+export default AccountDetail;

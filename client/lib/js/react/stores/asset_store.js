@@ -50,8 +50,11 @@ class AssetStore {
         if (assetList) {
             const { assets, account } = assetList;
             if (account && assets) {
-                if (Object.keys(assets).indexOf('bigchain') > -1) {
-                    this.assetList[account] = assets.bigchain.concat(assets.backlog);
+                if (assets.hasOwnProperty('bigchain')) {
+                    this.assetList[account] =
+                        assets.bigchain
+                            .concat(assets.backlog)
+                            .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp);
                 }
             }
             this.assetMeta.err = null;

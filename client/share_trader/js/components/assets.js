@@ -4,24 +4,23 @@ import AssetRow from './asset_row';
 import Spinner from '../../../lib/js/react/components/spinner';
 
 
-export default function Assets(props) {
-    const {
+const Assets = ({
         activeAccount,
         accountList,
         assetList,
         activeAsset,
         assetClasses,
         handleAssetClick
-    } = props;
-
+    }) => {
     if (assetList && assetList.length) {
+        // sorting assetList because it might contain entries from different accounts
         return (
             <div>
                 {assetList.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
                     .map((asset) => {
-                        const active = (activeAsset) ? activeAsset.id === asset.id : false;
-                        const assetClass = assetClasses[asset.transaction.conditions[0]
-                                               .new_owners[0]];
+                        const active = !!activeAsset && activeAsset.id === asset.id;
+                        const assetClass = assetClasses[asset.transaction.conditions[0].new_owners[0]];
+
                         return (
                             <AssetRow
                                 key={asset.id}
@@ -42,16 +41,15 @@ export default function Assets(props) {
             </div>
         );
     }
-}
+};
 
 Assets.propTypes = {
     accountList: React.PropTypes.array,
     activeAccount: React.PropTypes.object,
     activeAsset: React.PropTypes.object,
     assetClasses: React.PropTypes.object,
-    assetList: React.PropTypes.oneOfType([
-        React.PropTypes.object,
-        React.PropTypes.array
-    ]),
+    assetList: React.PropTypes.array,
     handleAssetClick: React.PropTypes.func
 };
+
+export default Assets;

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { safeInvoke } from 'js-utility-belt/es6';
 import classnames from 'classnames';
 
 import AccountActions from '../actions/account_actions';
@@ -76,16 +76,13 @@ const AccountWrapper = React.createClass({
     propTypes: {
         account: React.PropTypes.object,
         activeAccount: React.PropTypes.object,
-        children: React.PropTypes.oneOfType([
-            React.PropTypes.arrayOf(React.PropTypes.node),
-            React.PropTypes.node
-        ]),
+        children: React.PropTypes.node,
         handleClick: React.PropTypes.func
     },
 
     handleClick() {
         const { account, handleClick } = this.props;
-        handleClick(account);
+        safeInvoke(handleClick, account);
     },
 
     render() {
