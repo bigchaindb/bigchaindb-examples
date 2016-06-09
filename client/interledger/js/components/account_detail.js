@@ -15,7 +15,13 @@ const AccountDetail = React.createClass({
     },
 
     render() {
-        const { account, activeAccount, assetList, handleClick } = this.props;
+        const {
+            account,
+            activeAccount,
+            assetList,
+            handleClick
+        } = this.props;
+        
         if (account) {
             const assetListForAccount = assetList[account.vk];
             return (

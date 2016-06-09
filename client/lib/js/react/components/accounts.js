@@ -89,7 +89,11 @@ const AccountWrapper = React.createClass({
     },
 
     render() {
-        const { account, activeAccount, children } = this.props;
+        const {
+            account,
+            activeAccount,
+            children
+        } = this.props;
 
         return (
             <div>

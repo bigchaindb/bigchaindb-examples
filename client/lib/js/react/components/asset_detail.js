@@ -31,7 +31,11 @@ const AssetDetail = React.createClass({
     },
 
     render() {
-        const { asset, children, className } = this.props;
+        const {
+            asset,
+            children,
+            className
+        } = this.props;
 
         const assetContent = this.getAssetContent();
         const validGlyph = asset.hasOwnProperty('assignee') ? <Glyphicon glyph="cog" />

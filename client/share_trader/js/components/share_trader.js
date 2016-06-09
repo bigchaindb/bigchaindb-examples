@@ -51,7 +51,12 @@ const ShareTrader = React.createClass({
     },
 
     render() {
-        const { activeAccount, accountList, activeAsset, assetList } = this.state;
+        const { activeAccount,
+            accountList,
+            activeAsset,
+            assetList
+        } = this.state;
+
         const states = this.mapAccountsOnStates(accountList);
         const assetListForAccount =
             activeAccount && Object.keys(assetList).indexOf(activeAccount.vk) > -1 ?

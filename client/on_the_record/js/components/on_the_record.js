@@ -49,7 +49,11 @@ const OnTheRecord = React.createClass({
     },
 
     render() {
-        const { activeAccount, assetList, assetMeta } = this.state;
+        const {
+            activeAccount,
+            assetList,
+            assetMeta
+        } = this.state;
 
         return (
             <div>

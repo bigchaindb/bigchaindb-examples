@@ -4,9 +4,7 @@ import Scroll from 'react-scroll';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 
-import AssetDetail from '../../../lib/js/react/components/asset_detail';
-
-import Spinner from '../../../lib/js/react/components/spinner';
+import AssetHistory from './asset_history';
 
 
 const Assets = React.createClass({
@@ -63,47 +61,6 @@ const Assets = React.createClass({
                 </form>
             </div>
         );
-    }
-});
-
-
-const AssetHistory = React.createClass({
-    propTypes: {
-        activeAccount: React.PropTypes.object,
-        assetList: React.PropTypes.object
-    },
-
-    render() {
-        const { activeAccount, assetList } = this.props;
-
-        if (assetList && Object.keys(assetList).indexOf(activeAccount.vk) > -1) {
-            const assetListForAccount = assetList[activeAccount.vk];
-            if (assetListForAccount.length) {
-                return (
-                    <div>
-                        {assetListForAccount
-                            .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
-                            .map(asset => (
-                                <AssetDetail
-                                    key={asset.id}
-                                    asset={asset} />
-                            ))}
-                    </div>
-                );
-            } else {
-                return (
-                    <div className="content-text">
-                        No messages found in BigchainDB. Start typing...
-                    </div>
-                );
-            }
-        } else {
-            return (
-                <div style={{ margin: '2em' }}>
-                    <Spinner />
-                </div>
-            );
-        }
     }
 });
 

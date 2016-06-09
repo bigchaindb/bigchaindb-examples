@@ -17,7 +17,12 @@ const AssetActionPanel = React.createClass({
     },
 
     render() {
-        const { activeAccount, selectedAccount, accountList, handleTransferClick } = this.props;
+        const {
+            activeAccount,
+            selectedAccount,
+            accountList,
+            handleTransferClick
+        } = this.props;
 
         let transferButton = null;
         if (selectedAccount) {

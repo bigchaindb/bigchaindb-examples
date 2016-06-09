@@ -23,7 +23,10 @@ const Interledger = React.createClass({
     },
 
     render() {
-        const { activeAccount, assetList } = this.state;
+        const {
+            activeAccount,
+            assetList
+        } = this.state;
 
         return (
             <div>

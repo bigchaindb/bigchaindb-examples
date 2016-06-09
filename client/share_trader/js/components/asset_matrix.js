@@ -102,7 +102,10 @@ const AssetMatrix = React.createClass({
     },
 
     render() {
-        const { squareSize, states } = this.props;
+        const {
+            squareSize,
+            states
+        } = this.props;
 
         return (
             <div style={{ textAlign: 'center' }}>
