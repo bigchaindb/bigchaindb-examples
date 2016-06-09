@@ -56,8 +56,17 @@ const AssetRow = React.createClass({
     },
 
     render() {
-        const { asset, active, activeAccount, accountList, assetClass } = this.props;
-        const { selectedAccount, transfered } = this.state;
+        const {
+            asset,
+            active,
+            activeAccount,
+            accountList,
+            assetClass
+        } = this.props;
+        const {
+            selectedAccount,
+            transfered
+        } = this.state;
 
         const { data: { payload: { content } } = {} } = asset.transaction;
 
