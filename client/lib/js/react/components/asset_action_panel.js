@@ -12,26 +12,17 @@ const AssetActionPanel = React.createClass({
         selectedAccount: React.PropTypes.object
     },
 
-    handleAccountClick(account) {
-        this.props.handleAccountClick(account);
-    },
-
     render() {
         const {
             activeAccount,
             selectedAccount,
             accountList,
+            handleAccountClick,
             handleTransferClick
         } = this.props;
 
-        let transferButton = null;
-        if (selectedAccount) {
-            transferButton = (
-                <Button onClick={handleTransferClick}>
-                    TRANSFER
-                </Button>
-            );
-        }
+        const transferButton = selectedAccount ?
+            <Button onClick={handleTransferClick}>TRANSFER</Button> : null;
 
         return (
             <div className="asset-container-actions">
@@ -44,7 +35,7 @@ const AssetActionPanel = React.createClass({
                     {accountList.map((account) => (
                         <MenuItem
                             key={account.name}
-                            onClick={() => this.handleAccountClick(account)}>
+                            onClick={() => handleAccountClick(account)}>
                             {account.name}
                         </MenuItem>
                     ))}

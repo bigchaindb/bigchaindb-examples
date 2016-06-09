@@ -1,17 +1,11 @@
 import React from 'react';
-
 import Matrix from 'react-matrix';
-
-import AssetStore from '../../../lib/js/react/stores/asset_store';
-
+import { safeInvoke } from 'js-utility-belt/es6';
 
 const AssetMatrix = React.createClass({
 
     propTypes: {
-        assetList: React.PropTypes.oneOfType([
-            React.PropTypes.object,
-            React.PropTypes.array
-        ]),
+        assetList: React.PropTypes.array,
         cols: React.PropTypes.number,
         handleAssetClick: React.PropTypes.func,
         rows: React.PropTypes.number,
@@ -98,7 +92,7 @@ const AssetMatrix = React.createClass({
         const y = parseInt(cellState.y, 10);
 
         const activeAsset = this.getAssetForCell(x, y);
-        handleAssetClick(activeAsset);
+        safeInvoke(handleAssetClick, activeAsset);
     },
 
     render() {

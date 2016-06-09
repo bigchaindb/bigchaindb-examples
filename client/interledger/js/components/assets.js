@@ -12,7 +12,6 @@ export default function Assets(props) {
         return (
             <div>
                 {assetListForAccount
-                    .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
                     .map(asset => (
                         <AssetDetail
                             key={asset.id}
