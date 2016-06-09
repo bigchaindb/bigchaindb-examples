@@ -3,11 +3,7 @@ import React from 'react';
 import AssetDetail from '../../../lib/js/react/components/asset_detail';
 
 
-export default function Assets(props) {
-    const {
-        assetListForAccount
-    } = props;
-
+const Assets = ({ assetListForAccount }) => {
     if (assetListForAccount && assetListForAccount.length) {
         return (
             <div>
@@ -26,10 +22,11 @@ export default function Assets(props) {
             </div>
         );
     }
-}
-
+};
 
 Assets.propTypes = {
     activeAccount: React.PropTypes.object,
     assetListForAccount: React.PropTypes.array
 };
+
+export default Assets;
