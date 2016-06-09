@@ -24,7 +24,9 @@ const Interledger = React.createClass({
 
     render() {
         const {
+            accountList,
             activeAccount,
+            activeAsset,
             assetList
         } = this.state;
 
@@ -42,7 +44,10 @@ const Interledger = React.createClass({
                                 className="row"
                                 handleAccountClick={this.handleAccountChange} >
                                 <AccountDetail
-                                    assetList={assetList} />
+                                    accountList={accountList}
+                                    activeAsset={activeAsset}
+                                    assetList={assetList}
+                                    handleAssetClick={this.handleAssetChange} />
                             </AccountList>
                         </div>
                     </div>

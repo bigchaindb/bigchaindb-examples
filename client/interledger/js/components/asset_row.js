@@ -1,5 +1,4 @@
 import React from 'react';
-import classnames from 'classnames';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 
@@ -13,7 +12,7 @@ const AssetRow = React.createClass({
         active: React.PropTypes.bool,
         activeAccount: React.PropTypes.object,
         asset: React.PropTypes.object,
-        assetClass: React.PropTypes.string,
+        handleAccountClick: React.PropTypes.func,
         handleAssetClick: React.PropTypes.func
     },
 
@@ -25,12 +24,21 @@ const AssetRow = React.createClass({
     },
 
     setSelectedAccount(account) {
-        this.setState({ selectedAccount: account });
+        this.setState({
+            selectedAccount: account
+        });
     },
 
     handleAssetClick() {
-        const { asset, handleAssetClick } = this.props;
+        const {
+            activeAccount,
+            handleAccountClick,
+            asset,
+            handleAssetClick
+        } = this.props;
+
         handleAssetClick(asset);
+        handleAccountClick(activeAccount);
     },
 
     handleTransferClick() {
@@ -61,14 +69,13 @@ const AssetRow = React.createClass({
             active,
             activeAccount,
             accountList,
-            assetClass
         } = this.props;
+
         const {
             selectedAccount,
             transfered
         } = this.state;
 
-        const { data: { payload: { content } } = {} } = asset.transaction;
 
         let actionsPanel = null;
         if (active && activeAccount && accountList && !transfered) {
@@ -83,13 +90,14 @@ const AssetRow = React.createClass({
         }
 
         return (
-            <AssetDetail
-                asset={asset}
-                assetContent={content ? `Row: ${content.y + 1}, Col: ${content.x + 1}` : '-'}
-                className={classnames(assetClass, { transfered, active: active && !transfered })}
-                onClick={this.handleAssetClick}>
-                {actionsPanel}
-            </AssetDetail>
+            <div
+                onClick={this.handleAssetClick}
+                tabIndex={0}>
+                <AssetDetail
+                    asset={asset}>
+                    {actionsPanel}
+                </AssetDetail>
+            </div>
         );
     }
 });
