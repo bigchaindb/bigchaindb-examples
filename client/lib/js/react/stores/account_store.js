@@ -5,7 +5,7 @@ import AccountSource from '../sources/account_source';
 
 import AssetActions from '../actions/asset_actions';
 
-import BigchainDBLedgerPlugin from '../components/bigchaindb_ledgerplugin';
+import BigchainDBLedgerPlugin from '../../plugins/bigchaindb_ledgerplugin';
 
 class AccountStore {
     constructor() {
