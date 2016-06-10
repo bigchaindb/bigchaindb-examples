@@ -31,8 +31,8 @@ const AssetRow = React.createClass({
             handleAssetClick
         } = this.props;
 
-        safeInvoke(handleAssetClick(asset));
-        safeInvoke(handleAccountClick(activeAccount));
+        safeInvoke(handleAssetClick, asset);
+        safeInvoke(handleAccountClick, activeAccount);
     },
 
     handleEscrowClick(selectedAccount) {
