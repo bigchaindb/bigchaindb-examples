@@ -12,16 +12,16 @@
     $colorState8: #5bbc50;
 
     $colorList: (
-                    ("available", $colorAvailable),
-                    ("state0", $colorState0),
-                    ("state1", $colorState1),
-                    ("state2", $colorState2),
-                    ("state3", $colorState3),
-                    ("state4", $colorState4),
-                    ("state5", $colorState5),
-                    ("state6", $colorState6),
-                    ("state7", $colorState7),
-                    ("state8", $colorState8)
+        ("available", $colorAvailable),
+        ("state0", $colorState0),
+        ("state1", $colorState1),
+        ("state2", $colorState2),
+        ("state3", $colorState3),
+        ("state4", $colorState4),
+        ("state5", $colorState5),
+        ("state6", $colorState6),
+        ("state7", $colorState7),
+        ("state8", $colorState8)
     );
 
     .Matrix {
@@ -71,7 +71,7 @@
                 border-left-color: rgba($color, 0.6);
                 cursor: pointer;
             }
-            &.transferred {
+            &.inTransfer {
                 background: rgba($color, 0.05);
                 border-left-color: rgba($color, 0.4);
                 cursor: wait;

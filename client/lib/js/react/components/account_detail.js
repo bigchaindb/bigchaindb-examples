@@ -6,12 +6,12 @@ import { Row } from 'react-bootstrap/lib';
 
 const AccountDetail = ({
         account,
-        activeAccount,
+        isActive,
         handleClick
     }) => {
     return (
         <Row
-            className={classnames('list-row', { 'active': activeAccount === account })}
+            className={classnames('list-row', { 'active': isActive })}
             onClick={handleClick}>
             <div className="list-row-name">
                 {account.name}
@@ -25,8 +25,8 @@ const AccountDetail = ({
 
 AccountDetail.propTypes = {
     account: React.PropTypes.object,
-    activeAccount: React.PropTypes.object,
-    handleClick: React.PropTypes.func
+    handleClick: React.PropTypes.func,
+    isActive: React.PropTypes.bool
 };
 
 export default AccountDetail;

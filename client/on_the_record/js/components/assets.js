@@ -11,7 +11,7 @@ const Assets = React.createClass({
 
     propTypes: {
         activeAccount: React.PropTypes.object,
-        assetList: React.PropTypes.object
+        assetList: React.PropTypes.array
     },
 
     getInitialState() {
@@ -22,12 +22,15 @@ const Assets = React.createClass({
         event.preventDefault();
         const { activeAccount } = this.props;
         const { value } = this.state;
+
         const payload = {
             to: activeAccount.vk,
             content: value
         };
         AssetActions.postAsset(payload);
+
         this.setState({ value: null });
+
         Scroll.animateScroll.scrollToBottom();
     },
 
@@ -36,20 +39,24 @@ const Assets = React.createClass({
     },
 
     render() {
-        const { activeAccount, assetList } = this.props;
+        const {
+            activeAccount,
+            assetList
+        } = this.props;
+
         const { value } = this.state;
 
-        if (!activeAccount) {
+        if (!assetList || !activeAccount) {
             return (
                 <div className="content-text">
                     Select account from the list...
                 </div>
             );
         }
+
         return (
             <div>
                 <AssetHistory
-                    activeAccount={activeAccount}
                     assetList={assetList} />
                 <form onSubmit={this.handleInputSubmit}>
                     <input

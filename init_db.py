@@ -30,7 +30,7 @@ APPS = [
     },
     {
         'name': 'sharetrader',
-        'num_accounts': 3,
+        'num_accounts': 5,
         'num_assets': 64,
         'payload_func': (
             lambda i: {

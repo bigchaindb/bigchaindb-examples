@@ -11,6 +11,7 @@ const AssetDetail = React.createClass({
         assetContent: React.PropTypes.string,
         children: React.PropTypes.node,
         className: React.PropTypes.string,
+        inProcess: React.PropTypes.bool,
         onClick: React.PropTypes.func
     },
 
@@ -21,23 +22,17 @@ const AssetDetail = React.createClass({
     },
 
     getAssetContent() {
-        const { asset, assetContent } = this.props;
+        const {
+            asset,
+            assetContent
+        } = this.props;
 
         if (assetContent) {
             return assetContent;
         }
-
+        // TODO: Validate
         const { data: { payload: { content } } = {} } = asset.transaction;
         return content || '-';
-    },
-
-    isAssetInBacklog(asset) {
-        /*
-        Currently we discriminate if an asset is in the
-        backlog or bigchain by checking the assignee field.
-        TODO: have bigchain and backlog keys in assetList
-        */
-        return asset.hasOwnProperty('assignee');
     },
 
     render() {
@@ -45,14 +40,14 @@ const AssetDetail = React.createClass({
             asset,
             children,
             className,
+            inProcess,
             onClick
         } = this.props;
 
         const assetContent = this.getAssetContent();
-        const validGlyph = this.isAssetInBacklog(asset) ? <Glyphicon glyph="cog" />
-                                                        : <Glyphicon glyph="ok" />;
-        const timestamp = moment(parseInt(asset.transaction.timestamp, 10) * 1000)
-            .toDate().toGMTString();
+        const validGlyph = inProcess ? <Glyphicon glyph="cog" /> : <Glyphicon glyph="ok" />;
+        const timestamp =
+            moment(parseInt(asset.transaction.timestamp, 10) * 1000).toDate().toGMTString();
 
         return (
             <Row onClick={onClick}>

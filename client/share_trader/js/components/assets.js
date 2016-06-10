@@ -5,31 +5,31 @@ import Spinner from '../../../lib/js/react/components/spinner';
 
 
 const Assets = ({
-        activeAccount,
-        accountList,
-        assetList,
-        activeAsset,
-        assetClasses,
-        handleAssetClick
-    }) => {
+    accountList,
+    activeAccount,
+    activeAsset,
+    assetClasses,
+    assetList,
+    handleAssetClick
+}) => {
     if (assetList && assetList.length) {
-        // sorting assetList because it might contain entries from different accounts
+        // re-sorting assetList because assets of multiple accounts possible
         return (
             <div>
                 {assetList.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
                     .map((asset) => {
-                        const active = !!activeAsset && activeAsset.id === asset.id;
+                        const isActive = !!activeAsset && activeAsset.id === asset.id;
                         const assetClass = assetClasses[asset.transaction.conditions[0].new_owners[0]];
 
                         return (
                             <AssetRow
                                 key={asset.id}
-                                accountList={active ? accountList : null}
-                                active={active}
-                                activeAccount={active ? activeAccount : null}
+                                accountList={accountList}
+                                activeAccount={activeAccount}
                                 asset={asset}
                                 assetClass={assetClass}
-                                handleAssetClick={handleAssetClick} />
+                                handleAssetClick={handleAssetClick}
+                                isActive={isActive} />
                         );
                     })}
             </div>

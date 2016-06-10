@@ -55,6 +55,10 @@ const OnTheRecord = React.createClass({
             assetMeta
         } = this.state;
 
+        const assetListForAccount = (
+            assetList && activeAccount && Array.isArray(assetList[activeAccount.vk])) ?
+            assetList[activeAccount.vk] : null;
+
         return (
             <div>
                 <Navbar fixedTop inverse>
@@ -78,7 +82,7 @@ const OnTheRecord = React.createClass({
                         <div className="page-content">
                             <Assets
                                 activeAccount={activeAccount}
-                                assetList={assetList} />
+                                assetList={assetListForAccount} />
                         </div>
                     </div>
                 </div>

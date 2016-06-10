@@ -69,9 +69,7 @@ class AccountStore {
             },
         });
 
-        ledger.connect().catch((err) => {
-            console.error(err);
-        });
+        ledger.connect().catch(console.error);
         return ledger;
     }
 

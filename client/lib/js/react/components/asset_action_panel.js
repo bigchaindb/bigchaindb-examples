@@ -5,24 +5,44 @@ import { Button, DropdownButton, MenuItem } from 'react-bootstrap/lib';
 
 const AssetActionPanel = React.createClass({
     propTypes: {
-        accountList: React.PropTypes.array,
-        activeAccount: React.PropTypes.object,
-        handleAccountClick: React.PropTypes.func,
-        handleTransferClick: React.PropTypes.func,
-        selectedAccount: React.PropTypes.object
+        accountList: React.PropTypes.array.isRequired,
+        activeAccount: React.PropTypes.object.isRequired,
+        handleActionClick: React.PropTypes.func.isRequired,
+        actionName: React.PropTypes.string
+    },
+
+    getDefaultProps() {
+        return {
+            actionName: 'TRANSFER'
+        };
+    },
+
+    getInitialState() {
+        return {
+            selectedAccount: null
+        };
+    },
+
+    setSelectedAccount(account) {
+        this.setState({
+            selectedAccount: account
+        });
     },
 
     render() {
         const {
             activeAccount,
-            selectedAccount,
             accountList,
-            handleAccountClick,
-            handleTransferClick
+            actionName,
+            handleActionClick,
         } = this.props;
 
+        const {
+            selectedAccount
+        } = this.state;
+
         const transferButton = selectedAccount ?
-            <Button onClick={handleTransferClick}>TRANSFER</Button> : null;
+            <Button onClick={() => handleActionClick(selectedAccount)}>{actionName}</Button> : null;
 
         return (
             <div className="asset-container-actions">
@@ -32,13 +52,17 @@ const AssetActionPanel = React.createClass({
                     className="filter-dropdown-button"
                     id="bg-nested-dropdown"
                     title={selectedAccount ? selectedAccount.name : 'Select account'}>
-                    {accountList.map((account) => (
-                        <MenuItem
-                            key={account.name}
-                            onClick={() => handleAccountClick(account)}>
-                            {account.name}
-                        </MenuItem>
-                    ))}
+                    {
+                        accountList
+                            .filter((account) => account !== activeAccount)
+                            .map((account) => (
+                                <MenuItem
+                                    key={account.name}
+                                    onClick={() => this.setSelectedAccount(account)}>
+                                    {account.name}
+                                </MenuItem>
+                            ))
+                    }
                 </DropdownButton>
                 {transferButton}
             </div>

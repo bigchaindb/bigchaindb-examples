@@ -7,29 +7,28 @@ import Spinner from '../../../lib/js/react/components/spinner';
 const Assets = ({
         activeAccount,
         accountList,
-        assetListForAccount,
+        assetList,
         activeAsset,
         handleAccountClick,
         handleAssetClick
     }) => {
-    if (assetListForAccount && assetListForAccount.length) {
+    if (assetList && assetList.length) {
         return (
             <div>
-                {assetListForAccount.sort((a, b) => a.transaction.timestamp - b.transaction.timestamp)
-                    .map((asset) => {
-                        const active = (activeAsset) ? activeAsset.id === asset.id : false;
+                {assetList.map((asset) => {
+                    const isActive = !!activeAsset && activeAsset.id === asset.id;
 
-                        return (
-                            <AssetRow
-                                key={asset.id}
-                                accountList={active ? accountList : null}
-                                active={active}
-                                activeAccount={active ? activeAccount : null}
-                                asset={asset}
-                                handleAccountClick={handleAccountClick}
-                                handleAssetClick={handleAssetClick} />
-                        );
-                    })}
+                    return (
+                        <AssetRow
+                            key={asset.id}
+                            accountList={accountList}
+                            activeAccount={activeAccount}
+                            asset={asset}
+                            handleAccountClick={handleAccountClick}
+                            handleAssetClick={handleAssetClick}
+                            isActive={isActive}/>
+                    );
+                })}
             </div>
         );
     } else {
@@ -46,7 +45,7 @@ Assets.propTypes = {
     activeAccount: React.PropTypes.object,
     activeAsset: React.PropTypes.object,
     assetClasses: React.PropTypes.object,
-    assetListForAccount: React.PropTypes.array,
+    assetList: React.PropTypes.array,
     handleAccountClick: React.PropTypes.func,
     handleAssetClick: React.PropTypes.func
 };

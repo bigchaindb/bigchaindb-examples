@@ -11,6 +11,7 @@ const AccountList = React.createClass({
     propTypes: {
         activeAccount: React.PropTypes.object,
         appName: React.PropTypes.string,
+        children: React.PropTypes.node,
         className: React.PropTypes.string,
         handleAccountClick: React.PropTypes.func
     },
@@ -39,7 +40,13 @@ const AccountList = React.createClass({
     },
 
     render() {
-        const { activeAccount, className, handleAccountClick } = this.props;
+        const {
+            activeAccount,
+            children,
+            className,
+            handleAccountClick
+        } = this.props;
+        
         const { accountList } = this.state;
 
         if (accountList && accountList.length > 0) {
@@ -55,9 +62,9 @@ const AccountList = React.createClass({
                             <AccountWrapper
                                 key={account.name}
                                 account={account}
-                                activeAccount={activeAccount}
+                                isActive={activeAccount === account}
                                 handleClick={handleAccountClick}>
-                                {this.props.children}
+                                {children}
                             </AccountWrapper>
                         ))}
                 </div>
@@ -75,9 +82,9 @@ const AccountList = React.createClass({
 const AccountWrapper = React.createClass({
     propTypes: {
         account: React.PropTypes.object,
-        activeAccount: React.PropTypes.object,
         children: React.PropTypes.node,
-        handleClick: React.PropTypes.func
+        handleClick: React.PropTypes.func,
+        isActive: React.PropTypes.bool
     },
 
     handleClick() {
@@ -88,7 +95,7 @@ const AccountWrapper = React.createClass({
     render() {
         const {
             account,
-            activeAccount,
+            isActive,
             children
         } = this.props;
 
@@ -98,7 +105,7 @@ const AccountWrapper = React.createClass({
                     React.Children.map(children, (child) =>
                         React.cloneElement(child, {
                             account,
-                            activeAccount,
+                            isActive,
                             handleClick: this.handleClick
                         })
                     )

@@ -2,45 +2,34 @@ import React from 'react';
 
 import AssetDetail from '../../../lib/js/react/components/asset_detail';
 
-import Spinner from '../../../lib/js/react/components/spinner';
-
 
 const AssetHistory = ({
-        activeAccount,
         assetList
     }) => {
-    if (assetList && Array.isArray(assetList[activeAccount.vk])) {
-        const assetListForAccount = assetList[activeAccount.vk];
-        if (assetListForAccount.length) {
-            return (
-                <div>
-                    {assetListForAccount
-                        .map(asset => (
-                            <AssetDetail
-                                key={asset.id}
-                                asset={asset} />
-                        ))}
-                </div>
-            );
-        } else {
-            return (
-                <div className="content-text">
-                    No messages found in BigchainDB. Start typing...
-                </div>
-            );
-        }
-    } else {
+    if (assetList.length === 0) {
         return (
-            <div style={{ margin: '2em' }}>
-                <Spinner />
+            <div className="content-text">
+                No messages found on BigchainDB. Start typing...
             </div>
         );
     }
+
+    return (
+        <div>
+            {assetList
+                .map(asset => (
+                    // TODO: improve backlog identifier: asset.hasOwnProperty('assignee')
+                    <AssetDetail
+                        key={asset.id}
+                        asset={asset}
+                        inProcess={asset.hasOwnProperty('assignee')} />
+                ))}
+        </div>
+    );
 };
 
 AssetHistory.propTypes = {
-    activeAccount: React.PropTypes.object,
-    assetList: React.PropTypes.object
+    assetList: React.PropTypes.array.isRequired
 };
 
 export default AssetHistory;

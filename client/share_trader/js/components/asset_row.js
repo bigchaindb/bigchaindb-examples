@@ -11,24 +11,17 @@ import AssetDetail from '../../../lib/js/react/components/asset_detail';
 const AssetRow = React.createClass({
     propTypes: {
         accountList: React.PropTypes.array,
-        active: React.PropTypes.bool,
         activeAccount: React.PropTypes.object,
         asset: React.PropTypes.object,
         assetClass: React.PropTypes.string,
-        handleAssetClick: React.PropTypes.func
+        handleAssetClick: React.PropTypes.func,
+        isActive: React.PropTypes.bool
     },
 
     getInitialState() {
         return {
-            selectedAccount: null,
-            transferred: false
+            inTransfer: false
         };
-    },
-
-    setSelectedAccount(account) {
-        this.setState({
-            selectedAccount: account
-        });
     },
 
     handleAssetClick() {
@@ -39,15 +32,11 @@ const AssetRow = React.createClass({
         safeInvoke(handleAssetClick, asset);
     },
 
-    handleTransferClick() {
+    handleTransferClick(selectedAccount) {
         const {
             asset,
             activeAccount
         } = this.props;
-
-        const {
-            selectedAccount
-        } = this.state;
 
         const idToTransfer = {
             txid: asset.id,
@@ -55,8 +44,8 @@ const AssetRow = React.createClass({
         };
 
         const payloadToPost = {
-            source: activeAccount,
-            to: selectedAccount
+            'source': activeAccount,
+            'to': selectedAccount
         };
 
         AssetActions.transferAsset({
@@ -64,34 +53,31 @@ const AssetRow = React.createClass({
             payloadToPost
         });
 
-        this.setState({ transferred: true });
+        this.setState({ inTransfer: true });
     },
 
     render() {
         const {
             asset,
-            active,
             activeAccount,
             accountList,
-            assetClass
+            assetClass,
+            isActive
         } = this.props;
 
         const {
-            selectedAccount,
-            transferred
+            inTransfer
         } = this.state;
 
         const { data: { payload: { content } } = {} } = asset.transaction;
 
         let actionsPanel = null;
-        if (active && activeAccount && activeAccount.vk !== 'all' && accountList && !transferred) {
+        if (isActive && activeAccount && accountList && !inTransfer) {
             actionsPanel = (
                 <AssetActionPanel
                     accountList={accountList}
                     activeAccount={activeAccount}
-                    handleAccountClick={this.setSelectedAccount}
-                    handleTransferClick={this.handleTransferClick}
-                    selectedAccount={selectedAccount} />
+                    handleActionClick={this.handleTransferClick} />
             );
         }
 
@@ -99,7 +85,8 @@ const AssetRow = React.createClass({
             <AssetDetail
                 asset={asset}
                 assetContent={content ? `Row: ${content.y + 1}, Col: ${content.x + 1}` : '-'}
-                className={classnames(assetClass, { transferred, active: active && !transferred })}
+                className={classnames(assetClass, { inTransfer, active: isActive && !inTransfer })}
+                inProcess={inTransfer}
                 onClick={this.handleAssetClick}>
                 {actionsPanel}
             </AssetDetail>
