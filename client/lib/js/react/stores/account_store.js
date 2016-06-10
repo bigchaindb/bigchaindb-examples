@@ -5,7 +5,8 @@ import AccountSource from '../sources/account_source';
 
 import AssetActions from '../actions/asset_actions';
 
-import BigchainDBLedgerPlugin from '../../plugins/bigchaindb_ledgerplugin';
+import connectToBigchainDBLedger from '../../plugins/ledger_utils';
+
 
 class AccountStore {
     constructor() {
@@ -28,8 +29,7 @@ class AccountStore {
 
     onSuccessFetchAccount(account) {
         if (account) {
-            account.ledger = this.connectToLedger(account);
-            this.account = account;
+            this.account = this.postProcessAccount(account);
             this.accountMeta.err = null;
             this.accountMeta.idToFetch = null;
             this.accountMeta.app = null;
@@ -46,11 +46,7 @@ class AccountStore {
     onSuccessFetchAccountList(accountList) {
         if (accountList) {
             this.accountList = accountList.accounts.map((account) => {
-                account.ledger = this.connectToLedger(account);
-                AssetActions.fetchAssetList.defer({
-                    accountToFetch: account.vk
-                });
-                return account;
+                return this.postProcessAccount(account);
             });
             this.accountMeta.err = null;
             this.accountMeta.app = null;
@@ -59,18 +55,12 @@ class AccountStore {
         }
     }
 
-    connectToLedger(account) {
-        const ledger = new BigchainDBLedgerPlugin({
-            auth: {
-                account: {
-                    id: account.vk,
-                    uri: `ws://localhost:8888/users/${account.vk}`
-                }
-            },
+    postProcessAccount(account) {
+        account.ledger = connectToBigchainDBLedger(account.vk);
+        AssetActions.fetchAssetList.defer({
+            accountToFetch: account.vk
         });
-
-        ledger.connect().catch(console.error);
-        return ledger;
+        return account;
     }
 
     onPostAccount(payloadToPost) {

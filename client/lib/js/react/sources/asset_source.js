@@ -21,11 +21,13 @@ const AssetSource = {
     lookupAssetList: {
         remote(state) {
             const { accountToFetch, search } = state.assetMeta;
-            if (accountToFetch === 'all') {
+            if (accountToFetch === null) {
+                // fetch all assets
                 return request('assets', {
                     query: { search }
                 });
             } else {
+                // fetch assets for account
                 return request('assets_for_account', {
                     query: { search },
                     urlTemplateSpec: {
