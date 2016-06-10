@@ -44,8 +44,8 @@ const AssetRow = React.createClass({
         };
 
         const payloadToPost = {
-            'source': activeAccount,
-            'to': selectedAccount
+            source: activeAccount,
+            to: selectedAccount
         };
 
         AssetActions.transferAsset({

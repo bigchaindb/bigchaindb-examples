@@ -2,7 +2,6 @@ import BigchainDBLedgerPlugin from './bigchaindb_ledgerplugin';
 
 
 const connectToBigchainDBLedger = (publicKey) => {
-    console.log(publicKey)
     const ledger = new BigchainDBLedgerPlugin({
         auth: {
             account: {
