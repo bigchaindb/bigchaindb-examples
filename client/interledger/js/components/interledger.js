@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Navbar } from 'react-bootstrap/lib';
 
-import AccountList from '../../../lib/js/react/components/accounts';
+import AccountList from '../../../lib/js/react/components/account_list';
 import AccountDetail from './account_detail';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Row, Col, Button } from 'react-bootstrap/lib';
 
-import AccountList from '../../../lib/js/react/components/accounts';
+import AccountList from '../../../lib/js/react/components/account_list';
 import AccountDetail from '../../../lib/js/react/components/account_detail';
 
 import Assets from './assets';

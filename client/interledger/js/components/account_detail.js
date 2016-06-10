@@ -28,7 +28,7 @@ const AccountDetail = React.createClass({
             handleClick
         } = this.props;
 
-        if (account) {
+        if (account && assetList && Array.isArray(assetList[account.vk])) {
             const assetListForAccount = assetList[account.vk];
             return (
                 <Col
