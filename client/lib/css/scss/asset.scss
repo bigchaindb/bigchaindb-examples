@@ -1,0 +1,32 @@
+@import "variables";
+
+
+.asset-container {
+    border-bottom: 1px solid lighten($fg-color, 50%);
+    border-left: 5px solid transparent;
+    padding: 1em;
+}
+
+.asset-container-actions {
+    margin-top: 1em
+}
+
+.asset-container-id,
+.asset-container-timestamp {
+    font-size: 0.8em;
+    text-transform: uppercase;
+}
+
+.asset-container-id {
+    margin-bottom: 1em;
+    overflow: hidden;
+    font-size: 0.75em;
+    font-style: italic;
+    text-overflow: ellipsis;
+}
+
+.asset-container-timestamp {
+    color: lighten($fg-color, 50%);
+    margin-bottom: -.6em;
+    text-align: right;
+}

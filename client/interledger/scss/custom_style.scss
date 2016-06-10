@@ -3,35 +3,9 @@
 .interledger {
 
     .asset-container {
-        border: 1px solid lighten($fg-color, 70%);
-        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
-        cursor: pointer;
-        margin: 0.3em 0;
-        padding: 0.5em;
-        width: 100%;
-
         &:hover {
-            background: $bg-color--hover;
-            color: $bg-color;
-            .asset-container-timestamp,
-            .asset-container-id {
-                color: $bg-color;
-            }
+            border: 1px solid $ascribe-pink;
         }
-    }
-
-    .asset-container-timestamp,
-    .asset-container-id {
-        color: lighten($fg-color, 50%);
-        font-size: 0.8em;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        text-transform: uppercase;
-    }
-
-    .asset-container-detail {
-        font-size: 1em;
-        text-align: center;
     }
 
     #wrapper {

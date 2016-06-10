@@ -40,7 +40,7 @@ const AssetRow = React.createClass({
             asset,
             activeAccount
         } = this.props;
-        
+
         const idToTransfer = {
             txid: asset.id,
             cid: 0

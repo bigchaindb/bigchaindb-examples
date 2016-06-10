@@ -22,6 +22,7 @@ const AssetHistory = ({
                     <AssetDetail
                         key={asset.id}
                         asset={asset}
+                        className={'pull-right'}
                         inProcess={asset.hasOwnProperty('assignee')} />
                 ))}
         </div>

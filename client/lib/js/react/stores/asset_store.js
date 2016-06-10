@@ -54,6 +54,7 @@ class AssetStore {
                     this.assetList[account] =
                         assets.bigchain
                             .concat(assets.backlog)
+                            .map((asset) => this.postProcessAsset(asset))
                             .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp);
                 }
             }
@@ -64,7 +65,20 @@ class AssetStore {
         }
         this.assetMeta.isFetchingList = false;
     }
-    
+
+    postProcessAsset(asset) {
+        const condition = asset.transaction.conditions[0].condition;
+
+        if (condition.details.hasOwnProperty('subfulfillments') &&
+            condition.details.subfulfillments.length > 1) {
+            asset.type = 'multi-owner';
+        } else {
+            asset.type = 'single-owner';
+        }
+
+        return asset;
+    }
+
     onFlushAssetList(accountToFetch) {
         this.assetList[accountToFetch] = [];
         this.assetMeta.accountToFetch = null;

@@ -85,7 +85,7 @@ const AssetRow = React.createClass({
             <AssetDetail
                 asset={asset}
                 assetContent={content ? `Row: ${content.y + 1}, Col: ${content.x + 1}` : '-'}
-                className={classnames(assetClass, { inTransfer, active: isActive && !inTransfer })}
+                className={classnames(assetClass, { inTransfer, active: isActive && !inTransfer }, 'pull-right')}
                 inProcess={inTransfer}
                 onClick={this.handleAssetClick}>
                 {actionsPanel}

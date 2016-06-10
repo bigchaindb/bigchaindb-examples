@@ -42,13 +42,18 @@ const AssetActionPanel = React.createClass({
         } = this.state;
 
         const transferButton = selectedAccount ?
-            <Button onClick={() => handleActionClick(selectedAccount)}>{actionName}</Button> : null;
+            <Button
+                bsSize="xsmall"
+                onClick={() => handleActionClick(selectedAccount)}>
+                    {actionName}
+            </Button> : null;
 
         return (
             <div className="asset-container-actions">
                 <div>Transfer asset from {activeAccount.name} to:</div>
                 <DropdownButton
                     active
+                    bsSize="xsmall"
                     className="filter-dropdown-button"
                     id="bg-nested-dropdown"
                     title={selectedAccount ? selectedAccount.name : 'Select account'}>

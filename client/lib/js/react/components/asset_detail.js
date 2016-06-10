@@ -15,12 +15,6 @@ const AssetDetail = React.createClass({
         onClick: React.PropTypes.func
     },
 
-    getDefaultProps() {
-        return {
-            className: 'pull-right'
-        };
-    },
-
     getAssetContent() {
         const {
             asset,

@@ -6,24 +6,10 @@
         border: 1px solid lighten($fg-color, 50%);
         border-radius: .7em;
         margin-bottom: .5em;
-        padding: 1em;
-    }
-
-    .asset-container-id,
-    .asset-container-timestamp {
-        color: lighten($fg-color, 50%);
-        font-size: 0.8em;
-        text-transform: uppercase;
     }
 
     .asset-container-id {
-        font-size: 0.75em;
-        font-style: italic;
-        margin-bottom: 1em;
-    }
-
-    .asset-container-timestamp {
-        margin-bottom: -.6em;
+        color: lighten($fg-color, 50%);
     }
 
     .page-content {
