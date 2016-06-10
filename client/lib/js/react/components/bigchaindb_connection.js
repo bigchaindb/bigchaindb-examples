@@ -1,77 +1,91 @@
+import React from 'react';
 
-import { safeMerge } from 'js-utility-belt/es6';
+import { safeInvoke, safeMerge } from 'js-utility-belt/es6';
 
 import AssetStore from '../stores/asset_store';
 import AccountStore from '../stores/account_store';
 
 
-const BigchainDBMixin = {
-    getInitialState() {
-        const accountStore = AccountStore.getState();
-        const assetStore = AssetStore.getState();
+export default function BigchainDBConnection(Component) {
+    return React.createClass({
+        displayName: `BigchainDBConnection(${Component.displayName || Component})`,
 
-        return safeMerge(
-            {
-                activeAccount: null,
-                activeAsset: null
-            },
-            accountStore,
-            assetStore
-        );
-    },
+        getInitialState() {
+            const accountStore = AccountStore.getState();
+            const assetStore = AssetStore.getState();
 
-    componentDidMount() {
-        AccountStore.listen(this.onAccountStoreChange);
-        AssetStore.listen(this.onChange);
-    },
+            return safeMerge(
+                {
+                    activeAccount: null,
+                    activeAsset: null
+                },
+                accountStore,
+                assetStore
+            );
+        },
 
-    componentWillUnmount() {
-        AccountStore.unlisten(this.onAccountStoreChange);
-        AssetStore.unlisten(this.onChange);
-    },
+        componentDidMount() {
+            AccountStore.listen(this.onAccountStoreChange);
+            AssetStore.listen(this.onChange);
+        },
 
-    onChange(state) {
-        this.setState(state);
-    },
+        componentWillUnmount() {
+            AccountStore.unlisten(this.onAccountStoreChange);
+            AssetStore.unlisten(this.onChange);
+        },
 
-    onAccountStoreChange(state) {
-        const oldAccountList = this.state.accountList;
-        state.accountList.forEach((account) => {
-            if (account.ledger &&
-                (!oldAccountList ||
-                 (oldAccountList && oldAccountList.indexOf(account) === -1))) {
-                account.ledger.on('incoming', this.handleLedgerChanges);
-            }
-        });
+        onChange(state) {
+            this.setState(state);
+        },
 
-        this.setState(state);
-    },
-
-    handleAccountChange(account) {
-        this.setState({
-            activeAccount: account
-        });
-    },
-
-    resetActiveAccount() {
-        this.handleAccountChange(null);
-    },
-
-    handleLedgerChanges(changes) {
-        console.log('incoming: ', changes);
-
-        if (changes && changes.client) {
-            this.fetchAssetList({
-                accountToFetch: changes.client
+        onAccountStoreChange(state) {
+            const { oldAccountList } = this.state;
+            state.accountList.forEach((account) => {
+                if (account.ledger &&
+                    (!oldAccountList ||
+                     (oldAccountList && oldAccountList.indexOf(account) === -1))) {
+                    account.ledger.on('incoming', this.handleLedgerChanges);
+                }
             });
+
+            this.setState(state);
+        },
+
+        handleAccountChange(activeAccount) {
+            this.setState({
+                activeAccount
+            });
+        },
+
+        handleLedgerChanges(changes) {
+            console.log('incoming: ', changes);
+
+            if (changes && changes.client && this.refs.component) {
+                safeInvoke(this.refs.component.fetchAssetList, {
+                    accountToFetch: changes.client
+                });
+            }
+        },
+
+        handleAssetChange(asset) {
+            this.setState({
+                activeAsset: asset
+            });
+        },
+
+        resetActiveAccount() {
+            this.handleAccountChange(null);
+        },
+
+        render() {
+            return (
+                <Component
+                    ref="component"
+                    {...this.state}
+                    handleAccountChange={this.handleAccountChange}
+                    handleAssetChange={this.handleAssetChange}
+                    resetActiveAccount={this.resetActiveAccount} />
+            );
         }
-    },
-
-    handleAssetChange(asset) {
-        this.setState({
-            activeAsset: asset
-        });
-    }
-};
-
-export default BigchainDBMixin;
+    });
+}
