@@ -3,9 +3,26 @@
 .interledger {
 
     .asset-container {
+        border: 1px solid lighten($fg-color, 70%);
+        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+        margin-top: 1em;
+
         &:hover {
             border: 1px solid $ascribe-pink;
+            cursor: pointer;
         }
+    }
+
+    .asset-container-actions {
+        margin-top: 1.7em
+    }
+
+    .asset-container-id {
+        color: lighten($fg-color, 50%);
+    }
+
+    .card {
+        overflow: visible;
     }
 
     #wrapper {

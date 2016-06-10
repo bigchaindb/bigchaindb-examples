@@ -9,6 +9,7 @@ from decorator import contextmanager
 
 import bigchaindb
 import bigchaindb.util
+import bigchaindb.crypto
 
 
 @contextmanager
@@ -35,16 +36,15 @@ def query_reql_response(response, query):
 
 
 def get_owned_assets(bigchain, vk, query=None, table='bigchain'):
-
     assets = []
     asset_ids = bigchain.get_owned_ids(vk)
 
     if table == 'backlog':
         reql_query = \
             r.table(table) \
-            .filter(lambda tx: tx['transaction']['conditions']
-                    .contains(lambda c: c['new_owners']
-                              .contains(vk)))
+                .filter(lambda tx: tx['transaction']['conditions']
+                        .contains(lambda c: c['new_owners']
+                                  .contains(vk)))
         response = query_reql_response(reql_query.run(bigchain.conn), query)
         if response:
             assets += response
@@ -53,7 +53,7 @@ def get_owned_assets(bigchain, vk, query=None, table='bigchain'):
         for asset_id in asset_ids:
             txid = asset_id['txid'] if isinstance(asset_id, dict) else asset_id
 
-            reql_query = r.table(table)\
+            reql_query = r.table(table) \
                 .concat_map(lambda doc: doc['block']['transactions']) \
                 .filter(lambda transaction: transaction['id'] == txid)
             response = query_reql_response(reql_query.run(bigchain.conn), query)
@@ -66,15 +66,15 @@ def get_owned_assets(bigchain, vk, query=None, table='bigchain'):
 def get_assets(bigchain, search):
     if search:
         cursor = \
-            r.table('bigchain')\
-            .concat_map(lambda doc: doc["block"]["transactions"]
-                        .filter(lambda transaction: transaction["transaction"]["data"]["payload"]["content"]
-                                .match(search)))\
-            .run(bigchain.conn)
+            r.table('bigchain') \
+                .concat_map(lambda doc: doc["block"]["transactions"]
+                            .filter(lambda transaction: transaction["transaction"]["data"]["payload"]["content"]
+                                    .match(search))) \
+                .run(bigchain.conn)
     else:
         cursor = \
             r.table('bigchain') \
-            .concat_map(lambda doc: doc["block"]["transactions"]).run(bigchain.conn)
+                .concat_map(lambda doc: doc["block"]["transactions"]).run(bigchain.conn)
     return list(cursor)
 
 
@@ -169,4 +169,50 @@ def escrow_asset(bigchain, source, to, asset_id, sk):
     # sign transaction
     asset_escrow_signed = bigchain.sign_transaction(asset_escrow, sk)
     bigchain.write_transaction(asset_escrow_signed)
-    return asset_escrow
+    return asset_escrow_signed
+
+
+def fulfill_escrow_asset(bigchain, source, to, asset_id, sk):
+    asset = bigchain.get_transaction(asset_id['txid'])
+
+    asset_new_owners = asset['transaction']['conditions'][0]['new_owners']
+
+    # Create a base template for fulfill transaction
+    asset_escrow_fulfill = bigchain.create_transaction(asset_new_owners, to, asset_id, 'TRANSFER',
+                                                       payload=asset['transaction']['data']['payload'])
+
+    # Parse the threshold cryptocondition
+    escrow_fulfillment = cc.Fulfillment.from_json(
+        asset['transaction']['conditions'][0]['condition']['details'])
+
+    subfulfillment_user1 = escrow_fulfillment.get_subcondition_from_vk(asset_new_owners[0])[0]
+    subfulfillment_user2 = escrow_fulfillment.get_subcondition_from_vk(asset_new_owners[1])[0]
+    subfulfillment_timeout = escrow_fulfillment.subconditions[0]['body'].subconditions[1]['body']
+    subfulfillment_timeout_inverted = escrow_fulfillment.subconditions[1]['body'].subconditions[1]['body']
+
+    # Get the fulfillment message to sign
+    tx_escrow_execute_fulfillment_message = \
+        bigchaindb.util.get_fulfillment_message(asset_escrow_fulfill,
+                                                asset_escrow_fulfill['transaction']['fulfillments'][0],
+                                                serialized=True)
+
+    escrow_fulfillment.subconditions = []
+
+    # fulfill execute branch
+    fulfillment_execute = cc.ThresholdSha256Fulfillment(threshold=2)
+    subfulfillment_user2.sign(tx_escrow_execute_fulfillment_message, bigchaindb.crypto.SigningKey(sk))
+    fulfillment_execute.add_subfulfillment(subfulfillment_user2)
+    fulfillment_execute.add_subfulfillment(subfulfillment_timeout)
+    escrow_fulfillment.add_subfulfillment(fulfillment_execute)
+
+    # do not fulfill abort branch
+    condition_abort = cc.ThresholdSha256Fulfillment(threshold=2)
+    condition_abort.add_subfulfillment(subfulfillment_user1)
+    condition_abort.add_subfulfillment(subfulfillment_timeout_inverted)
+    escrow_fulfillment.add_subcondition(condition_abort.condition)
+
+    # create fulfillment and append to transaction
+    asset_escrow_fulfill['transaction']['fulfillments'][0]['fulfillment'] = escrow_fulfillment.serialize_uri()
+
+    bigchain.write_transaction(asset_escrow_fulfill)
+    return asset_escrow_fulfill

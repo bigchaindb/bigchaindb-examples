@@ -52,7 +52,7 @@ const AssetDetail = React.createClass({
                     <div className="asset-container-detail">
                         {assetContent}
                     </div>
-                    <div className="asset-container-timestamp pull-right">
+                    <div className="asset-container-timestamp">
                         {`${timestamp}   `}{validGlyph}
                     </div>
                     {children}

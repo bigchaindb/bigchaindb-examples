@@ -103,6 +103,12 @@ class AssetStore {
         this.getInstance().escrowAsset();
     }
 
+    onFulfillEscrowAsset({ idToTransfer, payloadToPost }) {
+        this.assetMeta.idToTransfer = idToTransfer;
+        this.assetMeta.payloadToPost = payloadToPost;
+        this.getInstance().fulfillEscrowAsset();
+    }
+
     onSuccessPostAsset(asset) {
         if (asset) {
             this.asset = asset;
