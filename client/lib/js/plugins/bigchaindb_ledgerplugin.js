@@ -4,7 +4,7 @@ import reconnectCore from 'reconnect-core';
 import EventEmitter2 from 'eventemitter2';
 import SimpleWebsocket from 'simple-websocket';
 
-import request from '../../utils/request';
+import request from '../utils/request';
 
 class BigchainDBLedgerPlugin extends EventEmitter2 {
 
