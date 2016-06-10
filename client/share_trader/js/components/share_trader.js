@@ -9,12 +9,20 @@ import AssetMatrix from './asset_matrix';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 
-import BigchainDBMixin from '../../../lib/js/react/mixins/bigchaindb_mixin';
+import BigchainDBConnection from '../../../lib/js/react/components/bigchaindb_connection';
 
 
 const ShareTrader = React.createClass({
-
-    mixins: [BigchainDBMixin],
+    propTypes: {
+        // Injected through BigchainDBConnection
+        accountList: React.PropTypes.array,
+        activeAccount: React.PropTypes.object,
+        activeAsset: React.PropTypes.object,
+        assetList: React.PropTypes.object,
+        handleAccountChange: React.PropTypes.func,
+        handleAssetChange: React.PropTypes.func,
+        resetActiveAccount: React.PropTypes.func
+    },
 
     fetchAssetList({ accountToFetch }) {
         AssetActions.fetchAssetList({
@@ -48,8 +56,11 @@ const ShareTrader = React.createClass({
             activeAccount,
             accountList,
             activeAsset,
-            assetList
-        } = this.state;
+            assetList,
+            handleAccountChange,
+            handleAssetChange,
+            resetActiveAccount
+        } = this.props;
 
         const states = this.mapAccountsOnStates(accountList);
         const assetListForAccount =
@@ -66,7 +77,7 @@ const ShareTrader = React.createClass({
                         <div className="sidebar-nav">
                             <div style={{ textAlign: 'center' }}>
                                 <Button
-                                    onClick={this.resetActiveAccount}>
+                                    onClick={resetActiveAccount}>
                                     Select All
                                 </Button>
                             </div>
@@ -74,7 +85,7 @@ const ShareTrader = React.createClass({
                             <AccountList
                                 activeAccount={activeAccount}
                                 appName="sharetrader"
-                                handleAccountClick={this.handleAccountChange}>
+                                handleAccountClick={handleAccountChange}>
                                 <AccountDetail />
                             </AccountList>
                         </div>
@@ -88,7 +99,7 @@ const ShareTrader = React.createClass({
                                             <AssetMatrix
                                                 assetList={assetListForAccount}
                                                 cols={8}
-                                                handleAssetClick={this.handleAssetChange}
+                                                handleAssetClick={handleAssetChange}
                                                 rows={8}
                                                 states={states} />
                                         </div>
@@ -101,7 +112,7 @@ const ShareTrader = React.createClass({
                                         activeAsset={activeAsset}
                                         assetClasses={states}
                                         assetList={assetListForAccount}
-                                        handleAssetClick={this.handleAssetChange} />
+                                        handleAssetClick={handleAssetChange} />
                                 </Col>
                             </Row>
                         </div>
@@ -112,4 +123,4 @@ const ShareTrader = React.createClass({
     }
 });
 
-export default ShareTrader;
+export default BigchainDBConnection(ShareTrader);

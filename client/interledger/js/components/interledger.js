@@ -7,12 +7,19 @@ import AccountDetail from './account_detail';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 
-import BigchainDBMixin from '../../../lib/js/react/mixins/bigchaindb_mixin';
+import BigchainDBConnection from '../../../lib/js/react/components/bigchaindb_connection';
 
 
 const Interledger = React.createClass({
-
-    mixins: [BigchainDBMixin],
+    propTypes: {
+        // Injected through BigchainDBConnection
+        accountList: React.PropTypes.array,
+        activeAccount: React.PropTypes.object,
+        activeAsset: React.PropTypes.object,
+        assetList: React.PropTypes.object,
+        handleAccountChange: React.PropTypes.func,
+        handleAssetChange: React.PropTypes.func
+    },
 
     fetchAssetList({ accountToFetch }) {
         if (accountToFetch) {
@@ -27,8 +34,10 @@ const Interledger = React.createClass({
             accountList,
             activeAccount,
             activeAsset,
-            assetList
-        } = this.state;
+            assetList,
+            handleAccountChange,
+            handleAssetChange
+        } = this.props;
 
         return (
             <div>
@@ -42,12 +51,12 @@ const Interledger = React.createClass({
                                 activeAccount={activeAccount}
                                 appName="interledger"
                                 className="row"
-                                handleAccountClick={this.handleAccountChange} >
+                                handleAccountClick={handleAccountChange}>
                                 <AccountDetail
                                     accountList={accountList}
                                     activeAsset={activeAsset}
                                     assetList={assetList}
-                                    handleAssetClick={this.handleAssetChange} />
+                                    handleAssetClick={handleAssetChange} />
                             </AccountList>
                         </div>
                     </div>
@@ -57,4 +66,4 @@ const Interledger = React.createClass({
     }
 });
 
-export default Interledger;
+export default BigchainDBConnection(Interledger);

@@ -12,12 +12,23 @@ import Search from '../../../lib/js/react/components/search';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 
-import BigchainDBMixin from '../../../lib/js/react/mixins/bigchaindb_mixin';
+import BigchainDBConnection from '../../../lib/js/react/components/bigchaindb_connection';
 
 
 const OnTheRecord = React.createClass({
+    propTypes: {
+        // Injected through BigchainDBConnection
+        activeAccount: React.PropTypes.object,
+        assetList: React.PropTypes.object,
+        assetMeta: React.PropTypes.object,
+        handleAccountChange: React.PropTypes.func
+    },
 
-    mixins: [BigchainDBMixin],
+    getInitialState() {
+        return {
+            search: null
+        };
+    },
 
     fetchAssetList({ accountToFetch, search }) {
         if (accountToFetch) {
@@ -31,12 +42,12 @@ const OnTheRecord = React.createClass({
     },
 
     handleAccountChangeAndScroll(account) {
-        this.handleAccountChange(account);
+        this.props.handleAccountChange(account);
         Scroll.animateScroll.scrollToBottom();
     },
 
     handleSearch(query) {
-        const { activeAccount } = this.state;
+        const { activeAccount } = this.props;
 
         this.setState({
             search: query
@@ -53,7 +64,7 @@ const OnTheRecord = React.createClass({
             activeAccount,
             assetList,
             assetMeta
-        } = this.state;
+        } = this.props;
 
         const assetListForAccount = (
             assetList && activeAccount && Array.isArray(assetList[activeAccount.vk])) ?
@@ -73,7 +84,7 @@ const OnTheRecord = React.createClass({
                             <AccountList
                                 activeAccount={activeAccount}
                                 appName="ontherecord"
-                                handleAccountClick={this.handleAccountChangeAndScroll} >
+                                handleAccountClick={this.handleAccountChangeAndScroll}>
                                 <AccountDetail />
                             </AccountList>
                         </div>
@@ -92,4 +103,4 @@ const OnTheRecord = React.createClass({
 });
 
 
-export default OnTheRecord;
+export default BigchainDBConnection(OnTheRecord);
