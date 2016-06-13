@@ -22,7 +22,7 @@ def create_app(debug):
     CORS(app,
          origins=("^(https?://)?(www\.)?(" +
                   os.environ.get('DOCKER_MACHINE_IP', 'localhost') +
-                  "0|0.0.0.0|dimi-bat.local|localhost|127.0.0.1)(\.com)?:\d{1,5}$"),
+                  "|0|0.0.0.0|dimi-bat.local|localhost|127.0.0.1)(\.com)?:\d{1,5}$"),
          headers=(
             'x-requested-with',
             'content-type',

@@ -15,9 +15,6 @@ require('dotenv').load({ path: '../.env', silent: true });
 const PRODUCTION = process.env.NODE_ENV === 'production';
 const EXTRACT = process.env.NODE_ENV === 'extract';
 
-const FLASK_BASE_URL = process.env.FLASK_HOST && process.env.FLASK_PORT &&
-                       `http://${process.env.FLASK_HOST}:${process.env.FLASK_PORT}`;
-
 const PATHS = {
     ON_THE_RECORD: path.resolve(__dirname, 'on_the_record/js/app.js'),
     SHARE_TRADER: path.resolve(__dirname, 'share_trader/js/app.js'),
@@ -48,7 +45,10 @@ const ENTRY_NAMES = {
 const DEFINITIONS = {
     'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
-        FLASK_BASE_URL: JSON.stringify(FLASK_BASE_URL || 'http://localhost:8000'),
+        FLASK_BASE_URL: JSON.stringify(`http://${process.env.FLASK_HOST || 'localhost'}:` +
+                                       `${process.env.FLASK_PORT || '8000'}`),
+        TORNADO_BASE_URL: JSON.stringify(`ws://${process.env.TORNADO_HOST || 'localhost'}:` +
+                                         `${process.env.TORNADO_PORT || '8888'}`),
     },
 };
 

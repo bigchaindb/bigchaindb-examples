@@ -1,4 +1,5 @@
 import functools
+import os
 
 from tornado import websocket, web, ioloop
 from tornado.gen import coroutine
@@ -79,7 +80,7 @@ app = web.Application([
 ])
 
 if __name__ == '__main__':
-    app.listen(8888)
+    app.listen(os.environ.get('TORNADO_PORT', 8888), address=os.environ.get('TORNADO_HOST', '127.0.0.1'))
     # TODO: use split changefeed for backlog and bigchain
     ioloop.IOLoop.current().add_callback(functools.partial(print_changes, 'backlog'))
     ioloop.IOLoop.current().add_callback(functools.partial(print_changes, 'bigchain'))
