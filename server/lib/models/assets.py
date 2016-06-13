@@ -127,3 +127,46 @@ def transfer_asset(bigchain, source, to, asset_id, sk):
     bigchain.validate_transaction(asset_transfer_signed)
     bigchain.write_transaction(asset_transfer_signed)
     return asset_transfer_signed
+
+
+def escrow_asset(bigchain, source, to, asset_id, sk):
+    asset = bigchain.get_transaction(asset_id['txid'])
+    # Create escrow template with the execute and abort address
+    asset_escrow = bigchain.create_transaction(source, [source, to], asset_id, 'TRANSFER',
+                                               payload=asset['transaction']['data']['payload'])
+
+    # Set expiry time (100 secs from now)
+    time_sleep = 100
+    time_expire = str(float(bigchaindb.util.timestamp()) + time_sleep)
+
+    # Create escrow and timeout condition
+    condition_escrow = cc.ThresholdSha256Fulfillment(threshold=1)  # OR Gate
+    condition_timeout = cc.TimeoutFulfillment(expire_time=time_expire)  # only valid if now() <= time_expire
+    condition_timeout_inverted = cc.InvertedThresholdSha256Fulfillment(threshold=1)
+    condition_timeout_inverted.add_subfulfillment(condition_timeout)
+
+    # Create execute branch
+    condition_execute = cc.ThresholdSha256Fulfillment(threshold=2)  # AND gate
+    condition_execute.add_subfulfillment(cc.Ed25519Fulfillment(public_key=to))  # execute address
+    condition_execute.add_subfulfillment(condition_timeout)  # federation checks on expiry
+    condition_escrow.add_subfulfillment(condition_execute)
+
+    # Create abort branch
+    condition_abort = cc.ThresholdSha256Fulfillment(threshold=2)  # AND gate
+    condition_abort.add_subfulfillment(cc.Ed25519Fulfillment(public_key=source))  # abort address
+    condition_abort.add_subfulfillment(condition_timeout_inverted)
+    condition_escrow.add_subfulfillment(condition_abort)
+
+    # Update the condition in the newly created transaction
+    asset_escrow['transaction']['conditions'][0]['condition'] = {
+        'details': json.loads(condition_escrow.serialize_json()),
+        'uri': condition_escrow.condition.serialize_uri()
+    }
+
+    # conditions have been updated, so hash needs updating
+    asset_escrow['id'] = bigchaindb.util.get_hash_data(asset_escrow)
+
+    # sign transaction
+    asset_escrow_signed = bigchain.sign_transaction(asset_escrow, sk)
+    bigchain.write_transaction(asset_escrow_signed)
+    return asset_escrow

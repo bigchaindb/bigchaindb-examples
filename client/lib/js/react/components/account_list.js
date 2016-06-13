@@ -1,13 +1,9 @@
 import React from 'react';
-
-import { Row } from 'react-bootstrap/lib';
-
+import { safeInvoke } from 'js-utility-belt/es6';
 import classnames from 'classnames';
 
 import AccountActions from '../actions/account_actions';
 import AccountStore from '../stores/account_store';
-
-import BigchainDBLedgerPlugin from './bigchaindb_ledgerplugin';
 
 import Spinner from './spinner';
 
@@ -15,6 +11,7 @@ const AccountList = React.createClass({
     propTypes: {
         activeAccount: React.PropTypes.object,
         appName: React.PropTypes.string,
+        children: React.PropTypes.node,
         className: React.PropTypes.string,
         handleAccountClick: React.PropTypes.func
     },
@@ -31,7 +28,7 @@ const AccountList = React.createClass({
     componentWillUnmount() {
         AccountStore.unlisten(this.onChange);
     },
-    
+
     onChange(state) {
         this.setState(state);
     },
@@ -41,9 +38,15 @@ const AccountList = React.createClass({
         AccountActions.flushAccountList();
         AccountActions.fetchAccountList({ app: appName });
     },
-    
+
     render() {
-        const { activeAccount, className, handleAccountClick } = this.props;
+        const {
+            activeAccount,
+            children,
+            className,
+            handleAccountClick
+        } = this.props;
+        
         const { accountList } = this.state;
 
         if (accountList && accountList.length > 0) {
@@ -56,11 +59,13 @@ const AccountList = React.createClass({
                             return 0;
                         })
                         .map(account => (
-                            <AccountRow
+                            <AccountWrapper
                                 key={account.name}
                                 account={account}
-                                activeAccount={activeAccount}
-                                handleClick={handleAccountClick} />
+                                isActive={activeAccount === account}
+                                handleClick={handleAccountClick}>
+                                {children}
+                            </AccountWrapper>
                         ))}
                 </div>
             );
@@ -74,51 +79,37 @@ const AccountList = React.createClass({
     }
 });
 
-const AccountRow = React.createClass({
+const AccountWrapper = React.createClass({
     propTypes: {
         account: React.PropTypes.object,
-        activeAccount: React.PropTypes.object,
-        handleClick: React.PropTypes.func
+        children: React.PropTypes.node,
+        handleClick: React.PropTypes.func,
+        isActive: React.PropTypes.bool
     },
-    
-    connectToLedger() {
-        const { account } = this.props;
-        return new BigchainDBLedgerPlugin({
-            auth: {
-                account: {
-                    id: account.vk,
-                    uri: 'ws://localhost:8888/users/' + account.vk
-                }
-            },
-        });
-    },
-    
+
     handleClick() {
         const { account, handleClick } = this.props;
-        const ledger = this.connectToLedger(account);
-        ledger.connect().catch((err) => {
-            console.error((err && err.stack) ? err.stack : err);
-        });
-
-        handleClick(account, ledger);
+        safeInvoke(handleClick, account);
     },
 
     render() {
-        const { account, activeAccount } = this.props;
+        const {
+            account,
+            isActive,
+            children
+        } = this.props;
 
         return (
-            <div
-                className={classnames('list-row', { 'active': activeAccount === account })}
-                onClick={this.handleClick}
-                tabIndex={0} >
-                <Row>
-                    <div className="list-row-name">
-                        {account.name}
-                    </div>
-                    <div className="list-row-detail">
-                        {account.vk}
-                    </div>
-                </Row>
+            <div>
+                {
+                    React.Children.map(children, (child) =>
+                        React.cloneElement(child, {
+                            account,
+                            isActive,
+                            handleClick: this.handleClick
+                        })
+                    )
+                }
             </div>
         );
     }

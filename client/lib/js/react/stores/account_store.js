@@ -1,8 +1,11 @@
 import alt from '../alt';
 
 import AccountActions from '../actions/account_actions';
-
 import AccountSource from '../sources/account_source';
+
+import AssetActions from '../actions/asset_actions';
+
+import connectToBigchainDBLedger from '../../plugins/ledger_utils';
 
 
 class AccountStore {
@@ -26,7 +29,7 @@ class AccountStore {
 
     onSuccessFetchAccount(account) {
         if (account) {
-            this.account = account;
+            this.account = this.postProcessAccount(account);
             this.accountMeta.err = null;
             this.accountMeta.idToFetch = null;
             this.accountMeta.app = null;
@@ -42,12 +45,22 @@ class AccountStore {
 
     onSuccessFetchAccountList(accountList) {
         if (accountList) {
-            this.accountList = accountList.accounts;
+            this.accountList = accountList.accounts.map((account) => {
+                return this.postProcessAccount(account);
+            });
             this.accountMeta.err = null;
             this.accountMeta.app = null;
         } else {
             this.accountMeta.err = new Error('Problem fetching the account list');
         }
+    }
+
+    postProcessAccount(account) {
+        account.ledger = connectToBigchainDBLedger(account.vk);
+        AssetActions.fetchAssetList.defer({
+            accountToFetch: account.vk
+        });
+        return account;
     }
 
     onPostAccount(payloadToPost) {

@@ -5,8 +5,12 @@ import classNames from 'classnames';
 const Spinner = React.createClass({
     propTypes: {
         classNames: React.PropTypes.string,
-        color: React.PropTypes.oneOf(['black', 'blue', 'dark-blue', 'light-blue', 'pink', 'white', 'loop']),
-        size: React.PropTypes.oneOf(['sm', 'md', 'lg'])
+        color: React.PropTypes.oneOf(
+            ['black', 'blue', 'dark-blue', 'light-blue', 'pink', 'white', 'loop']
+        ),
+        size: React.PropTypes.oneOf(
+            ['sm', 'md', 'lg']
+        )
     },
 
     getDefaultProps() {
@@ -18,7 +22,11 @@ const Spinner = React.createClass({
     },
 
     render() {
-        const { classNames: classes, color, size } = this.props;
+        const {
+            classNames: classes,
+            color,
+            size
+        } = this.props;
 
         return (
             <div

@@ -1,14 +1,12 @@
 import alt from '../alt';
 
 import AssetActions from '../actions/asset_actions';
-
 import AssetSource from '../sources/asset_source';
-
 
 class AssetStore {
     constructor() {
         this.asset = null;
-        this.assetList = null;
+        this.assetList = {};
         this.assetMeta = {
             err: null,
             isFetchingList: false,
@@ -38,8 +36,9 @@ class AssetStore {
         }
     }
 
-    onFetchAssetList({ accountToFetch, search }) {
-        if (!this.assetMeta.isFetchingList) {
+    onFetchAssetList({ accountToFetch, search, blockWhenFetching }) {
+        if (!blockWhenFetching ||
+            (blockWhenFetching && !this.assetMeta.isFetchingList)) {
             this.assetMeta.accountToFetch = accountToFetch;
             this.assetMeta.search = search;
             this.assetMeta.isFetchingList = true;
@@ -49,24 +48,27 @@ class AssetStore {
 
     onSuccessFetchAssetList(assetList) {
         if (assetList) {
-            const { assets } = assetList;
-
-            if (this.assetMeta.accountToFetch) {
-                if (assets && Object.keys(assets).indexOf('bigchain') > -1) {
-                    this.assetList = assets.bigchain.concat(assets.backlog);
+            const { assets, account } = assetList;
+            if (account && assets) {
+                if (assets.hasOwnProperty('bigchain')) {
+                    this.assetList[account] =
+                        assets.bigchain
+                            .concat(assets.backlog)
+                            .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp);
                 }
-            } else {
-                this.assetList = assets.filter((asset) => (
-                    asset.transaction.data.payload.app === 'sharetrader'
-                ));
             }
-
             this.assetMeta.err = null;
             this.assetMeta.accountToFetch = null;
-            this.assetMeta.search = null;
         } else {
             this.assetMeta.err = new Error('Problem fetching the asset list');
         }
+        this.assetMeta.isFetchingList = false;
+    }
+    
+    onFlushAssetList(accountToFetch) {
+        this.assetList[accountToFetch] = [];
+        this.assetMeta.accountToFetch = null;
+        this.assetMeta.search = null;
         this.assetMeta.isFetchingList = false;
     }
 
@@ -79,6 +81,12 @@ class AssetStore {
         this.assetMeta.idToTransfer = idToTransfer;
         this.assetMeta.payloadToPost = payloadToPost;
         this.getInstance().transferAsset();
+    }
+
+    onEscrowAsset({ idToTransfer, payloadToPost }) {
+        this.assetMeta.idToTransfer = idToTransfer;
+        this.assetMeta.payloadToPost = payloadToPost;
+        this.getInstance().escrowAsset();
     }
 
     onSuccessPostAsset(asset) {

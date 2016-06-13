@@ -1,13 +1,11 @@
 import React from 'react';
-
 import Matrix from 'react-matrix';
-
-import AssetStore from '../../../lib/js/react/stores/asset_store';
-
+import { safeInvoke } from 'js-utility-belt/es6';
 
 const AssetMatrix = React.createClass({
 
     propTypes: {
+        assetList: React.PropTypes.array,
         cols: React.PropTypes.number,
         handleAssetClick: React.PropTypes.func,
         rows: React.PropTypes.number,
@@ -34,22 +32,6 @@ const AssetMatrix = React.createClass({
         };
     },
 
-    getInitialState() {
-        return AssetStore.getState();
-    },
-
-    componentDidMount() {
-        AssetStore.listen(this.onChange);
-    },
-
-    componentWillUnmount() {
-        AssetStore.unlisten(this.onChange);
-    },
-
-    onChange(state) {
-        this.setState(state);
-    },
-
     initializeMatrix(rows, cols) {
         const matrix = new Array(cols);
 
@@ -74,29 +56,29 @@ const AssetMatrix = React.createClass({
         return matrix;
     },
 
-
     getAssetListContent() {
-        const { assetList } = this.state;
+        const { assetList } = this.props;
 
-        if (!assetList) {
-            return [];
+        if (assetList) {
+            return assetList.map((asset) => ({
+                vk: asset.transaction.conditions[0].new_owners[0],
+                x: asset.transaction.data.payload.content.x,
+                y: asset.transaction.data.payload.content.y
+            }));
         }
-
-        return assetList.map((asset) => ({
-            vk: asset.transaction.conditions[0].new_owners[0],
-            x: asset.transaction.data.payload.content.x,
-            y: asset.transaction.data.payload.content.y
-        }));
+        return [];
     },
 
     getAssetForCell(x, y) {
-        const { assetList } = this.state;
+        const { assetList } = this.props;
 
-        for (const asset of assetList) {
-            const content = asset.transaction.data.payload.content;
+        if (assetList) {
+            for (const asset of assetList) {
+                const content = asset.transaction.data.payload.content;
 
-            if (content.x === x && content.y === y) {
-                return asset;
+                if (content.x === x && content.y === y) {
+                    return asset;
+                }
             }
         }
 
@@ -110,11 +92,14 @@ const AssetMatrix = React.createClass({
         const y = parseInt(cellState.y, 10);
 
         const activeAsset = this.getAssetForCell(x, y);
-        handleAssetClick(activeAsset);
+        safeInvoke(handleAssetClick, activeAsset);
     },
 
     render() {
-        const { squareSize, states } = this.props;
+        const {
+            squareSize,
+            states
+        } = this.props;
 
         return (
             <div style={{ textAlign: 'center' }}>

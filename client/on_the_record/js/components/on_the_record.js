@@ -4,88 +4,50 @@ import { Navbar } from 'react-bootstrap/lib';
 
 import Scroll from 'react-scroll';
 
-import { safeMerge } from 'js-utility-belt/es6';
+import AccountList from '../../../lib/js/react/components/account_list';
+import AccountDetail from '../../../lib/js/react/components/account_detail';
 
-import AccountList from '../../../lib/js/react/components/accounts';
 import Assets from './assets';
 import Search from '../../../lib/js/react/components/search';
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
-import AssetStore from '../../../lib/js/react/stores/asset_store';
+
+import BigchainDBConnection from '../../../lib/js/react/components/bigchaindb_connection';
+
 
 const OnTheRecord = React.createClass({
+    propTypes: {
+        // Injected through BigchainDBConnection
+        activeAccount: React.PropTypes.object,
+        assetList: React.PropTypes.object,
+        assetMeta: React.PropTypes.object,
+        handleAccountChange: React.PropTypes.func
+    },
 
     getInitialState() {
-        const assetStore = AssetStore.getState();
-
-        return safeMerge(
-            {
-                activeAccount: null,
-                activeLedger: null,
-                search: null
-            },
-            assetStore
-        );
-    },
-
-    componentDidMount() {
-        AssetStore.listen(this.onChange);
-    },
-
-    componentWillUnmount() {
-        AssetStore.unlisten(this.onChange);
-        this.disconnectLedger(this.state.activeLedger);
-    },
-
-    onChange(state) {
-        this.setState(state);
+        return {
+            search: null
+        };
     },
 
     fetchAssetList({ accountToFetch, search }) {
-        AssetActions.flushAssetList();
-
         if (accountToFetch) {
             AssetActions.fetchAssetList({
                 accountToFetch,
-                search
+                search,
+                blockWhenFetching: true
             });
             Scroll.animateScroll.scrollToBottom();
         }
     },
 
-    disconnectLedger(ledger) {
-        if (ledger) {
-            ledger.disconnect();
-        }
-    },
-
-    handleAccountChange(account, ledger) {
-        this.disconnectLedger(this.state.activeLedger);
-        ledger.on('incoming', this.handleLedgerChanges);
-
-        this.setState({
-            activeAccount: account,
-            activeLedger: ledger
-        });
-
-        this.fetchAssetList({
-            accountToFetch: account.vk,
-            search: this.state.search
-        });
-    },
-
-    handleLedgerChanges(changes) {
-        console.log('incoming: ', changes);
-        const { activeAccount, search } = this.state;
-
-        this.fetchAssetList({
-            accountToFetch: activeAccount.vk,
-            search
-        });
+    handleAccountChangeAndScroll(account) {
+        this.props.handleAccountChange(account);
+        Scroll.animateScroll.scrollToBottom();
     },
 
     handleSearch(query) {
-        const { activeAccount } = this.state;
+        const { activeAccount } = this.props;
 
         this.setState({
             search: query
@@ -98,21 +60,15 @@ const OnTheRecord = React.createClass({
     },
 
     render() {
-        const { activeAccount, assetList, assetMeta } = this.state;
+        const {
+            activeAccount,
+            assetList,
+            assetMeta
+        } = this.props;
 
-        let content = (
-            <div className="content-text">
-                Select account from the list...
-            </div>
-        );
-
-        if (activeAccount) {
-            content = (
-                <Assets
-                    activeAccount={activeAccount}
-                    assetList={assetList} />
-            );
-        }
+        const assetListForAccount = (
+            assetList && activeAccount && Array.isArray(assetList[activeAccount.vk])) ?
+            assetList[activeAccount.vk] : null;
 
         return (
             <div>
@@ -128,12 +84,16 @@ const OnTheRecord = React.createClass({
                             <AccountList
                                 activeAccount={activeAccount}
                                 appName="ontherecord"
-                                handleAccountClick={this.handleAccountChange} />
+                                handleAccountClick={this.handleAccountChangeAndScroll}>
+                                <AccountDetail />
+                            </AccountList>
                         </div>
                     </div>
                     <div id="page-content-wrapper">
                         <div className="page-content">
-                            {content}
+                            <Assets
+                                activeAccount={activeAccount}
+                                assetList={assetListForAccount} />
                         </div>
                     </div>
                 </div>
@@ -143,4 +103,4 @@ const OnTheRecord = React.createClass({
 });
 
 
-export default OnTheRecord;
+export default BigchainDBConnection(OnTheRecord);

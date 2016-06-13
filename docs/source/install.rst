@@ -98,7 +98,7 @@ Start ``RethinkDB`` in the backgroud:
 
     $ docker-compose up -d rdb
 
-Configure ``BigchaninDB``:
+Configure ``BigchainDB``:
 
 .. code-block:: bash
 
