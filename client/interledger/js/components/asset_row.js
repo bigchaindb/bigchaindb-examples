@@ -1,6 +1,8 @@
 import React from 'react';
 import moment from 'moment';
+import classnames from 'classnames';
 import { safeInvoke } from 'js-utility-belt/es6';
+
 
 import AssetActions from '../../../lib/js/react/actions/asset_actions';
 
@@ -84,62 +86,32 @@ const AssetRow = React.createClass({
 
     handleActionClick(selectedAccount) {
         const {
-            asset,
+            account,
+            asset
         } = this.props;
+
+        const idToTransfer = {
+            txid: asset.id,
+            cid: 0
+        };
 
         if (asset.type === 'single-owner') {
-            this.handleEscrow(selectedAccount);
+            AssetActions.escrowAsset({
+                idToTransfer,
+                payloadToPost: {
+                    source: account,
+                    to: selectedAccount
+                }
+            });
         } else if (asset.type === 'multi-owner') {
-            this.handleFulfill();
+            AssetActions.fulfillEscrowAsset({
+                idToTransfer,
+                payloadToPost: {
+                    source: account,
+                    to: account
+                }
+            });
         }
-    },
-
-    handleFulfill() {
-        const {
-            asset,
-            account
-        } = this.props;
-
-        const idToTransfer = {
-            txid: asset.id,
-            cid: 0
-        };
-
-        const payloadToPost = {
-            source: account,
-            to: account
-        };
-
-        AssetActions.fulfillEscrowAsset({
-            idToTransfer,
-            payloadToPost
-        });
-
-        this.setState({ inEscrow: true });
-    },
-
-    handleEscrow(selectedAccount) {
-        const {
-            asset,
-            account
-        } = this.props;
-
-        const idToTransfer = {
-            txid: asset.id,
-            cid: 0
-        };
-
-        const payloadToPost = {
-            source: account,
-            to: selectedAccount
-        };
-
-        AssetActions.escrowAsset({
-            idToTransfer,
-            payloadToPost
-        });
-
-        this.setState({ inEscrow: true });
     },
 
     getOperation() {
@@ -172,10 +144,11 @@ const AssetRow = React.createClass({
             expiresIn
         } = this.state;
 
+        const inBacklog = asset.hasOwnProperty('assignee');
         const operation = this.getOperation();
 
         let actionsPanel = null;
-        if (isActive && accountList) {
+        if (isActive && accountList && !inBacklog) {
             const actionType = actionMap[`${asset.type}-${operation}`];
             actionsPanel = (
                 <AssetActionPanel
@@ -191,19 +164,12 @@ const AssetRow = React.createClass({
 
         let escrowDetails = null;
         if (expiresIn) {
-            if (expiresIn === -1) {
-                escrowDetails = (
-                    <div>
-                        EXPIRED
-                    </div>
-                );
-            } else {
-                escrowDetails = (
-                    <div>
-                        Expires in {expiresIn.format('HH:mm:ss')}
-                    </div>
-                );
-            }
+            const isExpired = expiresIn === -1;
+            escrowDetails = (
+                <div className={classnames('asset-escrow-details', { isExpired })}>
+                    {isExpired ? 'EXPIRED' : `Expires in ${expiresIn.format('HH:mm:ss')}`}
+                </div>
+            );
         }
 
 
@@ -213,7 +179,9 @@ const AssetRow = React.createClass({
                 style={{ outline: 'none' }}
                 tabIndex={0}>
                 <AssetDetail
-                    asset={asset}>
+                    asset={asset}
+                    className={classnames({ inBacklog })}
+                    inProcess={inBacklog}>
                     {escrowDetails}
                     {actionsPanel}
                 </AssetDetail>
