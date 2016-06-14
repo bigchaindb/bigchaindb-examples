@@ -174,21 +174,17 @@ def escrow_asset(bigchain, source, to, asset_id, sk):
 
 def fulfill_escrow_asset(bigchain, source, to, asset_id, sk):
     asset = bigchain.get_transaction(asset_id['txid'])
+    asset_owners = asset['transaction']['conditions'][asset_id['cid']]['new_owners']
 
-    asset_new_owners = asset['transaction']['conditions'][0]['new_owners']
+    other_owner = [owner for owner in asset_owners if not owner == source][0]
 
     # Create a base template for fulfill transaction
-    asset_escrow_fulfill = bigchain.create_transaction(asset_new_owners, to, asset_id, 'TRANSFER',
+    asset_escrow_fulfill = bigchain.create_transaction(asset_owners, to, asset_id, 'TRANSFER',
                                                        payload=asset['transaction']['data']['payload'])
 
     # Parse the threshold cryptocondition
     escrow_fulfillment = cc.Fulfillment.from_json(
         asset['transaction']['conditions'][0]['condition']['details'])
-
-    subfulfillment_user1 = escrow_fulfillment.get_subcondition_from_vk(asset_new_owners[0])[0]
-    subfulfillment_user2 = escrow_fulfillment.get_subcondition_from_vk(asset_new_owners[1])[0]
-    subfulfillment_timeout = escrow_fulfillment.subconditions[0]['body'].subconditions[1]['body']
-    subfulfillment_timeout_inverted = escrow_fulfillment.subconditions[1]['body'].subconditions[1]['body']
 
     # Get the fulfillment message to sign
     tx_escrow_execute_fulfillment_message = \
@@ -196,23 +192,45 @@ def fulfill_escrow_asset(bigchain, source, to, asset_id, sk):
                                                 asset_escrow_fulfill['transaction']['fulfillments'][0],
                                                 serialized=True)
 
-    escrow_fulfillment.subconditions = []
+    # get the indices path for the source that wants to fulfill
+    _, indices = get_subcondition_indices_from_vk(escrow_fulfillment, source)
+    subfulfillment_source = escrow_fulfillment
+    for index in indices:
+        subfulfillment_source = subfulfillment_source.subconditions[index]['body']
 
-    # fulfill execute branch
-    fulfillment_execute = cc.ThresholdSha256Fulfillment(threshold=2)
-    subfulfillment_user2.sign(tx_escrow_execute_fulfillment_message, bigchaindb.crypto.SigningKey(sk))
-    fulfillment_execute.add_subfulfillment(subfulfillment_user2)
-    fulfillment_execute.add_subfulfillment(subfulfillment_timeout)
-    escrow_fulfillment.add_subfulfillment(fulfillment_execute)
+    # sign the fulfillment
+    subfulfillment_source.sign(tx_escrow_execute_fulfillment_message, bigchaindb.crypto.SigningKey(sk))
 
-    # do not fulfill abort branch
-    condition_abort = cc.ThresholdSha256Fulfillment(threshold=2)
-    condition_abort.add_subfulfillment(subfulfillment_user1)
-    condition_abort.add_subfulfillment(subfulfillment_timeout_inverted)
-    escrow_fulfillment.add_subcondition(condition_abort.condition)
+    # get the indices path for the other source that delivers the condition
+    _, indices = get_subcondition_indices_from_vk(escrow_fulfillment, other_owner)
+    subfulfillment_other = escrow_fulfillment.subconditions[indices[0]]['body']
 
-    # create fulfillment and append to transaction
+    # update the condition
+    del escrow_fulfillment.subconditions[indices[0]]
+    escrow_fulfillment.add_subcondition(subfulfillment_other.condition)
+
     asset_escrow_fulfill['transaction']['fulfillments'][0]['fulfillment'] = escrow_fulfillment.serialize_uri()
 
     bigchain.write_transaction(asset_escrow_fulfill)
     return asset_escrow_fulfill
+
+
+def get_subcondition_indices_from_vk(condition, vk):
+    if isinstance(vk, str):
+        vk = vk.encode()
+
+    conditions = []
+    indices = []
+    for i, c in enumerate(condition.subconditions):
+        if isinstance(c['body'], cc.Ed25519Fulfillment) and c['body'].public_key.to_ascii(encoding='base58') == vk:
+            indices.append(i)
+            conditions.append(c['body'])
+            break
+        elif isinstance(c['body'], cc.ThresholdSha256Fulfillment):
+            result, index = get_subcondition_indices_from_vk(c['body'], vk)
+            if result:
+                conditions += result
+                indices += [i]
+                indices += index
+                break
+    return conditions, indices

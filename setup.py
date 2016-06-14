@@ -32,7 +32,7 @@ docs_require = [
 
 setup(
     name='BigchainDB-Examples',
-    version='0.0.2',
+    version='0.1.0',
     description='Example usages for BigchainDB',
     long_description=__doc__,
     url='https://github.com/BigchainDB/bigchaindb-examples/',
@@ -59,7 +59,7 @@ setup(
     packages=find_packages(exclude=['tests*']),
 
     install_requires=[
-        "BigchainDB==0.4.0",
+        "BigchainDB==0.4.1",
         "decorator==4.0.9",
         "flask==0.10.1",
         "flask-cors==2.1.2",
