@@ -59,7 +59,7 @@ setup(
     packages=find_packages(exclude=['tests*']),
 
     install_requires=[
-        "BigchainDB==0.4.1",
+        "BigchainDB==0.4.2",
         "decorator==4.0.9",
         "flask==0.10.1",
         "flask-cors==2.1.2",

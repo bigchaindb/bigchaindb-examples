@@ -1,4 +1,3 @@
-import json
 from time import sleep
 from datetime import datetime
 
@@ -100,7 +99,7 @@ def create_asset_hashlock(bigchain, payload, secret):
     # The conditions list is empty, so we need to append a new condition
     hashlock_tx['transaction']['conditions'].append({
         'condition': {
-            'details': json.loads(hashlock_tx_condition.serialize_json()),
+            'details': hashlock_tx_condition.to_dict(),
             'uri': hashlock_tx_condition.condition.serialize_uri()
         },
         'cid': 0,
@@ -159,7 +158,7 @@ def escrow_asset(bigchain, source, to, asset_id, sk):
 
     # Update the condition in the newly created transaction
     asset_escrow['transaction']['conditions'][0]['condition'] = {
-        'details': json.loads(condition_escrow.serialize_json()),
+        'details': condition_escrow.to_dict(),
         'uri': condition_escrow.condition.serialize_uri()
     }
 
@@ -183,7 +182,7 @@ def fulfill_escrow_asset(bigchain, source, to, asset_id, sk):
                                                        payload=asset['transaction']['data']['payload'])
 
     # Parse the threshold cryptocondition
-    escrow_fulfillment = cc.Fulfillment.from_json(
+    escrow_fulfillment = cc.Fulfillment.from_dict(
         asset['transaction']['conditions'][0]['condition']['details'])
 
     # Get the fulfillment message to sign
