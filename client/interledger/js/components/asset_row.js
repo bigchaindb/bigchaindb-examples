@@ -9,6 +9,8 @@ import AssetActions from '../../../lib/js/react/actions/asset_actions';
 import AssetActionPanel from '../../../lib/js/react/components/asset_action_panel';
 import AssetDetail from '../../../lib/js/react/components/asset_detail';
 
+import inBacklog from '../../../lib/js/utils/bigchaindb/in_backlog';
+
 
 const AssetRow = React.createClass({
     propTypes: {
@@ -51,9 +53,7 @@ const AssetRow = React.createClass({
 
     componentDidMount() {
         if (this.getOperation() !== 'transfer') {
-            this.intervalId = window.setInterval(() => {
-                this.setExpiryTime();
-            }, 1000);
+            this.intervalId = window.setInterval(this.setExpiryTime, 1000);
         }
     },
 
@@ -65,7 +65,7 @@ const AssetRow = React.createClass({
         const {
             asset
         } = this.props;
-        const expires = moment(parseInt(parseFloat(asset.expiryTime) * 1000, 10));
+        const expires = moment.unix(parseFloat(asset.expiryTime));
         const expiresIn = moment.utc(expires.diff(moment.utc()));
         this.setState({
             expiresIn: expiresIn > 0 ? expiresIn : -1
@@ -144,11 +144,11 @@ const AssetRow = React.createClass({
             expiresIn
         } = this.state;
 
-        const inBacklog = asset.hasOwnProperty('assignee');
+        const assetInBacklog = inBacklog(asset);
         const operation = this.getOperation();
 
         let actionsPanel = null;
-        if (isActive && accountList && !inBacklog) {
+        if (isActive && accountList && !assetInBacklog) {
             const actionType = actionMap[`${asset.type}-${operation}`];
             actionsPanel = (
                 <AssetActionPanel
@@ -180,8 +180,8 @@ const AssetRow = React.createClass({
                 tabIndex={0}>
                 <AssetDetail
                     asset={asset}
-                    className={classnames({ inBacklog })}
-                    inProcess={inBacklog}>
+                    className={classnames({ inBacklog: assetInBacklog })}
+                    inBacklog={assetInBacklog}>
                     {escrowDetails}
                     {actionsPanel}
                 </AssetDetail>

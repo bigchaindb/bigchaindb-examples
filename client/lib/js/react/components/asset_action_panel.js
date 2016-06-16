@@ -51,7 +51,7 @@ const AssetActionPanel = React.createClass({
             <Button
                 bsSize="xsmall"
                 onClick={() => handleActionClick(selectedAccount)}>
-                    {actionName}
+                {actionName}
             </Button> : null;
 
         const accountDropdown = selectAccounts ?

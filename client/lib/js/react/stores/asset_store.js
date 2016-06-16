@@ -1,10 +1,12 @@
+import { safeMerge } from 'js-utility-belt/es6';
 import alt from '../alt';
-import { safeMerge } from 'js-utility-belt';
 
 import parseEscrowData from '../../utils/cryptoconditions/parse_escrow_data';
 
 import AssetActions from '../actions/asset_actions';
 import AssetSource from '../sources/asset_source';
+
+
 
 class AssetStore {
     constructor() {
@@ -57,7 +59,7 @@ class AssetStore {
                     this.assetList[account] =
                         assets.bigchain
                             .concat(assets.backlog)
-                            .map((asset) => this.postProcessAsset(asset))
+                            .map(this.postProcessAsset)
                             .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp);
                 }
             }
@@ -72,8 +74,7 @@ class AssetStore {
     postProcessAsset(asset) {
         const condition = asset.transaction.conditions[0].condition;
 
-        if (condition.details.hasOwnProperty('subfulfillments') &&
-            condition.details.subfulfillments.length > 1) {
+        if (Array.isArray(condition.details.subfulfillments)) {
             asset.type = 'multi-owner';
             return safeMerge(
                 asset,

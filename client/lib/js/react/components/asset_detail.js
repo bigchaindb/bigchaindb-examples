@@ -11,7 +11,7 @@ const AssetDetail = React.createClass({
         assetContent: React.PropTypes.string,
         children: React.PropTypes.node,
         className: React.PropTypes.string,
-        inProcess: React.PropTypes.bool,
+        inBacklog: React.PropTypes.bool,
         onClick: React.PropTypes.func
     },
 
@@ -34,12 +34,12 @@ const AssetDetail = React.createClass({
             asset,
             children,
             className,
-            inProcess,
+            inBacklog,
             onClick
         } = this.props;
 
         const assetContent = this.getAssetContent();
-        const validGlyph = inProcess ? <Glyphicon glyph="cog" /> : <Glyphicon glyph="ok" />;
+        const validGlyph = inBacklog ? <Glyphicon glyph="cog" /> : <Glyphicon glyph="ok" />;
         const timestamp =
             moment(parseInt(asset.transaction.timestamp, 10) * 1000).toDate().toGMTString();
 

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import AssetDetail from '../../../lib/js/react/components/asset_detail';
+import inBacklog from '../../../lib/js/utils/bigchaindb/in_backlog';
 
 
 const AssetHistory = ({
@@ -18,12 +19,11 @@ const AssetHistory = ({
         <div>
             {assetList
                 .map(asset => (
-                    // TODO: improve backlog identifier: asset.hasOwnProperty('assignee')
                     <AssetDetail
                         key={asset.id}
                         asset={asset}
                         className={'pull-right'}
-                        inProcess={asset.hasOwnProperty('assignee')} />
+                        inBacklog={inBacklog(asset)} />
                 ))}
         </div>
     );

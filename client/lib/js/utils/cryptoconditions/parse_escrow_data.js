@@ -1,17 +1,18 @@
-import filterByType from './filter';
+import filterByType from './filter_by_type';
 import TypeIds from './type_ids';
 
 
 const filterChildrenByTypes = ({ condition, types }) => {
     if (condition.hasOwnProperty('subfulfillments')) {
-        let children = [];
-        Object.values(types).forEach((type) => {
-            children = children.concat(filterByType({
-                condition,
-                typeId: type,
-                maxDepth: 1
-            }));
-        });
+        const children = Object.values(types)
+            .map((type) => {
+                return filterByType({
+                    condition,
+                    typeId: type,
+                    maxDepth: 1
+                });
+            })
+            .reduce((a, b) => a.concat(b));
         if (children.length >= types.length) {
             return children;
         }
