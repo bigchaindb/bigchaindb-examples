@@ -84,10 +84,6 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
         return this.connected;
     }
 
-    validateTransfer(transfer) {
-        // validator.validate('TransferTemplate', transfer)
-    }
-
     getInfo() {
     }
 

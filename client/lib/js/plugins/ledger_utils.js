@@ -1,4 +1,5 @@
-import BigchainDBLedgerPlugin from './bigchaindb_ledgerplugin';
+// import BigchainDBLedgerPlugin from './bigchaindb_ledgerplugin';
+import BigchainDBLedgerPlugin from 'ilp-plugin-bigchaindb/build/main/bundle';
 
 
 const connectToBigchainDBLedger = (publicKey) => {
