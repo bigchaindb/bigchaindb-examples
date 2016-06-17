@@ -8,12 +8,16 @@ const AssetActionPanel = React.createClass({
         accountList: React.PropTypes.array.isRequired,
         activeAccount: React.PropTypes.object.isRequired,
         handleActionClick: React.PropTypes.func.isRequired,
-        actionName: React.PropTypes.string
+        actionMessage: React.PropTypes.string,
+        actionName: React.PropTypes.string,
+        selectAccounts: React.PropTypes.bool
     },
 
     getDefaultProps() {
         return {
-            actionName: 'TRANSFER'
+            actionMessage: 'Transfer asset to:',
+            actionName: 'TRANSFER',
+            selectAccounts: true
         };
     },
 
@@ -31,43 +35,54 @@ const AssetActionPanel = React.createClass({
 
     render() {
         const {
-            activeAccount,
             accountList,
+            actionMessage,
             actionName,
+            activeAccount,
             handleActionClick,
+            selectAccounts
         } = this.props;
 
         const {
             selectedAccount
         } = this.state;
 
-        const transferButton = selectedAccount ?
-            <Button onClick={() => handleActionClick(selectedAccount)}>{actionName}</Button> : null;
+        const transferButton = (!selectAccounts || selectedAccount) ?
+            <Button
+                bsSize="xsmall"
+                onClick={() => handleActionClick(selectedAccount)}>
+                {actionName}
+            </Button> : null;
+
+        const accountDropdown = selectAccounts ?
+            <DropdownButton
+                active
+                bsSize="xsmall"
+                className="filter-dropdown-button"
+                id="bg-nested-dropdown"
+                title={selectedAccount ? selectedAccount.name : 'Select account'}>
+                {
+                    accountList
+                        .filter((account) => account !== activeAccount)
+                        .map((account) => (
+                            <MenuItem
+                                key={account.name}
+                                onClick={() => this.setSelectedAccount(account)}>
+                                {account.name}
+                            </MenuItem>
+                        ))
+                }
+            </DropdownButton> : null;
 
         return (
             <div className="asset-container-actions">
-                <div>Transfer asset from {activeAccount.name} to:</div>
-                <DropdownButton
-                    active
-                    className="filter-dropdown-button"
-                    id="bg-nested-dropdown"
-                    title={selectedAccount ? selectedAccount.name : 'Select account'}>
-                    {
-                        accountList
-                            .filter((account) => account !== activeAccount)
-                            .map((account) => (
-                                <MenuItem
-                                    key={account.name}
-                                    onClick={() => this.setSelectedAccount(account)}>
-                                    {account.name}
-                                </MenuItem>
-                            ))
-                    }
-                </DropdownButton>
+                <div>{actionMessage}</div>
+                {accountDropdown}
                 {transferButton}
             </div>
         );
     }
 });
+
 
 export default AssetActionPanel;

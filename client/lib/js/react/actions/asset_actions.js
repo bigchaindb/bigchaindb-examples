@@ -9,6 +9,7 @@ class AssetActions {
             'successFetchAsset',
             'transferAsset',
             'escrowAsset',
+            'fulfillEscrowAsset',
             'flushAssetList',
             'fetchAssetList',
             'successFetchAssetList',

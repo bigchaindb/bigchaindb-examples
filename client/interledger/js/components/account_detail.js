@@ -43,7 +43,7 @@ const AccountDetail = React.createClass({
                         </div>
                         <Assets
                             accountList={accountList}
-                            activeAccount={account}
+                            account={account}
                             activeAsset={activeAsset}
                             assetList={assetListForAccount}
                             handleAccountClick={handleClick}

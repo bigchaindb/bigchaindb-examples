@@ -5,7 +5,7 @@ import Spinner from '../../../lib/js/react/components/spinner';
 
 
 const Assets = ({
-        activeAccount,
+        account,
         accountList,
         assetList,
         activeAsset,
@@ -21,8 +21,8 @@ const Assets = ({
                     return (
                         <AssetRow
                             key={asset.id}
+                            account={account}
                             accountList={accountList}
-                            activeAccount={activeAccount}
                             asset={asset}
                             handleAccountClick={handleAccountClick}
                             handleAssetClick={handleAssetClick}
@@ -41,8 +41,8 @@ const Assets = ({
 };
 
 Assets.propTypes = {
+    account: React.PropTypes.object,
     accountList: React.PropTypes.array,
-    activeAccount: React.PropTypes.object,
     activeAsset: React.PropTypes.object,
     assetClasses: React.PropTypes.object,
     assetList: React.PropTypes.array,

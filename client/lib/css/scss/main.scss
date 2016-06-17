@@ -5,10 +5,14 @@
 @import './style';
 $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
-@import 'normalize.css';
 @import 'custom_bootstrap';
-@import 'spinner';
+@import 'normalize.css';
+@import 'account';
+@import 'asset';
+@import 'card';
+@import 'search';
 @import 'sidebar';
+@import 'spinner';
 @import 'style';
 @import '../../../on_the_record/scss/custom_style';
 @import '../../../share_trader/scss/custom_style';

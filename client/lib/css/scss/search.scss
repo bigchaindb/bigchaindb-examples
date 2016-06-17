@@ -1,0 +1,26 @@
+@import "variables";
+
+.searchbar {
+    margin: 0 auto;
+}
+
+.searchbar input[type="url"] {
+    width: 80%;
+    display: inline-block;
+    @media (max-width: 480px) {
+        width: 70%;
+    }
+}
+
+.searchbar input[type="submit"] {
+    width: calc(20% - 15px);
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 15px;
+    margin-right: 0;
+    display: inline-block;
+    @media (max-width: 480px) {
+        width: 30%;
+        margin-left: 0px;
+    }
+}

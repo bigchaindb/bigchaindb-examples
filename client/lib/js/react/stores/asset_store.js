@@ -1,7 +1,12 @@
+import { safeMerge } from 'js-utility-belt/es6';
 import alt from '../alt';
+
+import parseEscrowData from '../../utils/cryptoconditions/parse_escrow_data';
 
 import AssetActions from '../actions/asset_actions';
 import AssetSource from '../sources/asset_source';
+
+
 
 class AssetStore {
     constructor() {
@@ -54,6 +59,7 @@ class AssetStore {
                     this.assetList[account] =
                         assets.bigchain
                             .concat(assets.backlog)
+                            .map(this.postProcessAsset)
                             .sort((a, b) => a.transaction.timestamp - b.transaction.timestamp);
                 }
             }
@@ -64,7 +70,23 @@ class AssetStore {
         }
         this.assetMeta.isFetchingList = false;
     }
-    
+
+    postProcessAsset(asset) {
+        const condition = asset.transaction.conditions[0].condition;
+
+        if (Array.isArray(condition.details.subfulfillments)) {
+            asset.type = 'multi-owner';
+            return safeMerge(
+                asset,
+                parseEscrowData(condition.details)
+            );
+        } else {
+            asset.type = 'single-owner';
+        }
+
+        return asset;
+    }
+
     onFlushAssetList(accountToFetch) {
         this.assetList[accountToFetch] = [];
         this.assetMeta.accountToFetch = null;
@@ -87,6 +109,12 @@ class AssetStore {
         this.assetMeta.idToTransfer = idToTransfer;
         this.assetMeta.payloadToPost = payloadToPost;
         this.getInstance().escrowAsset();
+    }
+
+    onFulfillEscrowAsset({ idToTransfer, payloadToPost }) {
+        this.assetMeta.idToTransfer = idToTransfer;
+        this.assetMeta.payloadToPost = payloadToPost;
+        this.getInstance().fulfillEscrowAsset();
     }
 
     onSuccessPostAsset(asset) {

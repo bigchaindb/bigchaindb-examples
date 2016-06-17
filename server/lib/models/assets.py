@@ -1,4 +1,3 @@
-import json
 from time import sleep
 from datetime import datetime
 
@@ -9,6 +8,7 @@ from decorator import contextmanager
 
 import bigchaindb
 import bigchaindb.util
+import bigchaindb.crypto
 
 
 @contextmanager
@@ -35,16 +35,15 @@ def query_reql_response(response, query):
 
 
 def get_owned_assets(bigchain, vk, query=None, table='bigchain'):
-
     assets = []
     asset_ids = bigchain.get_owned_ids(vk)
 
     if table == 'backlog':
         reql_query = \
             r.table(table) \
-            .filter(lambda tx: tx['transaction']['conditions']
-                    .contains(lambda c: c['new_owners']
-                              .contains(vk)))
+                .filter(lambda tx: tx['transaction']['conditions']
+                        .contains(lambda c: c['new_owners']
+                                  .contains(vk)))
         response = query_reql_response(reql_query.run(bigchain.conn), query)
         if response:
             assets += response
@@ -53,7 +52,7 @@ def get_owned_assets(bigchain, vk, query=None, table='bigchain'):
         for asset_id in asset_ids:
             txid = asset_id['txid'] if isinstance(asset_id, dict) else asset_id
 
-            reql_query = r.table(table)\
+            reql_query = r.table(table) \
                 .concat_map(lambda doc: doc['block']['transactions']) \
                 .filter(lambda transaction: transaction['id'] == txid)
             response = query_reql_response(reql_query.run(bigchain.conn), query)
@@ -66,15 +65,15 @@ def get_owned_assets(bigchain, vk, query=None, table='bigchain'):
 def get_assets(bigchain, search):
     if search:
         cursor = \
-            r.table('bigchain')\
-            .concat_map(lambda doc: doc["block"]["transactions"]
-                        .filter(lambda transaction: transaction["transaction"]["data"]["payload"]["content"]
-                                .match(search)))\
-            .run(bigchain.conn)
+            r.table('bigchain') \
+                .concat_map(lambda doc: doc["block"]["transactions"]
+                            .filter(lambda transaction: transaction["transaction"]["data"]["payload"]["content"]
+                                    .match(search))) \
+                .run(bigchain.conn)
     else:
         cursor = \
             r.table('bigchain') \
-            .concat_map(lambda doc: doc["block"]["transactions"]).run(bigchain.conn)
+                .concat_map(lambda doc: doc["block"]["transactions"]).run(bigchain.conn)
     return list(cursor)
 
 
@@ -100,7 +99,7 @@ def create_asset_hashlock(bigchain, payload, secret):
     # The conditions list is empty, so we need to append a new condition
     hashlock_tx['transaction']['conditions'].append({
         'condition': {
-            'details': json.loads(hashlock_tx_condition.serialize_json()),
+            'details': hashlock_tx_condition.to_dict(),
             'uri': hashlock_tx_condition.condition.serialize_uri()
         },
         'cid': 0,
@@ -159,7 +158,7 @@ def escrow_asset(bigchain, source, to, asset_id, sk):
 
     # Update the condition in the newly created transaction
     asset_escrow['transaction']['conditions'][0]['condition'] = {
-        'details': json.loads(condition_escrow.serialize_json()),
+        'details': condition_escrow.to_dict(),
         'uri': condition_escrow.condition.serialize_uri()
     }
 
@@ -169,4 +168,68 @@ def escrow_asset(bigchain, source, to, asset_id, sk):
     # sign transaction
     asset_escrow_signed = bigchain.sign_transaction(asset_escrow, sk)
     bigchain.write_transaction(asset_escrow_signed)
-    return asset_escrow
+    return asset_escrow_signed
+
+
+def fulfill_escrow_asset(bigchain, source, to, asset_id, sk):
+    asset = bigchain.get_transaction(asset_id['txid'])
+    asset_owners = asset['transaction']['conditions'][asset_id['cid']]['new_owners']
+
+    other_owner = [owner for owner in asset_owners if not owner == source][0]
+
+    # Create a base template for fulfill transaction
+    asset_escrow_fulfill = bigchain.create_transaction(asset_owners, to, asset_id, 'TRANSFER',
+                                                       payload=asset['transaction']['data']['payload'])
+
+    # Parse the threshold cryptocondition
+    escrow_fulfillment = cc.Fulfillment.from_dict(
+        asset['transaction']['conditions'][0]['condition']['details'])
+
+    # Get the fulfillment message to sign
+    tx_escrow_execute_fulfillment_message = \
+        bigchaindb.util.get_fulfillment_message(asset_escrow_fulfill,
+                                                asset_escrow_fulfill['transaction']['fulfillments'][0],
+                                                serialized=True)
+
+    # get the indices path for the source that wants to fulfill
+    _, indices = get_subcondition_indices_from_vk(escrow_fulfillment, source)
+    subfulfillment_source = escrow_fulfillment
+    for index in indices:
+        subfulfillment_source = subfulfillment_source.subconditions[index]['body']
+
+    # sign the fulfillment
+    subfulfillment_source.sign(tx_escrow_execute_fulfillment_message, bigchaindb.crypto.SigningKey(sk))
+
+    # get the indices path for the other source that delivers the condition
+    _, indices = get_subcondition_indices_from_vk(escrow_fulfillment, other_owner)
+    subfulfillment_other = escrow_fulfillment.subconditions[indices[0]]['body']
+
+    # update the condition
+    del escrow_fulfillment.subconditions[indices[0]]
+    escrow_fulfillment.add_subcondition(subfulfillment_other.condition)
+
+    asset_escrow_fulfill['transaction']['fulfillments'][0]['fulfillment'] = escrow_fulfillment.serialize_uri()
+
+    bigchain.write_transaction(asset_escrow_fulfill)
+    return asset_escrow_fulfill
+
+
+def get_subcondition_indices_from_vk(condition, vk):
+    if isinstance(vk, str):
+        vk = vk.encode()
+
+    conditions = []
+    indices = []
+    for i, c in enumerate(condition.subconditions):
+        if isinstance(c['body'], cc.Ed25519Fulfillment) and c['body'].public_key.to_ascii(encoding='base58') == vk:
+            indices.append(i)
+            conditions.append(c['body'])
+            break
+        elif isinstance(c['body'], cc.ThresholdSha256Fulfillment):
+            result, index = get_subcondition_indices_from_vk(c['body'], vk)
+            if result:
+                conditions += result
+                indices += [i]
+                indices += index
+                break
+    return conditions, indices

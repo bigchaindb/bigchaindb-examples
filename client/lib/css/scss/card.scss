@@ -1,0 +1,72 @@
+@import "variables";
+
+.card {
+    max-width: $row--wide;
+    background: $bg-color;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+    padding: 20px 40px;
+    margin: 0 auto 40px;
+    overflow: hidden;
+
+    .desc {
+        font-size: 35px;
+        line-height: 150%;
+        margin: 0 0 25px 0;
+
+        @media (max-width: 600px) {
+            font-size: 20px;
+        }
+
+        strong {
+            background-color: black;
+            color: $fg-color;
+            padding: 4px 20px;
+        }
+    }
+}
+
+.card--summary {
+    .desc {
+        float: left;
+        width: 60%;
+        @media (max-width: 600px) {
+            float: none;
+            width: 100%;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+
+    .preview {
+        margin-top: -10px;
+        float: right;
+        width: 30%;
+        max-width: 400px;
+        @media (max-width: 600px) {
+            float: none;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+    }
+}
+
+.card {
+    .disclaimer {
+        padding-top: 30px;
+        text-align: right;
+        font-size: 12px;
+    }
+}
+
+.card--claim {
+    box-shadow: none;
+    background-color: transparent;
+    .desc {
+        font-size: 20px;
+        text-align: center;
+        a {
+            color: inherit;
+        }
+    }
+}
