@@ -96,21 +96,17 @@ const AssetRow = React.createClass({
         };
 
         if (asset.type === 'single-owner') {
-            AssetActions.escrowAsset({
-                idToTransfer,
-                payloadToPost: {
-                    source: account,
-                    to: selectedAccount
-                }
-            });
+            const transfer = {
+                account: selectedAccount,
+                asset: idToTransfer
+            };
+            account.ledger.send(transfer);
         } else if (asset.type === 'multi-owner') {
-            AssetActions.fulfillEscrowAsset({
-                idToTransfer,
-                payloadToPost: {
-                    source: account,
-                    to: account
-                }
-            });
+            const transfer = {
+                account,
+                asset: idToTransfer
+            };
+            account.ledger.fulfillCondition(transfer);
         }
     },
 

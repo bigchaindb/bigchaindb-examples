@@ -168,6 +168,10 @@ module.exports = {
     devtool: PRODUCTION ? '#source-map' : '#inline-source-map',
 
     resolve: {
+        alias: {
+            'babel-runtime': path.resolve(PATHS.NODE_MODULES, 'babel-runtime'),
+            'core-js': path.resolve(PATHS.NODE_MODULES, 'core-js'),
+        },
         extensions: ['', '.js', '.jsx'],
         modules: ['node_modules'], // Don't use absolute path here to allow recursive matching
     },
