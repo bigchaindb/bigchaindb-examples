@@ -66,5 +66,5 @@ In (yet) another terminal, launch the ``tornado`` server
     $ python3 -m server.tornado_app
 
 You should be able to view the "On the record" app at
-`<http://localhost:8000/ontherecord/>`_, and the "Share Trader" app at
-`<http://localhost:8000/sharetrader/>`_.
+`<http://localhost:3000/ontherecord/>`_, and the "Share Trader" app at
+`<http://localhost:3000/sharetrader/>`_.
