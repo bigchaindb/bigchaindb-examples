@@ -44,7 +44,10 @@ def create_app(debug):
     return app
 
 
-if __name__ == '__main__':
+def run_flask_server():
     app = create_app(debug=True)
     app.run(host=os.environ.get('FLASK_HOST', '127.0.0.1'), port=os.environ.get('FLASK_PORT', 8000))
-    app.run()
+    app.run(use_reloader=False)
+
+if __name__ == '__main__':
+    run_flask_server()
