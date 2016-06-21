@@ -58,10 +58,14 @@ setup(
 
     packages=find_packages(exclude=['tests*']),
 
-    dependency_links=['https://github.com/bigchaindb/bigchaindb/tarball/3322a0921530bded2a88524ce0821da30718bf11#egg=bigchaindb-0.4.3'],
+    entry_points={
+        'console_scripts': [
+            'bigchaindb-examples=commands.bigchaindb_examples:main'
+        ]
+    },
 
     install_requires=[
-        "BigchainDB==0.4.3",
+        "BigchainDB==0.4.2",
         "decorator==4.0.9",
         "flask==0.10.1",
         "flask-cors==2.1.2",

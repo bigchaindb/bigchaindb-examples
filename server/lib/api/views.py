@@ -4,6 +4,8 @@ For more information please refer to the documentation in Apiary:
  - http://docs.bigchaindb.apiary.io/
 """
 
+import os
+
 import flask
 from flask import request, Blueprint
 
@@ -19,7 +21,8 @@ bigchain = get_bigchain()
 
 @api_views.route('/accounts/')
 def get_accounts():
-    app = request.args.get('app')
+    legder_number = os.environ.get('BIGCHAINDB_LEDGER_NUMBER')
+    app = '{}{}'.format(request.args.get('app'), legder_number)
     result = accounts.retrieve_accounts(bigchain, app)
     return flask.jsonify({'accounts': result})
 

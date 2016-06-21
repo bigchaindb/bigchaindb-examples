@@ -1,3 +1,4 @@
+import sys
 import random
 import logging
 import os.path
@@ -89,4 +90,7 @@ def main(ledger_number=''):
 
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) > 1:
+        main(sys.argv[1])
+    else:
+        main()
