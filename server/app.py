@@ -3,6 +3,7 @@
 The application is implemented in Flask and runs using Gunicorn.
 """
 import os
+import sys
 
 from flask import Flask
 from flask.ext.cors import CORS
@@ -46,7 +47,7 @@ def create_app(debug):
 
 def run_flask_server():
     app = create_app(debug=True)
-    app.run(host=os.environ.get('FLASK_HOST', '127.0.0.1'), port=os.environ.get('FLASK_PORT', 8000))
+    app.run(host=os.environ.get('FLASK_HOST', '127.0.0.1'), port=int(os.environ.get('FLASK_PORT', 8000)))
     app.run(use_reloader=False)
 
 if __name__ == '__main__':
