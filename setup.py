@@ -65,6 +65,7 @@ setup(
     },
 
     install_requires=[
+        "rethinkdb==2.3.0",
         "BigchainDB==0.4.2",
         "decorator==4.0.9",
         "flask==0.10.1",
