@@ -7,8 +7,6 @@ import subprocess
 import rethinkdb as r
 from bigchaindb import Bigchain
 
-from init_db import main as main_init_db
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
