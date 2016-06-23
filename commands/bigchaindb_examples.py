@@ -129,25 +129,33 @@ def main():
     subparser = parser.add_subparsers(title='Commands',
                                       dest='command')
 
+    # Start services
     start_parser = subparser.add_parser('start',
                                         help='start a new ledger')
-
     start_parser.add_argument('-l', '--ledger',
                               type=int,
-                              default=0,
-                              help='Start a new ledger with the number provided')
+                              help='Start the services for the provided ledger')
+    start_parser.add_argument('-a', '--all',
+                              default=False,
+                              action='store_true',
+                              help='Start the services for all ledgers')
 
-    init_parser = subparser.add_parser('init-bigchaindb',
-                                       help='Initialize a new bigchaindb ledger')
+    # Initialize bigchaindb
+    init_bigchaindb_parser = subparser.add_parser('init-bigchaindb',
+                                                  help='Initialize a new bigchaindb ledger')
+    init_bigchaindb_parser.add_argument('-l', '--ledger',
+                                        type=int,
+                                        help='Initialize the databases for a ledger')
+    init_bigchaindb_parser.add_argument('-a', '--all',
+                                        default=False,
+                                        action='store_true',
+                                        help='Initialize all databases for the ledgers')
 
-    init_parser.add_argument('ledger',
-                             metavar='N',
-                             type=int,
-                             help='Initialize the databases for a ledger N')
-
+    # Initialize accounts
     subparser.add_parser('init-accounts',
                          help='Initialize accounts for all the apps')
 
+    # Reset bigchaindb
     reset_bigchaindb_parser = subparser.add_parser('reset-bigchaindb',
                                                    help='Delete the bigchaindb ledger')
     reset_bigchaindb_parser.add_argument('-l', '--ledger',
@@ -158,6 +166,7 @@ def main():
                                          action='store_true',
                                          help='Delete all the bigchaindb ledgers')
 
+    # Reset accounts
     reset_accounts_parser = subparser.add_parser('reset-accounts',
                                                  help='Delete the accounts databases')
 
