@@ -8,6 +8,7 @@ import rethinkdb as r
 from bigchaindb import Bigchain
 
 from init_accounts import main as init_accounts_main
+from init_assets import main as init_assets_main
 from apps_config import APPS
 
 logging.basicConfig(level=logging.INFO)
@@ -114,6 +115,10 @@ def run_reset_accounts(args):
     delete_databases(['interledger', 'ontherecord', 'sharetrader'])
 
 
+def run_init_assets(args):
+    init_assets_main()
+
+
 def run_start(args):
     # setup env
     frontend_port = 3000 + args.ledger
@@ -182,10 +187,6 @@ def main():
                                         action='store_true',
                                         help='Initialize all databases for the ledgers')
 
-    # Initialize accounts
-    subparser.add_parser('init-accounts',
-                         help='Initialize accounts for all the apps')
-
     # Reset bigchaindb
     reset_bigchaindb_parser = subparser.add_parser('reset-bigchaindb',
                                                    help='Delete the bigchaindb ledger')
@@ -197,9 +198,17 @@ def main():
                                          action='store_true',
                                          help='Delete all the bigchaindb ledgers')
 
+    # Initialize accounts
+    subparser.add_parser('init-accounts',
+                         help='Initialize accounts for all the apps')
+
     # Reset accounts
-    reset_accounts_parser = subparser.add_parser('reset-accounts',
-                                                 help='Delete the accounts databases')
+    subparser.add_parser('reset-accounts',
+                         help='Delete the accounts databases')
+
+    # Initialize assets
+    subparser.add_parser('init-assets',
+                         help='Initialize assets for all the apps in all the ledgers')
 
     start(parser, globals())
 
