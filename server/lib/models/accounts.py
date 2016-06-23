@@ -7,14 +7,14 @@ DB = 'examples'
 
 
 class Account:
-    def __init__(self, bigchain, name, ledgers, db=None):
+    def __init__(self, bigchain, name, ledger, db=None):
         if not db:
             db = DB
         self.bigchain = bigchain
         self.db = db
         self.name = name
         self.sk, self.vk = bigchaindb.crypto.generate_key_pair()
-        self.ledgers = ledgers
+        self.ledger = ledger
         self.save()
 
     @property
@@ -41,7 +41,8 @@ class Account:
 
         user_exists = list(r.db(self.db)
                            .table('accounts')
-                           .filter(lambda user: user['name'] == self.name)
+                           .filter(lambda user: (user['name'] == self.name)
+                                                & (user['ledger']['id'] == self.ledger['id']))
                            .run(self.bigchain.conn))
 
         if not len(user_exists):
@@ -59,7 +60,7 @@ class Account:
             'name': self.name,
             'sk': self.sk,
             'vk': self.vk,
-            'ledgers': self.ledgers
+            'ledger': self.ledger
         }
 
 

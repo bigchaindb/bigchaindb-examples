@@ -1,5 +1,3 @@
-import sys
-import random
 import logging
 import os.path
 
@@ -8,7 +6,6 @@ import bigchaindb.config_utils
 
 import apps_config
 from server.lib.models.accounts import Account
-from server.lib.models.assets import create_asset
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -44,22 +41,25 @@ def main():
             for i in range(app['num_accounts']):
                 account = Account(bigchain=bigchain,
                                   name='account_{}'.format(i),
-                                  ledgers=[{
+                                  ledger={
+                                      'id': app['ledger'],
                                       'api': creat_uri('localhost', 8000, app['ledger']),
                                       'ws': creat_uri('localhost', 8888, app['ledger'])
-                                  }],
+                                  },
                                   db=app_name)
                 accounts.append(account)
         elif 'accounts' in app:
             for account_config in app['accounts']:
-                account = Account(bigchain=bigchain,
-                                  name=account_config['name'],
-                                  ledgers=[{
-                                      'api': creat_uri('localhost', 8000, ledger['id']),
-                                      'ws': creat_uri('localhost', 8888, ledger['id'])
-                                  } for ledger in account_config['ledgers']],
-                                  db=app_name)
-                accounts.append(account)
+                for ledger in account_config['ledgers']:
+                    account = Account(bigchain=bigchain,
+                                      name=account_config['name'],
+                                      ledger={
+                                          'id': ledger['id'],
+                                          'api': creat_uri('localhost', 8000, ledger['id']),
+                                          'ws': creat_uri('localhost', 8888, ledger['id'])
+                                      },
+                                      db=app_name)
+                    accounts.append(account)
         logging.info('INIT: {} accounts initialized for app: {}'.format(len(accounts), app_name))
 
 
