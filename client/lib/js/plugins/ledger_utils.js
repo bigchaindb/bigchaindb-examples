@@ -1,14 +1,17 @@
-import BigchainDBLedgerPlugin from './bigchaindb_ledgerplugin';
+// import BigchainDBLedgerPlugin from './bigchaindb_ledgerplugin';
+import BigchainDBLedgerPlugin from 'ilp-plugin-bigchaindb';
+import { API_PATH } from '../constants/application_constants';
 
-import { TORNADO_BASE_URL } from '../constants/application_constants';
-
-
-const connectToBigchainDBLedger = (publicKey) => {
+const connectToBigchainDBLedger = (account) => {
     const ledger = new BigchainDBLedgerPlugin({
         auth: {
             account: {
-                id: publicKey,
-                uri: `${TORNADO_BASE_URL}/users/${publicKey}`
+                id: account.vk,
+                key: account.sk,
+                uri: {
+                    api: API_PATH,
+                    ws: `ws://localhost:8888/users/${account.vk}`
+                }
             }
         }
     });

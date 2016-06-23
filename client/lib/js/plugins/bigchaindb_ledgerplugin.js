@@ -34,9 +34,7 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
         const streamUri = `${accountUri}/changes`;
         console.log(`subscribing to ${streamUri}`);
 
-        const reconnect = reconnectCore(() => {
-            return new SimpleWebsocket(streamUri);
-        });
+        const reconnect = reconnectCore(() => new SimpleWebsocket(streamUri));
 
         return new Promise((resolve, reject) => {
             this.connection = reconnect({ immediate: true }, (ws) => {
@@ -84,10 +82,6 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
         return this.connected;
     }
 
-    validateTransfer(transfer) {
-        // validator.validate('TransferTemplate', transfer)
-    }
-
     getInfo() {
     }
 
@@ -131,12 +125,19 @@ class BigchainDBLedgerPlugin extends EventEmitter2 {
 
     * _send(transfer) {
         let res;
+        const creds = this.credentials;
         try {
             res = yield request('assets_escrow', {
                 method: 'POST',
-                jsonBody: transfer.payloadToPost,
+                jsonBody: {
+                    source: {
+                        vk: creds.account.id,
+                        sk: creds.account.key
+                    },
+                    to: transfer.account
+                },
                 urlTemplateSpec: {
-                    assetId: transfer.asset.id,
+                    assetId: transfer.asset.txid,
                     cid: transfer.asset.cid
                 }
             });

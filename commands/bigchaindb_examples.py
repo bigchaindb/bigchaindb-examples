@@ -7,7 +7,7 @@ import subprocess
 import rethinkdb as r
 from bigchaindb import Bigchain
 
-from init_db import main as init_db_main
+from init_accounts import main as init_accounts_main
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -80,7 +80,7 @@ def run_reset_bigchaindb(args):
 
 
 def run_init_accounts(args):
-    init_db_main()
+    init_accounts_main()
 
 
 def run_reset_accounts(args):

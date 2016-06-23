@@ -6,6 +6,7 @@ import os.path
 import bigchaindb
 import bigchaindb.config_utils
 
+import apps_config
 from server.lib.models.accounts import Account
 from server.lib.models.assets import create_asset
 
@@ -17,44 +18,7 @@ try:
 except KeyError:
     CONFIG_FILE = os.path.join(os.path.dirname(__file__), '.bigchaindb_examples')
 
-APPS = [
-    {
-        'name': 'ontherecord',
-        'num_accounts': 3,
-        'num_assets': 0,
-        'payload_func': (
-            lambda x: {
-                'app': 'ontherecord',
-                'content': x
-            }
-        )
-    },
-    {
-        'name': 'sharetrader',
-        'num_accounts': 5,
-        'num_assets': 64,
-        'payload_func': (
-            lambda i: {
-                'app': 'sharetrader',
-                'content': {
-                    'x': int(i / 8),
-                    'y': int(i % 8)
-                }
-            }
-        )
-    },
-    {
-        'name': 'interledger',
-        'num_accounts': 3,
-        'num_assets': 10,
-        'payload_func': (
-            lambda x: {
-                'app': 'interledger',
-                'content': x
-            }
-        )
-    }
-]
+APPS = apps_config.APPS
 
 
 def get_bigchain(conf=CONFIG_FILE):
@@ -71,10 +35,11 @@ def main(ledger_number=''):
 
     for app in APPS:
         accounts = []
-        app_name = '{}{}'.format(app['name'], ledger_number)
+        app_name = '{}'.format(app['name'])
         for i in range(app['num_accounts']):
             account = Account(bigchain=bigchain,
                               name='account_{}'.format(i),
+                              ledgers=[bigchaindb.config['database']['name']],
                               db=app_name)
             accounts.append(account)
 

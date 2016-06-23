@@ -7,13 +7,14 @@ DB = 'examples'
 
 
 class Account:
-    def __init__(self, bigchain, name, db=None):
+    def __init__(self, bigchain, name, ledgers, db=None):
         if not db:
             db = DB
         self.bigchain = bigchain
         self.db = db
         self.name = name
         self.sk, self.vk = bigchaindb.crypto.generate_key_pair()
+        self.ledgers = ledgers
         self.save()
 
     @property

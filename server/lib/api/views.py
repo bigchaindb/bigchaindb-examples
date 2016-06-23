@@ -21,8 +21,7 @@ bigchain = get_bigchain()
 
 @api_views.route('/accounts/')
 def get_accounts():
-    legder_number = os.environ.get('BIGCHAINDB_LEDGER_NUMBER')
-    app = '{}{}'.format(request.args.get('app'), legder_number)
+    app = '{}'.format(request.args.get('app'))
     result = accounts.retrieve_accounts(bigchain, app)
     return flask.jsonify({'accounts': result})
 
