@@ -61,6 +61,7 @@ export default function BigchainDBConnection(Component) {
             console.log('incoming: ', changes);
 
             if (changes && changes.client && this.refs.component) {
+                console.log(this.state)
                 safeInvoke(this.refs.component.fetchAssetList, {
                     accountToFetch: changes.client
                 });

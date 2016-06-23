@@ -58,7 +58,7 @@ class AccountStore {
     postProcessAccount(account) {
         account.ledger = connectToBigchainDBLedger(account);
         AssetActions.fetchAssetList.defer({
-            accountToFetch: account.vk
+            accountToFetch: account
         });
         return account;
     }

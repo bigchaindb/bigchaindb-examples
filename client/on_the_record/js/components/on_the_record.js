@@ -54,7 +54,7 @@ const OnTheRecord = React.createClass({
         });
 
         this.fetchAssetList({
-            accountToFetch: activeAccount.vk,
+            accountToFetch: activeAccount,
             search: query
         });
     },
