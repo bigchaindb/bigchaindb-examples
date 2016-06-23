@@ -154,6 +154,30 @@ def run_start(args):
     p_bigchaindb.wait()
 
 
+def run_reset_all(args):
+    # reset bigchaindb
+    args = argparse.Namespace(all=True, command='reset-bigchaindb', ledger=None)
+    run_reset_bigchaindb(args)
+
+    # reset accounts
+    args = argparse.Namespace()
+    run_reset_accounts(args)
+
+
+def run_init_all(args):
+    # init bigchaindb
+    args = argparse.Namespace(all=True, command='init-bigchaindb', ledger=None)
+    run_init_bigchaindb(args)
+
+    # init accounts
+    args = argparse.Namespace()
+    run_init_accounts(args)
+
+    # init assets
+    args = argparse.Namespace()
+    run_init_assets(args)
+
+
 def main():
     parser = argparse.ArgumentParser(prog='bigchaindb-examples',
                                      description='Run bigchaindb examples')
@@ -209,6 +233,14 @@ def main():
     # Initialize assets
     subparser.add_parser('init-assets',
                          help='Initialize assets for all the apps in all the ledgers')
+
+    # Initialize everything
+    subparser.add_parser('init-all',
+                         help='Initializes all the databases for apps, ledgers and assets')
+
+    # Reset everything
+    subparser.add_parser('reset-all',
+                         help='Deletes all databases created by apps and all the ledgers')
 
     start(parser, globals())
 
