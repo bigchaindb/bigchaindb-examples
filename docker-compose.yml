@@ -21,6 +21,8 @@ services:
       CLIENT_HOST: 0.0.0.0
       FLASK_HOST: "${DOCKER_MACHINE_IP}"
       FLASK_PORT: 32801
+      TORNADO_HOST: "${DOCKER_MACHINE_IP}"
+      TORNADO_PORT: 32802
     ports:
       - "32800:3000"
     command: node server.demo.js
@@ -61,3 +63,17 @@ services:
     ports:
       - "32801:8000"
     command: python -m server.app
+
+  ws:
+    build:
+      context: .
+      dockerfile: Dockerfile-bdb
+    volumes_from:
+      - app
+    environment:
+      BIGCHAINDB_CONFIG: /root/.bigchaindb
+      BIGCHAIN_DATABASE_HOST: rdb
+      TORNADO_HOST: 0.0.0.0
+    ports:
+      - "32802:8888"
+    command: python -m server.tornado_app
