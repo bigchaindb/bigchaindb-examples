@@ -65,6 +65,43 @@ def init_ledgers(ledger_ids=[]):
         subprocess.Popen(['bigchaindb', '-c', '.bigchaindb_examples', 'init'], env=my_env).wait()
 
 
+def start_services(ledger_num):
+    procs = []
+
+    # setup env
+    frontend_port = 3000 + ledger_num
+    flask_port = 8000 + ledger_num
+    tornado_port = 8888 + ledger_num
+    bigchaindb_db_name = 'bigchaindb_examples_{}'.format(ledger_num)
+    bigchaindb_server_bind = 'localhost:{}'.format(9984 + ledger_num)
+
+    my_env = os.environ.copy()
+    my_env['CLIENT_PORT'] = str(frontend_port)
+    my_env['FLASK_PORT'] = str(flask_port)
+    my_env['TORNADO_PORT'] = str(tornado_port)
+    my_env['BIGCHAINDB_DATABASE_NAME'] = bigchaindb_db_name
+    my_env['BIGCHAINDB_SERVER_BIND'] = bigchaindb_server_bind
+    my_env['BIGCHAINDB_LEDGER_NUMBER'] = str(ledger_num)
+
+    # start npm
+    p_npm = subprocess.Popen(['/bin/sh', 'start.sh'], cwd='./client/', env=my_env)
+    procs.append(p_npm)
+
+    # start flask
+    p_flask = subprocess.Popen(['python', '-m', 'server.app'], env=my_env)
+    procs.append(p_flask)
+
+    # start tornado
+    p_tornado = subprocess.Popen(['python', '-m', 'server.tornado_app'], env=my_env)
+    procs.append(p_tornado)
+
+    # start bigchaindb
+    p_bigchaindb = subprocess.Popen(['bigchaindb', '-c', '.bigchaindb_examples', 'start'], env=my_env)
+    procs.append(p_bigchaindb)
+
+    return procs
+
+
 def get_ledger_ids_from_config(config):
     # read the config file and return all ledger ids
     ledger_ids = []
@@ -120,38 +157,19 @@ def run_init_assets(args):
 
 
 def run_start(args):
-    # setup env
-    frontend_port = 3000 + args.ledger
-    flask_port = 8000 + args.ledger
-    tornado_port = 8888 + args.ledger
-    bigchaindb_db_name = 'bigchaindb_examples{}'.format(args.ledger)
-    bigchaindb_server_bind = 'localhost:{}'.format(9984 + args.ledger)
+    ledger_ids = []
+    if args.ledger:
+        ledger_ids = [args.ledger]
+    elif args.all:
+        ledger_ids = get_ledger_ids_from_config(APPS)
 
-    my_env = os.environ.copy()
-    my_env['CLIENT_PORT'] = str(frontend_port)
-    my_env['FLASK_PORT'] = str(flask_port)
-    my_env['TORNADO_PORT'] = str(tornado_port)
-    my_env['BIGCHAINDB_DATABASE_NAME'] = bigchaindb_db_name
-    my_env['BIGCHAINDB_SERVER_BIND'] = bigchaindb_server_bind
-    my_env['BIGCHAINDB_LEDGER_NUMBER'] = str(args.ledger)
-
-    # start npm
-    p_npm = subprocess.Popen(['/bin/sh', 'start.sh'], cwd='./client/', env=my_env)
-
-    # start flask
-    p_flask = subprocess.Popen(['python', '-m', 'server.app'], env=my_env)
-
-    # start tornado
-    p_tornado = subprocess.Popen(['python', '-m', 'server.tornado_app'], env=my_env)
-
-    # start bigchaindb
-    p_bigchaindb = subprocess.Popen(['bigchaindb', '-c', '.bigchaindb_examples', 'start'], env=my_env)
+    procs = []
+    for ledger in ledger_ids:
+        procs += start_services(ledger)
 
     # wait for processes to finish
-    p_npm.wait()
-    p_flask.wait()
-    p_tornado.wait()
-    p_bigchaindb.wait()
+    for proc in procs:
+        proc.wait()
 
 
 def run_reset_all(args):
