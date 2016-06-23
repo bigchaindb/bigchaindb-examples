@@ -58,7 +58,8 @@ class Account:
         return {
             'name': self.name,
             'sk': self.sk,
-            'vk': self.vk
+            'vk': self.vk,
+            'ledgers': self.ledgers
         }
 
 
