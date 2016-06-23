@@ -60,7 +60,7 @@ const AccountList = React.createClass({
                         })
                         .map(account => (
                             <AccountWrapper
-                                key={account.name}
+                                key={account.vk}
                                 account={account}
                                 isActive={activeAccount === account}
                                 handleClick={handleAccountClick}>

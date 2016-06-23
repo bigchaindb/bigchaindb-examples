@@ -61,9 +61,13 @@ export default function BigchainDBConnection(Component) {
             console.log('incoming: ', changes);
 
             if (changes && changes.client && this.refs.component) {
-                console.log(this.state)
+                const {
+                    accountList
+                } = this.state;
+
+                const account = accountList.filter((account) => account.vk === changes.client)[0];
                 safeInvoke(this.refs.component.fetchAssetList, {
-                    accountToFetch: changes.client
+                    account
                 });
             }
         },

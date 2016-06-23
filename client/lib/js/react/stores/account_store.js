@@ -56,11 +56,13 @@ class AccountStore {
     }
 
     postProcessAccount(account) {
-        account.ledger = connectToBigchainDBLedger(account);
+        const processedAccount = Object.assign({}, account);
+        processedAccount.ledger = connectToBigchainDBLedger(account);
+        processedAccount.api = `http://${account.ledger.api}/api`;
         AssetActions.fetchAssetList.defer({
-            accountToFetch: account
+            account: processedAccount
         });
-        return account;
+        return processedAccount;
     }
 
     onPostAccount(payloadToPost) {

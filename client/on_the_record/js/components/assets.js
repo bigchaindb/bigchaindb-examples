@@ -23,11 +23,14 @@ const Assets = React.createClass({
         const { activeAccount } = this.props;
         const { value } = this.state;
 
-        const payload = {
+        const payloadToPost = {
             to: activeAccount.vk,
             content: value
         };
-        AssetActions.postAsset(payload);
+        AssetActions.postAsset({
+            payloadToPost,
+            account: activeAccount
+        });
 
         this.setState({ value: null });
 

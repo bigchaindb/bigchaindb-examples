@@ -5,36 +5,14 @@ import AssetActions from '../actions/asset_actions';
 
 const AssetSource = {
 
-    lookupAsset: {
-        remote(state) {
-            return request('asset_detail', {
-                urlTemplateSpec: {
-                    assetId: state.assetMeta.idToFetch
-                }
-            });
-        },
-
-        success: AssetActions.successFetchAsset,
-        error: AssetActions.errorAsset
-    },
-
     lookupAssetList: {
         remote(state) {
-            const { accountToFetch, search } = state.assetMeta;
-            if (accountToFetch === null) {
-                // fetch all assets
-                return request('assets', {
-                    query: { search }
-                });
-            } else {
-                // fetch assets for account
-                return request('assets_for_account', {
-                    query: { search },
-                    urlTemplateSpec: {
-                        accountId: accountToFetch
-                    }
-                });
-            }
+            const { account, search } = state.assetMeta;
+            // fetch assets for account
+            const url = `${account.api}/accounts/${account.vk}/assets/`;
+            return request(url, {
+                query: { search }
+            });
         },
 
         success: AssetActions.successFetchAssetList,
@@ -43,9 +21,11 @@ const AssetSource = {
 
     postAsset: {
         remote(state) {
-            return request('assets', {
+            const { account, payloadToPost } = state.assetMeta;
+            const url = `${account.api}/assets/`;
+            return request(url, {
                 method: 'POST',
-                jsonBody: state.assetMeta.payloadToPost
+                jsonBody: payloadToPost
             });
         },
 
@@ -55,9 +35,9 @@ const AssetSource = {
 
     transferAsset: {
         remote(state) {
-            const { idToTransfer: { cid, txid: assetId }, payloadToPost } = state.assetMeta;
-
-            return request('assets_transfer', {
+            const { account, idToTransfer: { cid, txid: assetId }, payloadToPost } = state.assetMeta;
+            const url = `${account.api}/assets/${assetId}/${cid}/transfer/`;
+            return request(url, {
                 method: 'POST',
                 jsonBody: payloadToPost,
                 urlTemplateSpec: { assetId, cid }

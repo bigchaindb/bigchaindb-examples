@@ -21,10 +21,10 @@ const Interledger = React.createClass({
         handleAssetChange: React.PropTypes.func
     },
 
-    fetchAssetList({ accountToFetch }) {
-        if (accountToFetch) {
+    fetchAssetList({ account }) {
+        if (account) {
             AssetActions.fetchAssetList({
-                accountToFetch
+                account
             });
         }
     },

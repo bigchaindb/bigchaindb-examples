@@ -50,7 +50,8 @@ const AssetRow = React.createClass({
 
         AssetActions.transferAsset({
             idToTransfer,
-            payloadToPost
+            payloadToPost,
+            account: activeAccount
         });
 
         this.setState({ inTransfer: true });

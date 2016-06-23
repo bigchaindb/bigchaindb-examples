@@ -66,7 +66,7 @@ const AssetActionPanel = React.createClass({
                         .filter((account) => account !== activeAccount)
                         .map((account) => (
                             <MenuItem
-                                key={account.name}
+                                key={account.vk}
                                 onClick={() => this.setSelectedAccount(account)}>
                                 {account.name}
                             </MenuItem>

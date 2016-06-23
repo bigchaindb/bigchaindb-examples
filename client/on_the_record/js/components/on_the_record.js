@@ -30,10 +30,10 @@ const OnTheRecord = React.createClass({
         };
     },
 
-    fetchAssetList({ accountToFetch, search }) {
-        if (accountToFetch) {
+    fetchAssetList({ account, search }) {
+        if (account) {
             AssetActions.fetchAssetList({
-                accountToFetch,
+                account,
                 search,
                 blockWhenFetching: true
             });
@@ -54,7 +54,7 @@ const OnTheRecord = React.createClass({
         });
 
         this.fetchAssetList({
-            accountToFetch: activeAccount,
+            account: activeAccount,
             search: query
         });
     },
