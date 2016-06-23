@@ -60,7 +60,6 @@ def run_init_bigchaindb(args):
     bigchaindb_db_name = 'bigchaindb_examples{}'.format(args.ledger)
     my_env['BIGCHAINDB_DATABASE_NAME'] = bigchaindb_db_name
     subprocess.Popen(['bigchaindb', '-c', '.bigchaindb_examples', 'init'], env=my_env).wait()
-    # subprocess.Popen(['python3', 'init_db.py', str(args.ledger)], env=my_env).wait()
 
 
 def run_reset_bigchaindb(args):
@@ -103,13 +102,6 @@ def run_start(args):
     my_env['BIGCHAINDB_DATABASE_NAME'] = bigchaindb_db_name
     my_env['BIGCHAINDB_SERVER_BIND'] = bigchaindb_server_bind
     my_env['BIGCHAINDB_LEDGER_NUMBER'] = str(args.ledger)
-
-    # we need to make sure that the database is initialized before calling anything else
-    # initialize bigchaindb database
-    subprocess.Popen(['bigchaindb', '-c', '.bigchaindb_examples', 'init'], env=my_env).wait()
-    # initialize apps database
-    subprocess.Popen(['python3', 'init_db.py', str(args.ledger)], env=my_env).wait()
-    # main_init_db(args.ledger)
 
     # start npm
     p_npm = subprocess.Popen(['/bin/sh', 'start.sh'], cwd='./client/', env=my_env)
