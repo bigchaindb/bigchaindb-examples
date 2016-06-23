@@ -166,6 +166,10 @@ def main():
                               default=False,
                               action='store_true',
                               help='Start the services for all ledgers')
+    start_parser.add_argument('-i', '--init',
+                              default=False,
+                              action='store_true',
+                              help='First initialize and then start the services for all ledgers')
 
     # Initialize bigchaindb
     init_bigchaindb_parser = subparser.add_parser('init-bigchaindb',
