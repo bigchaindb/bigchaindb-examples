@@ -31,31 +31,37 @@ bigchain = get_bigchain()
 logging.info('INIT: bigchain initialized with database: {}'.format(bigchaindb.config['database']['name']))
 
 
-def main(ledger_number=''):
+def creat_uri(host, port, offset):
+    return '{}:{}'.format(host, port+offset)
+
+
+def main():
 
     for app in APPS:
         accounts = []
         app_name = '{}'.format(app['name'])
-        for i in range(app['num_accounts']):
-            account = Account(bigchain=bigchain,
-                              name='account_{}'.format(i),
-                              ledgers=[bigchaindb.config['database']['name']],
-                              db=app_name)
-            accounts.append(account)
-
+        if 'num_accounts' in app:
+            for i in range(app['num_accounts']):
+                account = Account(bigchain=bigchain,
+                                  name='account_{}'.format(i),
+                                  ledgers=[{
+                                      'api': creat_uri('localhost', 8000, app['ledger']),
+                                      'ws': creat_uri('localhost', 8888, app['ledger'])
+                                  }],
+                                  db=app_name)
+                accounts.append(account)
+        elif 'accounts' in app:
+            for account_config in app['accounts']:
+                account = Account(bigchain=bigchain,
+                                  name=account_config['name'],
+                                  ledgers=[{
+                                      'api': creat_uri('localhost', 8000, ledger['id']),
+                                      'ws': creat_uri('localhost', 8888, ledger['id'])
+                                  } for ledger in account_config['ledgers']],
+                                  db=app_name)
+                accounts.append(account)
         logging.info('INIT: {} accounts initialized for app: {}'.format(len(accounts), app_name))
-
-        assets = []
-        for i in range(app['num_assets']):
-            asset = create_asset(bigchain=bigchain,
-                                 to=accounts[random.randint(0, app['num_accounts'] - 1)].vk,
-                                 payload=app['payload_func'](i))
-            assets.append(asset)
-        logging.info('INIT: {} assets initialized for app: {}'.format(len(assets), app_name))
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        main(sys.argv[1])
-    else:
-        main()
+    main()
