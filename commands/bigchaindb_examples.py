@@ -8,6 +8,7 @@ import rethinkdb as r
 from bigchaindb import Bigchain
 
 from init_accounts import main as init_accounts_main
+from apps_config import APPS
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -54,12 +55,38 @@ def delete_databases(dbnames=[]):
             logger.info(e.message)
 
 
+def init_ledgers(ledger_ids=[]):
+    for ledger_id in ledger_ids:
+        my_env = os.environ.copy()
+        bigchaindb_db_name = 'bigchaindb_examples_{}'.format(ledger_id)
+        logger.info('Initializing ledger {}'.format(bigchaindb_db_name))
+        my_env['BIGCHAINDB_DATABASE_NAME'] = bigchaindb_db_name
+        subprocess.Popen(['bigchaindb', '-c', '.bigchaindb_examples', 'init'], env=my_env).wait()
+
+
+def get_ledger_ids_from_config(config):
+    # read the config file and return all ledger ids
+    ledger_ids = []
+    for app in config:
+        if app['name'] != 'interledger':
+            ledger_ids.append(app['ledger'])
+        else:
+            for account in app['accounts']:
+                for ledger in account['ledgers']:
+                    ledger_ids.append(ledger['id'])
+
+    return list(set(ledger_ids))
+
+
 def run_init_bigchaindb(args):
     # initialize the databases for ledger args.ledger
-    my_env = os.environ.copy()
-    bigchaindb_db_name = 'bigchaindb_examples{}'.format(args.ledger)
-    my_env['BIGCHAINDB_DATABASE_NAME'] = bigchaindb_db_name
-    subprocess.Popen(['bigchaindb', '-c', '.bigchaindb_examples', 'init'], env=my_env).wait()
+    ledger_ids = []
+    if args.ledger:
+        ledger_ids = [args.ledger]
+    elif args.all:
+        ledger_ids = get_ledger_ids_from_config(APPS)
+
+    init_ledgers(ledger_ids)
 
 
 def run_reset_bigchaindb(args):
@@ -69,9 +96,9 @@ def run_reset_bigchaindb(args):
     # dbs do delete
     dbnames = []
     if args.ledger:
-        dbnames = ['bigchaindb_examples{}'.format(args.ledger)]
+        dbnames = ['bigchaindb_examples_{}'.format(args.ledger)]
     elif args.all:
-        regex_db = re.compile(r'^(bigchaindb_examples\d*$)')
+        regex_db = re.compile(r'^(bigchaindb_examples_\d*$)')
         for dbname in r.db_list().run(b.conn):
             if regex_db.match(dbname):
                 dbnames.append(dbname)
