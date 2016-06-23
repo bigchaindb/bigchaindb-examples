@@ -6,8 +6,6 @@ import parseEscrowData from '../../utils/cryptoconditions/parse_escrow_data';
 import AssetActions from '../actions/asset_actions';
 import AssetSource from '../sources/asset_source';
 
-
-
 class AssetStore {
     constructor() {
         this.asset = null;

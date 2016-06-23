@@ -41,10 +41,10 @@ export default function BigchainDBConnection(Component) {
         onAccountStoreChange(state) {
             const { oldAccountList } = this.state;
             state.accountList.forEach((account) => {
-                if (account.ledger &&
+                if (account.ledgers &&
                     (!oldAccountList ||
                      (oldAccountList && oldAccountList.indexOf(account) === -1))) {
-                    account.ledger.on('incoming', this.handleLedgerChanges);
+                    account.ledgers.forEach((ledger) => ledger.on('incoming', this.handleLedgerChanges));
                 }
             });
 

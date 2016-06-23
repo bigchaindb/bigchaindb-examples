@@ -9,7 +9,7 @@ import os
 import flask
 from flask import request, Blueprint
 
-from init_db import get_bigchain
+from init_accounts import get_bigchain
 
 from server.lib.models import accounts
 from server.lib.models import assets

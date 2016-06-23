@@ -1,4 +1,4 @@
-    import request from '../../utils/request';
+import request from '../../utils/request';
 
 import AssetActions from '../actions/asset_actions';
 
