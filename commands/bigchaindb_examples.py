@@ -157,6 +157,11 @@ def run_init_assets(args):
 
 
 def run_start(args):
+    # check if we need to initialize
+    if args.init:
+        init_args = argparse.Namespace()
+        run_init_all(init_args)
+
     ledger_ids = []
     if args.ledger:
         ledger_ids = [args.ledger]
