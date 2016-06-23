@@ -43,14 +43,15 @@ def start(parser, scope):
     func(args)
 
 
-def run_reset(args):
+def delete_databases(dbnames=[]):
     b = Bigchain()
-    regex_db = re.compile(r'^((bigchaindb_examples\d*$)|(interledger\d*$)|(ontherecord\d*$)|(sharetrader\d*$))')
 
-    for dbname in r.db_list().run(b.conn):
-        if regex_db.match(dbname):
-            logger.info('Droping database: {}'.format(dbname))
+    for dbname in dbnames:
+        logger.info('Dropping database: {}'.format(dbname))
+        try:
             r.db_drop(dbname).run(b.conn)
+        except r.ReqlOpFailedError as e:
+            logger.info(e.message)
 
 
 def run_init_bigchaindb(args):
@@ -64,7 +65,6 @@ def run_init_bigchaindb(args):
 
 def run_reset_bigchaindb(args):
     # delete databases for ledger args.ledger or all
-    print(args)
     b = Bigchain()
 
     # dbs do delete
@@ -72,22 +72,20 @@ def run_reset_bigchaindb(args):
     if args.ledger:
         dbnames = ['bigchaindb_examples{}'.format(args.ledger)]
     elif args.all:
-        print('inside all')
         regex_db = re.compile(r'^(bigchaindb_examples\d*$)')
         for dbname in r.db_list().run(b.conn):
             if regex_db.match(dbname):
                 dbnames.append(dbname)
 
-    for dbname in dbnames:
-        logger.info('Dropping database: {}'.format(dbname))
-        try:
-            r.db_drop(dbname).run(b.conn)
-        except r.ReqlOpFailedError as e:
-            logger.info(e.message)
+    delete_databases(dbnames)
 
 
 def run_init_accounts(args):
     init_db_main()
+
+
+def run_reset_accounts(args):
+    delete_databases(['interledger', 'ontherecord', 'sharetrader'])
 
 
 def run_start(args):
@@ -139,17 +137,6 @@ def main():
     subparser = parser.add_subparsers(title='Commands',
                                       dest='command')
 
-    reset_parser = subparser.add_parser('reset',
-                                        help='Reset the database')
-
-    reset_parser.add_argument('-l', '--legder',
-                              type=int,
-                              help='Delete the databases created for a ledger')
-
-    reset_parser.add_argument('-a', '--all',
-                              type=bool,
-                              help='Delete the databases created for all ledgers')
-
     start_parser = subparser.add_parser('start',
                                         help='start a new ledger')
 
@@ -178,6 +165,9 @@ def main():
                                          default=False,
                                          action='store_true',
                                          help='Delete all the bigchaindb ledgers')
+
+    reset_accounts_parser = subparser.add_parser('reset-accounts',
+                                                 help='Delete the accounts databases')
 
     start(parser, globals())
 
