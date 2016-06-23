@@ -7,6 +7,8 @@ import subprocess
 import rethinkdb as r
 from bigchaindb import Bigchain
 
+from init_db import main as init_db_main
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -49,6 +51,15 @@ def run_reset(args):
         if regex_db.match(dbname):
             logger.info('Droping database: {}'.format(dbname))
             r.db_drop(dbname).run(b.conn)
+
+
+def run_init(args):
+    # initialize the databases for ledger args.ledger
+    my_env = os.environ.copy()
+    bigchaindb_db_name = 'bigchaindb_examples{}'.format(args.ledger)
+    my_env['BIGCHAINDB_DATABASE_NAME'] = bigchaindb_db_name
+    subprocess.Popen(['bigchaindb', '-c', '.bigchaindb_examples', 'init'], env=my_env).wait()
+    subprocess.Popen(['python3', 'init_db.py', str(args.ledger)], env=my_env).wait()
 
 
 def run_start(args):
@@ -100,8 +111,16 @@ def main():
     subparser = parser.add_subparsers(title='Commands',
                                       dest='command')
 
-    subparser.add_parser('reset',
-                         help='Reset the database')
+    reset_parser = subparser.add_parser('reset',
+                                        help='Reset the database')
+
+    reset_parser.add_argument('-l', '--legder',
+                              type=int,
+                              help='Delete the databases created for a ledger')
+
+    reset_parser.add_argument('-a', '--all',
+                              type=bool,
+                              help='Delete the databases created for all ledgers')
 
     start_parser = subparser.add_parser('start',
                                         help='start a new ledger')
@@ -110,6 +129,14 @@ def main():
                               type=int,
                               default=0,
                               help='Start a new ledger with the number provided')
+
+    init_parser = subparser.add_parser('init',
+                                       help='Initialize the databases for a ledger')
+
+    init_parser.add_argument('ledger',
+                             metavar='N',
+                             type=int,
+                             help='Initialize the databases for a ledger N')
 
     start(parser, globals())
 
