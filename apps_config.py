@@ -3,6 +3,7 @@ APPS = [
         'name': 'ontherecord',
         'num_accounts': 3,
         'num_assets': 0,
+        'ledger': 0,
         'payload_func': (
             lambda x: {
                 'app': 'ontherecord',
@@ -14,6 +15,7 @@ APPS = [
         'name': 'sharetrader',
         'num_accounts': 5,
         'num_assets': 64,
+        'ledger': 1,
         'payload_func': (
             lambda i: {
                 'app': 'sharetrader',
@@ -31,7 +33,7 @@ APPS = [
                 'name': 'alice',
                 'ledgers': [
                     {
-                        'id': 0,
+                        'id': 2,
                         'num_assets': 3
                     }
                 ]
@@ -40,7 +42,7 @@ APPS = [
                 'name': 'bob',
                 'ledgers': [
                     {
-                        'id': 1,
+                        'id': 2,
                         'num_assets': 3
                     }
                 ]
@@ -49,11 +51,11 @@ APPS = [
                 'name': 'chloe',
                 'ledgers': [
                     {
-                        'id': 0,
+                        'id': 2,
                         'num_assets': 3
                     },
                     {
-                        'id': 1,
+                        'id': 3,
                         'num_assets': 3
                     }
                 ]
