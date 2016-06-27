@@ -11,7 +11,8 @@ const connectToBigchainDBLedger = (account) => {
                     ws: `ws://${account.ledger.ws}/users/${account.vk}`
                 }
             }
-        }
+        },
+        ledgerId: account.ledger.id
     });
 
     ledgerPlugin.connect().catch(console.error);

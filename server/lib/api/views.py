@@ -46,6 +46,13 @@ def get_assets_for_account(account_vk):
     return flask.jsonify({'assets': result, 'account': account_vk})
 
 
+@api_views.route('/ledgers/<ledger_id>/connectors/')
+def get_connectors_for_account(ledger_id):
+    app = '{}'.format(request.args.get('app'))
+    result = accounts.get_connectors(bigchain, ledger_id, app)
+    return flask.jsonify({'connectors': result})
+
+
 @api_views.route('/assets/')
 def get_assets():
     search = request.args.get('search')

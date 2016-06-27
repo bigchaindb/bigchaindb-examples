@@ -15,7 +15,7 @@ APPS = [
         'name': 'sharetrader',
         'num_accounts': 5,
         'num_assets': 64,
-        'ledger': 1,
+        'ledger': 0,
         'payload_func': (
             lambda i: {
                 'app': 'sharetrader',
@@ -33,7 +33,7 @@ APPS = [
                 'name': 'alice',
                 'ledgers': [
                     {
-                        'id': 2,
+                        'id': 0,
                         'num_assets': 3
                     }
                 ]
@@ -42,7 +42,7 @@ APPS = [
                 'name': 'bob',
                 'ledgers': [
                     {
-                        'id': 2,
+                        'id': 1,
                         'num_assets': 3
                     }
                 ]
@@ -51,11 +51,11 @@ APPS = [
                 'name': 'chloe',
                 'ledgers': [
                     {
-                        'id': 2,
+                        'id': 0,
                         'num_assets': 3
                     },
                     {
-                        'id': 3,
+                        'id': 1,
                         'num_assets': 3
                     }
                 ]

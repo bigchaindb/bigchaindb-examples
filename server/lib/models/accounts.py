@@ -3,13 +3,9 @@ import rethinkdb as r
 import bigchaindb.crypto
 from .assets import transfer_asset
 
-DB = 'examples'
-
 
 class Account:
-    def __init__(self, bigchain, name, ledger, db=None):
-        if not db:
-            db = DB
+    def __init__(self, bigchain, name, ledger, db):
         self.bigchain = bigchain
         self.db = db
         self.name = name
@@ -64,9 +60,25 @@ class Account:
         }
 
 
-def retrieve_accounts(bigchain, db=None):
-    if not db:
-        db = DB
+def retrieve_accounts(bigchain, db):
     return list(r.db(db)
                 .table('accounts')
                 .run(bigchain.conn))
+
+
+def get_connectors(bigchain, ledger_id, db):
+    account_on_ledgers = \
+        list(r.db(db)
+              .table('accounts')
+              .filter(lambda user: user['ledger']['id'] == int(ledger_id))
+              .run(bigchain.conn))
+    result = []
+    for account_on_ledger in account_on_ledgers:
+        account_on_multiple_ledgers = \
+            list(r.db(db)
+                  .table('accounts')
+                  .filter(lambda user: user['name'] == account_on_ledger['name'])
+                  .run(bigchain.conn))
+        if len(account_on_multiple_ledgers) > 1:
+            result += account_on_multiple_ledgers
+    return result
