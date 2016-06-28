@@ -7,6 +7,17 @@
         <meta charset="UTF-8">
         <title><%= htmlWebpackPlugin.options.title || 'BigchainDB Examples' %></title>
         <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+
+        <% if (!htmlWebpackPlugin.options.PRODUCTION) { %>
+            <script>
+                if (window.top !== window && !window.top.__REACT_DEVTOOLS_HOLDER__) {
+                    // Pass down the react devtools hook from the parent document to this iframed document
+                    __REACT_DEVTOOLS_GLOBAL_HOOK__ = top.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+                    top.__REACT_DEVTOOLS_HOLDER__ = window;
+                }
+            </script>
+        <% } %>
+
     </head>
     <body>
         <div id="bigchaindb-example-app"></div>

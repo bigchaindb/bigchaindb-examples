@@ -1,0 +1,33 @@
+body {
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+.button--add-frame {
+    bottom: 15px;
+    height: 45px;
+    position: absolute;
+    right: 15px;
+}
+
+.button--back-frame {
+    height: 25px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
+.button--close-frame {
+    height: 25px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.frame-container {
+    /* Floating frames containers left will allow any frames to be fluidly added or removed */
+    float: left;
+
+    position: relative;
+}
