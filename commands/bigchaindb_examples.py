@@ -88,8 +88,8 @@ def start_services(ledger_num):
     procs.append(p_npm)
 
     # start flask
-    p_flask = subprocess.Popen(['python', '-m', 'server.app'], env=my_env)
-    procs.append(p_flask)
+    # p_flask = subprocess.Popen(['python', '-m', 'server.app'], env=my_env)
+    # procs.append(p_flask)
 
     # start tornado
     p_tornado = subprocess.Popen(['python', '-m', 'server.tornado_app'], env=my_env)

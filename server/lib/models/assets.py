@@ -128,11 +128,16 @@ def transfer_asset(bigchain, source, to, asset_id, sk):
     return asset_transfer_signed
 
 
-def escrow_asset(bigchain, source, to, asset_id, sk, expires_at=None, execution_condition=None):
+def escrow_asset(bigchain, source, to, asset_id, sk,
+                 expires_at=None, ilp_header=None, execution_condition=None):
     asset = bigchain.get_transaction(asset_id['txid'])
+    payload = asset['transaction']['data']['payload'].copy()
+    if ilp_header:
+        payload.update({'ilp_header': ilp_header})
+
     # Create escrow template with the execute and abort address
     asset_escrow = bigchain.create_transaction(source, [source, to], asset_id, 'TRANSFER',
-                                               payload=asset['transaction']['data']['payload'])
+                                               payload=payload)
     if not expires_at:
         # Set expiry time (100 secs from now)
         time_sleep = 100
