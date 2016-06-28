@@ -120,7 +120,7 @@ const AssetRow = React.createClass({
                 asset: idToTransfer,
                 destinationAccount: selectedAccount,
                 executionCondition: 'cc:0:3:47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU:0',
-                expiresAt: moment().unix() * 1000 + 100
+                expiresAt: moment().unix() + 100
             };
 
             account.ledger.send(transfer);
@@ -129,8 +129,12 @@ const AssetRow = React.createClass({
                 account,
                 asset: idToTransfer
             };
-
-            account.ledger.fulfillCondition(transfer);
+            if (this.getOperation() === 'execute') {
+                const conditionFulfillment = 'cf:0:';
+                account.ledger.fulfillCondition(transfer, conditionFulfillment);
+            } else {
+                account.ledger.fulfillCondition(transfer);
+            }
         }
     },
 

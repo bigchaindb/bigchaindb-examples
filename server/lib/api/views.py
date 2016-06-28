@@ -93,6 +93,8 @@ def transfer_asset(asset_id, cid):
 def escrow_asset(asset_id, cid):
     json_payload = request.get_json(force=True)
     source = json_payload.pop('source')
+    expires_at = json_payload.pop('expiresAt')
+    execution_condition = json_payload.pop('executionCondition')
     to = json_payload.pop('to')
 
     tx = assets.escrow_asset(bigchain=bigchain,
@@ -102,7 +104,9 @@ def escrow_asset(asset_id, cid):
                                  'txid': asset_id,
                                  'cid': int(cid)
                              },
-                             sk=source['sk'])
+                             sk=source['sk'],
+                             expires_at=expires_at,
+                             execution_condition=execution_condition)
 
     return flask.jsonify(**tx)
 
@@ -112,6 +116,7 @@ def fulfill_escrow_asset(asset_id, cid):
     json_payload = request.get_json(force=True)
     source = json_payload.pop('source')
     to = json_payload.pop('to')
+    execution_fulfillment = json_payload.pop('conditionFulfillment', None)
 
     tx = assets.fulfill_escrow_asset(bigchain=bigchain,
                                      source=source['vk'],
@@ -120,6 +125,7 @@ def fulfill_escrow_asset(asset_id, cid):
                                          'txid': asset_id,
                                          'cid': int(cid)
                                      },
-                                     sk=source['sk'])
+                                     sk=source['sk'],
+                                     execution_fulfillment=execution_fulfillment)
 
     return flask.jsonify(**tx)
