@@ -1,11 +1,15 @@
 import time
+import threading
+
+import rethinkdb as r
 
 import bigchaindb.util
 import bigchaindb.crypto
 from bigchaindb import Bigchain
 import cryptoconditions as cc
 
-connector_sk, connector_vk = bigchaindb.crypto.generate_key_pair()
+connector_sk = 'EBceArfSnHRZvqKRqbcGiVoJ7op5L6pWa5u3atVnD2Kx'
+connector_vk = '2MBzgDqY9M635gG2FPzRZJaWsC1sZQr5sHBfvyxw5uSK'
 
 
 def get_connectors():
@@ -91,7 +95,6 @@ def create_escrow(frm, to, asset_id, amount, preimage, expiry, ledger, connector
 
 def test():
     b = Bigchain()
-    connector_sk, connector_vk = bigchaindb.crypto.generate_key_pair()
     alice_sk, alice_vk = bigchaindb.crypto.generate_key_pair()
 
     # create asset for alice
@@ -114,12 +117,54 @@ def test():
     b.write_transaction(tx_escrow)
     time.sleep(6)
 
-    # fulfill execute
-    print('executing escrow')
-    tx_execute = fulfill_execute_tx(b, tx_escrow, connector_vk, secret)
-    assert b.is_valid_transaction(tx_execute) == tx_execute
-    b.write_transaction(tx_execute)
+    return tx_escrow
 
-    return tx_create, tx_escrow, tx_execute
 
+class Connector(object):
+
+    def __init__(self, vk, sk, ledger_a, ledger_b):
+        port_a = 28015 + ledger_a
+        port_b = 28015 + ledger_b
+        self.ledger_a = Bigchain(port=port_a)
+        self.ledger_b = Bigchain(port=port_b)
+        self.vk = vk
+        self.sk = sk
+        self.assets_a = self._create_assets(self.ledger_a)
+        self.assets_b = self._create_assets(self.ledger_b)
+
+    def listen_events(self):
+        listen_a = threading.Thread(target=self._listen_events, args=(self.ledger_a,))
+        listen_a.start()
+        listen_b = threading.Thread(target=self._listen_events, args=(self.ledger_b,))
+        listen_b.start()
+
+        listen_a.join()
+        listen_b.join()
+
+    def handle_event(self, tx):
+        print('received tx with id {}'.format(tx['id']))
+
+    def _listen_events(self, ledger):
+        for change in r.table('bigchain').changes().run(ledger.conn):
+            if change['old_val'] is None:
+                tx = self._filter_block(change['new_val'])
+                if tx:
+                    self.handle_event(tx)
+
+    def _filter_block(self, block):
+        for transaction in block['block']['transactions']:
+            for condition in transaction['transaction']['conditions']:
+                print(self.vk, condition['new_owners'])
+                if self.vk in condition['new_owners']:
+                    return transaction
+        return None
+
+    def _create_assets(self, ledger):
+        assets = []
+        for i in range(50):
+            tx = ledger.create_transaction(ledger.me, self.vk, None, 'CREATE')
+            tx = ledger.sign_transaction(tx, ledger.me_private)
+            ledger.write_transaction(tx)
+            assets.append(tx['id'])
+        return assets
 
