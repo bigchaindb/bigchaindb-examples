@@ -141,23 +141,48 @@ class Connector(object):
         listen_a.join()
         listen_b.join()
 
-    def handle_event(self, tx):
-        print('received tx with id {}'.format(tx['id']))
+    def handle_escrow(self, tx):
+        print('called handle_escrow {}'.format(tx['id']))
+
+    def handle_execute(self, tx):
+        print('called handle_execute {}'.format(tx['id']))
 
     def _listen_events(self, ledger):
         for change in r.table('bigchain').changes().run(ledger.conn):
             if change['old_val'] is None:
-                tx = self._filter_block(change['new_val'])
-                if tx:
-                    self.handle_event(tx)
+                self._handle_block(change['new_val'])
 
-    def _filter_block(self, block):
+    def _handle_block(self, block):
+        """
+        1. Alice          ---> [Alice, Chloe] ledger_a
+        2. Chloe          ---> [Chloe, Bob]   ledger_b
+        3. [Chloe, Bob]   ---> Bob            ledger_b
+        4. [Alice, Chloe] ---> Chloe          ledger_a
+
+
+        1. If chloe not in current owners and if new_owners = [current_owner, chloe] ---> escrow
+        2. If current_owners == [chloe] do nothing
+        3. If current_owners = [chloe, new_owner] and new_owners = [bob] ---> bob fulfilled hashlock
+        4. If new_owner == [chloe] do nothing
+        """
         for transaction in block['block']['transactions']:
-            for condition in transaction['transaction']['conditions']:
-                print(self.vk, condition['new_owners'])
-                if self.vk in condition['new_owners']:
-                    return transaction
-        return None
+            current_owners = transaction['transaction']['fulfillments'][0]['current_owners']
+            new_owners = transaction['transaction']['conditions'][0]['new_owners']
+
+            # 1.
+            if self.vk not in current_owners and sorted(new_owners) == sorted([self.vk] + current_owners):
+                print('chloe received escrow {}'.format(transaction['id']))
+                self.handle_escrow(transaction)
+            # 2.
+            elif current_owners == [self.vk]:
+                print('skip {}'.format(transaction['id']))
+            # 3.
+            elif self.vk in current_owners and self.vk not in new_owners:
+                print('hashlock fulfilled {}'.format(transaction['id']))
+                self.handle_execute(transaction)
+            # 4.
+            elif new_owners == [self.vk]:
+                print('skip {}'.format(transaction['id']))
 
     def _create_assets(self, ledger):
         assets = []
