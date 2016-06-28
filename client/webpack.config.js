@@ -143,6 +143,10 @@ const LOADERS = [
         loader: JS_LOADER,
     },
     {
+        test: /\.json$/,
+        loader: 'json'
+    },
+    {
         test: /\.s[ac]ss$/,
         exclude: [PATHS.NODE_MODULES],
         loader: PRODUCTION || EXTRACT ? ExtractTextPlugin.extract('style', CSS_LOADER)
