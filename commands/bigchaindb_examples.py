@@ -102,6 +102,11 @@ def start_services(ledger_num):
     return procs
 
 
+def start_connectors():
+    # start connectors
+    return [subprocess.Popen(['python', '-m', 'server.lib.models.connector'])]
+
+
 def get_ledger_ids_from_config(config):
     # read the config file and return all ledger ids
     ledger_ids = []
@@ -171,6 +176,8 @@ def run_start(args):
     procs = []
     for ledger in ledger_ids:
         procs += start_services(ledger)
+
+    procs += start_connectors()
 
     # wait for processes to finish
     for proc in procs:

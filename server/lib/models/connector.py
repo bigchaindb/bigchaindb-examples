@@ -1,10 +1,12 @@
 import threading
+import multiprocessing
+from itertools import groupby
 
 import rethinkdb as r
 
 from bigchaindb import Bigchain
 from server.lib.models.accounts import get_connectors
-from server.lib.models.assets import escrow_asset
+from server.lib.models.accounts import retrieve_accounts
 
 
 class Connector(object):
@@ -100,10 +102,37 @@ class Connector(object):
                 print('skip {}'.format(transaction['id']))
 
 
-if __name__ == '__main__':
-    accounts_0 = get_connectors(Bigchain(port=28015), 0, 'interledger')
-    accounts_1 = get_connectors(Bigchain(port=28015), 1, 'interledger')
+def get_connector_accounts(db='interledger'):
+    b = Bigchain()
+    connector_accounts = []
+    accounts_db = retrieve_accounts(b, db)
 
-    c = Connector(accounts_0[0], accounts_1[0])
+    for name, accounts in groupby(sorted(accounts_db, key=lambda d: d['name']), key=lambda d: d['name']):
+        accounts = list(accounts)
+        if len(accounts) == 2:
+            connector_accounts.append(tuple(accounts))
+
+    return connector_accounts
+
+
+def run_connector(account1, account2):
+    c = Connector(account1=account1, account2=account2)
     c.listen_events()
+
+
+if __name__ == '__main__':
+    connector_accounts = get_connector_accounts()
+    connector_procs = []
+
+    for connector_account in connector_accounts:
+        print('Starting connector: {} <--- {} ---> {}'.format(connector_account[0]['ledger']['id'],
+                                                              connector_account[0]['name'],
+                                                              connector_account[1]['ledger']['id']))
+
+        connector_proc = multiprocessing.Process(target=run_connector, args=connector_account)
+        connector_proc.start()
+        connector_procs.append(connector_proc)
+
+    for connector_proc in connector_procs:
+        connector_proc.join()
 
