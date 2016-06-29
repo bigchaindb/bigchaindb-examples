@@ -18,11 +18,14 @@ except KeyError:
 APPS = apps_config.APPS
 
 
-def get_bigchain(conf=CONFIG_FILE):
+def get_bigchain(conf=CONFIG_FILE, ledger_id=None):
     if os.path.isfile(conf):
         bigchaindb.config_utils.autoconfigure(filename=conf, force=True)
 
-    return bigchaindb.Bigchain()
+    if ledger_id is not None:
+        return bigchaindb.Bigchain(dbname='bigchaindb_examples_{}'.format(ledger_id))
+    else:
+        return bigchaindb.Bigchain()
 
 bigchain = get_bigchain()
 logging.info('INIT: bigchain initialized with database: {}'.format(bigchaindb.config['database']['name']))

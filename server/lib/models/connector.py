@@ -9,10 +9,7 @@ import cryptoconditions as cc
 
 from server.lib.models.accounts import retrieve_accounts
 from server.lib.models.assets import escrow_asset, get_subcondition_indices_from_type
-
-
-def get_bigchain(ledger_id):
-    return Bigchain(dbname='bigchaindb_examples_{}'.format(ledger_id))
+from init_accounts import get_bigchain
 
 
 class Connector(object):
@@ -41,7 +38,7 @@ class Connector(object):
         ilp_header = tx['transaction']['data']['payload']['ilp_header']
         destination_ledger_id = ilp_header['ledger']
 
-        ledger = get_bigchain(destination_ledger_id)
+        ledger = get_bigchain(ledger_id=destination_ledger_id)
         source = self.accounts[destination_ledger_id]['vk']
         to = ilp_header['account']
         asset_id = ledger.get_owned_ids(source).pop()
@@ -68,7 +65,7 @@ class Connector(object):
         print('called handle_execute {}'.format(tx['id']))
 
     def _listen_events(self, ledger_id):
-        ledger = get_bigchain(ledger_id)
+        ledger = get_bigchain(ledger_id=ledger_id)
         for change in r.table('bigchain').changes().run(ledger.conn):
             if change['old_val'] is None:
                 self._handle_block(change['new_val'], ledger_id)
