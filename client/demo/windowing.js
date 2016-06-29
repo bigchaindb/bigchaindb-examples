@@ -5,6 +5,14 @@
 
 'use strict';
 
+/**
+ * Windowing script to dynamically create, resize, and destroy iframe instances of the BigchainDB
+ * examples React app. Up to four windows can be open at the same time with one window shown
+ * initially.
+ *
+ * Targets an element with the id `add-frame-handler` to become the button for adding new frames.
+ * All new frames will be appended into the body.
+ */
 (function windowing() {
     var APP_SOURCE = './start.html';
     var ADD_FRAME_HANDLER_QUERY = '#add-frame-handler';
