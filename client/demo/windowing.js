@@ -58,6 +58,14 @@
                 frame.style.width = baseFrameWidthPercentage;
             }
         });
+
+        // Remove iframe borders if only one frame is visible
+        if (totalFrames.length === 1) {
+            totalFrames[0].querySelector(IFRAME_QUERY).style.borderWidth = 0;
+        } else {
+            // Reset first frame's borders in case they were removed
+            totalFrames[0].querySelector(IFRAME_QUERY).style.borderWidth = '';
+        }
     }
 
     // Creates a new iframe
