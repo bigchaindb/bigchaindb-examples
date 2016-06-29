@@ -94,6 +94,9 @@ const HTML_PLUGINS = Object.keys(ENTRY).map((entryName) => (
             removeRedundantAttributes: true
         } : false,
         template: path.resolve(__dirname, 'app_index_template.html'),
+
+        // Our own options
+        PRODUCTION: PRODUCTION
     })
 ));
 
