@@ -5,8 +5,14 @@ from itertools import groupby
 import rethinkdb as r
 
 from bigchaindb import Bigchain
-from server.lib.models.accounts import get_connectors
+import cryptoconditions as cc
+
 from server.lib.models.accounts import retrieve_accounts
+from server.lib.models.assets import escrow_asset, get_subcondition_indices_from_type
+
+
+def get_bigchain(ledger_id):
+    return Bigchain(dbname='bigchaindb_examples_{}'.format(ledger_id))
 
 
 class Connector(object):
@@ -17,10 +23,7 @@ class Connector(object):
         self.add_accounts(account2)
 
     def add_accounts(self, account):
-        self.accounts[account['ledger']['id']] = {
-            'account': account,
-            'connection': Bigchain(dbname='bigchaindb_examples_{}'.format(account['ledger']['id']))
-        }
+        self.accounts[account['ledger']['id']] = account
 
     def listen_events(self):
         listeners = []
@@ -38,31 +41,34 @@ class Connector(object):
         ilp_header = tx['transaction']['data']['payload']['ilp_header']
         destination_ledger_id = ilp_header['ledger']
 
-        ledger = self.accounts[destination_ledger_id]['connection']
-        source = self.accounts[destination_ledger_id]['account']['vk']
+        ledger = get_bigchain(destination_ledger_id)
+        source = self.accounts[destination_ledger_id]['vk']
         to = ilp_header['account']
-        print('fetching asset id')
         asset_id = ledger.get_owned_ids(source).pop()
-        print('asset id fetched')
-        sk = self.accounts[destination_ledger_id]['account']['sk']
-        pass
-        # expires_at =
-        # execution_condition =
+        sk = self.accounts[destination_ledger_id]['sk']
 
-        # escrow_asset(bigchain=ledger,
-        #              source=source,
-        #              to=to,
-        #              asset_id=asset_id,
-        #              sk=sk,
-        #              expires_at=expires_at,
-        #              ilp_header=ilp_header,
-        #              execution_condition=execution_condition)
+        condition = cc.Fulfillment.from_dict(tx['transaction']['conditions'][0]['condition']['details'])
+
+        timelocks, _ = get_subcondition_indices_from_type(condition, cc.TimeoutFulfillment.TYPE_ID)
+        expires_at = timelocks[0].expire_time.decode()
+
+        hashlocks, _ = get_subcondition_indices_from_type(condition, cc.PreimageSha256Fulfillment.TYPE_ID)
+        execution_condition = hashlocks[0].serialize_uri()
+
+        escrow_asset(bigchain=ledger,
+                     source=source,
+                     to=to,
+                     asset_id=asset_id,
+                     sk=sk,
+                     expires_at=expires_at,
+                     ilp_header=ilp_header,
+                     execution_condition=execution_condition)
 
     def handle_execute(self, tx):
         print('called handle_execute {}'.format(tx['id']))
 
     def _listen_events(self, ledger_id):
-        ledger = self.accounts[ledger_id]['connection']
+        ledger = get_bigchain(ledger_id)
         for change in r.table('bigchain').changes().run(ledger.conn):
             if change['old_val'] is None:
                 self._handle_block(change['new_val'], ledger_id)
@@ -80,7 +86,7 @@ class Connector(object):
         3. If current_owners = [chloe, new_owner] and new_owners = [bob] ---> bob fulfilled hashlock
         4. If new_owner == [chloe] do nothing
         """
-        vk = self.accounts[ledger_id]['account']['vk']
+        vk = self.accounts[ledger_id]['vk']
 
         for transaction in block['block']['transactions']:
             current_owners = transaction['transaction']['fulfillments'][0]['current_owners']
