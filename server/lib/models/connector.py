@@ -33,6 +33,20 @@ class Connector(object):
     def handle_escrow(self, tx, ledger_id):
         print('called handle_escrow {}'.format(tx['id']))
 
+        ilp_header = tx['transaction']['data']['payload']['ilp_header']
+        destination_ledger_id = ilp_header['ledger']
+
+        ledger = self.accounts[destination_ledger_id]['connection']
+        source = self.accounts[destination_ledger_id]['account']['vk']
+        to = ilp_header['account']
+        print('fetching asset id')
+        asset_id = ledger.get_owned_ids(source).pop()
+        print('asset id fetched')
+        sk = self.accounts[destination_ledger_id]['account']['sk']
+        pass
+        # expires_at =
+        # execution_condition =
+
         # escrow_asset(bigchain=ledger,
         #              source=source,
         #              to=to,
