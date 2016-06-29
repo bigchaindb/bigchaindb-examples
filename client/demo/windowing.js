@@ -87,7 +87,10 @@
         backButton.className = 'button--back-frame';
         backButton.innerHTML = 'Back';
         backButton.onclick = function goBackInFrame() {
-            frame.contentWindow.history.back();
+            // Only allow the back button to function if we're not on the start page
+            if (frame.contentWindow.location.pathname !== APP_SOURCE.substring(1)) {
+                frame.contentWindow.history.back();
+            }
         };
 
         // Set up close button
