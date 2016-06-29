@@ -28,9 +28,11 @@ def query_reql_response(response, query):
 
     if result and len(result):
         content = result[0]["transaction"]["data"]["payload"]["content"]
-        if content:
-            if (not query) or (query and query in content):
+        if query and content is not None:
+            if query in content:
                 return result
+        else:
+            return result
     return None
 
 
@@ -174,7 +176,7 @@ def escrow_asset(bigchain, source, to, asset_id, sk,
     asset_escrow['id'] = bigchaindb.util.get_hash_data(asset_escrow)
 
     # sign transaction
-    asset_escrow_signed = bigchain.sign_transaction(asset_escrow, sk)
+    asset_escrow_signed = bigchaindb.util.sign_tx(asset_escrow, sk, bigchain=bigchain)
     bigchain.write_transaction(asset_escrow_signed)
     return asset_escrow_signed
 
