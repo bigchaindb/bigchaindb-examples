@@ -80,5 +80,5 @@ def get_connectors(bigchain, ledger_id, db):
                   .filter(lambda user: user['name'] == account_on_ledger['name'])
                   .run(bigchain.conn))
         if len(account_on_multiple_ledgers) > 1:
-            result += account_on_multiple_ledgers
+            result += [account for account in account_on_multiple_ledgers if account['ledger']['id'] == int(ledger_id)]
     return result

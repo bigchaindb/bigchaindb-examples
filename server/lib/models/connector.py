@@ -3,6 +3,8 @@ import threading
 import rethinkdb as r
 
 from bigchaindb import Bigchain
+from server.lib.models.assets import escrow_asset
+
 
 connector_sk = 'EBceArfSnHRZvqKRqbcGiVoJ7op5L6pWa5u3atVnD2Kx'
 connector_vk = '2MBzgDqY9M635gG2FPzRZJaWsC1sZQr5sHBfvyxw5uSK'
@@ -29,8 +31,17 @@ class Connector(object):
         listen_a.join()
         listen_b.join()
 
-    def handle_escrow(self, tx):
+    def handle_escrow(self, tx, ledger):
         print('called handle_escrow {}'.format(tx['id']))
+
+        # escrow_asset(bigchain=ledger,
+        #              source=source,
+        #              to=to,
+        #              asset_id=asset_id,
+        #              sk=sk,
+        #              expires_at=expires_at,
+        #              ilp_header=ilp_header,
+        #              execution_condition=execution_condition)
 
     def handle_execute(self, tx):
         print('called handle_execute {}'.format(tx['id']))
@@ -38,9 +49,9 @@ class Connector(object):
     def _listen_events(self, ledger):
         for change in r.table('bigchain').changes().run(ledger.conn):
             if change['old_val'] is None:
-                self._handle_block(change['new_val'])
+                self._handle_block(change['new_val'], ledger)
 
-    def _handle_block(self, block):
+    def _handle_block(self, block, ledger):
         """
         1. Alice          ---> [Alice, Chloe] ledger_a
         2. Chloe          ---> [Chloe, Bob]   ledger_b
@@ -60,7 +71,7 @@ class Connector(object):
             # 1.
             if self.vk not in current_owners and sorted(new_owners) == sorted([self.vk] + current_owners):
                 print('chloe received escrow {}'.format(transaction['id']))
-                self.handle_escrow(transaction)
+                self.handle_escrow(transaction, ledger)
             # 2.
             elif current_owners == [self.vk]:
                 print('skip {}'.format(transaction['id']))
@@ -84,3 +95,4 @@ class Connector(object):
 if __name__ == '__main__':
     c = Connector(connector_vk, connector_sk, 0, 0)
     c.listen_events()
+

@@ -46,6 +46,19 @@
         overflow: visible;
     }
 
+    .ledger-0 {
+        color: darken($ascribe-blue, 10%);
+    }
+    .ledger-1 {
+        color: $ascribe-pink;
+    }
+    .ledger-2 {
+        color: $ascribe-dark-blue;
+    }
+    .ledger-3 {
+        color: $ascribe-black;
+    }
+
     #wrapper {
         margin-top: 80px;
         padding-left: 0 !important;
