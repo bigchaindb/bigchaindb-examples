@@ -75,6 +75,9 @@ setup(
 
     setup_requires=['pytest-runner'],
     tests_require=tests_require,
+    dependency_links=[
+        'git+https://github.com/bigchaindb/bigchaindb.git@cc20136cb14b98b323faaead0c2456f8c9859a0b#egg=bigchaindb-0.4.4',
+    ],
     extras_require={
         'test': tests_require,
         'dev':  dev_require + tests_require + docs_require,
