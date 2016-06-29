@@ -7,4 +7,4 @@ COPY setup.py /usr/src/app/
 COPY server /usr/src/app/server
 
 RUN pip install --upgrade pip
-RUN pip install -e .[dev]
+RUN pip install --no-cache-dir --process-dependency-links -e .[dev]
