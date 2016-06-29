@@ -30,8 +30,8 @@
             addFrameHandler.disabled = true;
         }
 
-        // Finally, push new window into DOM before the button
-        addFrameHandler.parentNode.insertBefore(newFrameContainer, addFrameHandler);
+        // Finally, push new window into DOM body
+        document.body.appendChild(newFrameContainer, addFrameHandler);
     }
 
     // Adjust sizing of each frame based on the total number of frames
