@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  
+  bdocs:
+    build:
+      context: .
+      dockerfile: Dockerfile-bdb
+    volumes:
+      - .:/usr/src/app/
+    working_dir: /usr/src/app/docs
+    command: make html
+  
+  vdocs:
+    image: nginx
+    ports:
+      - '41234:80'
+    volumes:
+      - ./docs/build/html:/usr/share/nginx/html
