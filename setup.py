@@ -66,7 +66,7 @@ setup(
 
     install_requires=[
         "rethinkdb==2.3.0",
-        "BigchainDB==0.4.2",
+        "BigchainDB==0.5.0",
         "decorator==4.0.9",
         "flask==0.10.1",
         "flask-cors==2.1.2",
