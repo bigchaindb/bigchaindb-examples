@@ -8,7 +8,7 @@ from bigchaindb import Bigchain
 import cryptoconditions as cc
 
 from server.lib.models.accounts import retrieve_accounts
-from server.lib.models.assets import escrow_asset, get_subcondition_indices_from_type
+from server.lib.models.assets import escrow_asset, get_subcondition_indices_from_type, fulfill_escrow_asset
 from init_accounts import get_bigchain
 
 
@@ -32,10 +32,17 @@ class Connector(object):
         for listen in listeners:
             listen.join()
 
-    def handle_escrow(self, tx, ledger_id):
+    def handle_escrow(self, tx, current_ledger_id):
         print('called handle_escrow {}'.format(tx['id']))
 
         ilp_header = tx['transaction']['data']['payload']['ilp_header']
+        if 'hops' not in ilp_header:
+            ilp_header['hops'] = []
+        ilp_header['hops'].append({
+            'ledger': current_ledger_id,
+            'txid': tx['id']
+        })
+
         destination_ledger_id = ilp_header['ledger']
 
         ledger = get_bigchain(ledger_id=destination_ledger_id)
@@ -63,6 +70,33 @@ class Connector(object):
 
     def handle_execute(self, tx):
         print('called handle_execute {}'.format(tx['id']))
+
+        ilp_header = tx['transaction']['data']['payload']['ilp_header']
+
+        hop = ilp_header['hops'][0]
+
+        ledger = get_bigchain(ledger_id=hop['ledger'])
+        tx_escrow = ledger.get_transaction(hop['txid'])
+
+        source = self.accounts[hop['ledger']]['vk']
+        to = source
+        asset_id = {
+            'txid': hop['txid'],
+            'cid': 0
+        }
+        sk = self.accounts[hop['ledger']]['sk']
+
+        fulfillment = cc.Fulfillment.from_uri(tx['transaction']['fulfillments'][0]['fulfillment'])
+
+        hashlocks, _ = get_subcondition_indices_from_type(fulfillment, cc.PreimageSha256Fulfillment.TYPE_ID)
+        execution_fulfillment = hashlocks[0].serialize_uri()
+
+        fulfill_escrow_asset(bigchain=ledger,
+                             source=source,
+                             to=to,
+                             asset_id=asset_id,
+                             sk=sk,
+                             execution_fulfillment=execution_fulfillment)
 
     def _listen_events(self, ledger_id):
         ledger = get_bigchain(ledger_id=ledger_id)
