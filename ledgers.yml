@@ -9,7 +9,7 @@ services:
       - "58087:8080"
       - "28015"
 
-  js-0:
+  frontend:
     build:
       context: .
       dockerfile: Dockerfile-js
@@ -25,14 +25,10 @@ services:
       - ./client/webpack.config.js:/usr/src/app/client/webpack.config.js
     environment:
       CLIENT_HOST: 0.0.0.0
-      FLASK_HOST: "${DOCKER_MACHINE_IP}"
-      FLASK_PORT: 32801
-      TORNADO_HOST: "${DOCKER_MACHINE_IP}"
-      TORNADO_PORT: 32802
     ports:
-      - "32800:3000"
+      - "33000:3000"
     command: node server.demo.js
-
+        
   bdb-0:
     build:
       context: .
@@ -62,9 +58,11 @@ services:
       BIGCHAINDB_CONFIG: /root/.bigchaindb
       BIGCHAIN_DATABASE_HOST: rdb
       FLASK_HOST: 0.0.0.0
+      TORNADO_HOST: "${DOCKER_MACHINE_IP}"
+      TORNADO_PORT: 8888
       DOCKER_MACHINE_IP: "${DOCKER_MACHINE_IP}"
     ports:
-      - "32801:8000"
+      - "8000:8000"
     command: python -m server.app
 
   ws-0:
@@ -78,33 +76,9 @@ services:
       BIGCHAIN_DATABASE_HOST: rdb
       TORNADO_HOST: 0.0.0.0
     ports:
-      - "32802:8888"
+      - "8888:8888"
     command: python -m server.tornado_app
   
-  js-1:
-    build:
-      context: .
-      dockerfile: Dockerfile-js
-    volumes:
-      - ./client/demo:/usr/src/app/client/demo
-      - ./client/lib:/usr/src/app/client/lib
-      - ./client/on_the_record:/usr/src/app/client/on_the_record
-      - ./client/share_trader:/usr/src/app/client/share_trader
-      - ./client/app_index_template.html:/usr/src/app/client/app_index_template.html
-      - ./client/browserlist:/usr/src/app/client/browserlist
-      - ./client/package.json:/usr/src/app/client/package.json
-      - ./client/server.demo.js/:/usr/src/app/client/server.demo.js
-      - ./client/webpack.config.js:/usr/src/app/client/webpack.config.js
-    environment:
-      CLIENT_HOST: 0.0.0.0
-      FLASK_HOST: "${DOCKER_MACHINE_IP}"
-      FLASK_PORT: 32811
-      TORNADO_HOST: "${DOCKER_MACHINE_IP}"
-      TORNADO_PORT: 32812
-    ports:
-      - "32810:3000"
-    command: node server.demo.js
-        
   bdb-1:
     build:
       context: .
@@ -136,7 +110,7 @@ services:
       FLASK_HOST: 0.0.0.0
       DOCKER_MACHINE_IP: "${DOCKER_MACHINE_IP}"
     ports:
-      - "32811:8000"
+      - "8001:8000"
     command: python -m server.app
 
   ws-1:
@@ -150,5 +124,5 @@ services:
       BIGCHAIN_DATABASE_HOST: rdb
       TORNADO_HOST: 0.0.0.0
     ports:
-      - "32812:8888"
+      - "8889:8888"
     command: python -m server.tornado_app
