@@ -24,9 +24,9 @@ const ShareTrader = React.createClass({
         resetActiveAccount: React.PropTypes.func
     },
 
-    fetchAssetList({ accountToFetch }) {
+    fetchAssetList({ account }) {
         AssetActions.fetchAssetList({
-            accountToFetch,
+            account,
             blockWhenFetching: false
         });
     },

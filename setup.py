@@ -58,8 +58,15 @@ setup(
 
     packages=find_packages(exclude=['tests*']),
 
+    entry_points={
+        'console_scripts': [
+            'bigchaindb-examples=commands.bigchaindb_examples:main'
+        ]
+    },
+
     install_requires=[
-        "BigchainDB==0.4.2",
+        "rethinkdb==2.3.0",
+        "BigchainDB==0.5.0",
         "decorator==4.0.9",
         "flask==0.10.1",
         "flask-cors==2.1.2",

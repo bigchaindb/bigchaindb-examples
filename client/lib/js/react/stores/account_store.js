@@ -45,9 +45,7 @@ class AccountStore {
 
     onSuccessFetchAccountList(accountList) {
         if (accountList) {
-            this.accountList = accountList.accounts.map((account) => {
-                return this.postProcessAccount(account);
-            });
+            this.accountList = accountList.accounts.map((account) => this.postProcessAccount(account));
             this.accountMeta.err = null;
             this.accountMeta.app = null;
         } else {
@@ -56,11 +54,26 @@ class AccountStore {
     }
 
     postProcessAccount(account) {
-        account.ledger = connectToBigchainDBLedger(account.vk);
+        const processedAccount = Object.assign({}, account);
+
+        // ledger bindings
+        processedAccount.ledger = connectToBigchainDBLedger(account);
+        processedAccount.api = `http://${account.ledger.api}/api`;
+
+        // connectors
+        processedAccount.ledger.getConnectors()
+            .then((res) => {
+                processedAccount.connectors = res.connectors;
+                processedAccount.isConnector =
+                    res.connectors.filter((connector) => connector.vk === account.vk).length > 0;
+            });
+
+        // assets
         AssetActions.fetchAssetList.defer({
-            accountToFetch: account.vk
+            account: processedAccount
         });
-        return account;
+
+        return processedAccount;
     }
 
     onPostAccount(payloadToPost) {

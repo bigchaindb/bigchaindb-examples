@@ -28,9 +28,11 @@ def query_reql_response(response, query):
 
     if result and len(result):
         content = result[0]["transaction"]["data"]["payload"]["content"]
-        if content:
-            if (not query) or (query and query in content):
+        if query and content is not None:
+            if query in content:
                 return result
+        else:
+            return result
     return None
 
 
@@ -128,26 +130,34 @@ def transfer_asset(bigchain, source, to, asset_id, sk):
     return asset_transfer_signed
 
 
-def escrow_asset(bigchain, source, to, asset_id, sk):
+def escrow_asset(bigchain, source, to, asset_id, sk,
+                 expires_at=None, ilp_header=None, execution_condition=None):
     asset = bigchain.get_transaction(asset_id['txid'])
+    payload = asset['transaction']['data']['payload'].copy()
+    if ilp_header:
+        payload.update({'ilp_header': ilp_header})
+
     # Create escrow template with the execute and abort address
     asset_escrow = bigchain.create_transaction(source, [source, to], asset_id, 'TRANSFER',
-                                               payload=asset['transaction']['data']['payload'])
-
-    # Set expiry time (100 secs from now)
-    time_sleep = 100
-    time_expire = str(float(bigchaindb.util.timestamp()) + time_sleep)
+                                               payload=payload)
+    if not expires_at:
+        # Set expiry time (100 secs from now)
+        time_sleep = 100
+        expires_at = float(bigchaindb.util.timestamp()) + time_sleep
 
     # Create escrow and timeout condition
     condition_escrow = cc.ThresholdSha256Fulfillment(threshold=1)  # OR Gate
-    condition_timeout = cc.TimeoutFulfillment(expire_time=time_expire)  # only valid if now() <= time_expire
+    condition_timeout = cc.TimeoutFulfillment(expire_time=str(expires_at))  # only valid if now() <= time_expire
     condition_timeout_inverted = cc.InvertedThresholdSha256Fulfillment(threshold=1)
     condition_timeout_inverted.add_subfulfillment(condition_timeout)
 
     # Create execute branch
-    condition_execute = cc.ThresholdSha256Fulfillment(threshold=2)  # AND gate
+    execution_threshold = 3 if execution_condition else 2
+    condition_execute = cc.ThresholdSha256Fulfillment(threshold=execution_threshold)  # AND gate
     condition_execute.add_subfulfillment(cc.Ed25519Fulfillment(public_key=to))  # execute address
     condition_execute.add_subfulfillment(condition_timeout)  # federation checks on expiry
+    if execution_condition:
+        condition_execute.add_subcondition_uri(execution_condition)
     condition_escrow.add_subfulfillment(condition_execute)
 
     # Create abort branch
@@ -166,12 +176,12 @@ def escrow_asset(bigchain, source, to, asset_id, sk):
     asset_escrow['id'] = bigchaindb.util.get_hash_data(asset_escrow)
 
     # sign transaction
-    asset_escrow_signed = bigchain.sign_transaction(asset_escrow, sk)
+    asset_escrow_signed = bigchaindb.util.sign_tx(asset_escrow, sk, bigchain=bigchain)
     bigchain.write_transaction(asset_escrow_signed)
     return asset_escrow_signed
 
 
-def fulfill_escrow_asset(bigchain, source, to, asset_id, sk):
+def fulfill_escrow_asset(bigchain, source, to, asset_id, sk, execution_fulfillment=None):
     asset = bigchain.get_transaction(asset_id['txid'])
     asset_owners = asset['transaction']['conditions'][asset_id['cid']]['new_owners']
 
@@ -208,6 +218,11 @@ def fulfill_escrow_asset(bigchain, source, to, asset_id, sk):
     del escrow_fulfillment.subconditions[indices[0]]
     escrow_fulfillment.add_subcondition(subfulfillment_other.condition)
 
+    if execution_fulfillment:
+        _, indices = get_subcondition_indices_from_type(escrow_fulfillment, cc.PreimageSha256Fulfillment.TYPE_ID)
+        del escrow_fulfillment.subconditions[indices[0]]['body'].subconditions[indices[1]]
+        escrow_fulfillment.subconditions[indices[0]]['body'].add_subfulfillment_uri(execution_fulfillment)
+
     asset_escrow_fulfill['transaction']['fulfillments'][0]['fulfillment'] = escrow_fulfillment.serialize_uri()
 
     bigchain.write_transaction(asset_escrow_fulfill)
@@ -227,6 +242,24 @@ def get_subcondition_indices_from_vk(condition, vk):
             break
         elif isinstance(c['body'], cc.ThresholdSha256Fulfillment):
             result, index = get_subcondition_indices_from_vk(c['body'], vk)
+            if result:
+                conditions += result
+                indices += [i]
+                indices += index
+                break
+    return conditions, indices
+
+
+def get_subcondition_indices_from_type(condition, type_id):
+    conditions = []
+    indices = []
+    for i, c in enumerate(condition.subconditions):
+        if c['body'].type_id == type_id:
+            indices.append(i)
+            conditions.append(c['body'])
+            break
+        elif isinstance(c['body'], cc.ThresholdSha256Fulfillment):
+            result, index = get_subcondition_indices_from_type(c['body'], type_id)
             if result:
                 conditions += result
                 indices += [i]

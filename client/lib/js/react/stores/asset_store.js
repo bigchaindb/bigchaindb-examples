@@ -6,8 +6,6 @@ import parseEscrowData from '../../utils/cryptoconditions/parse_escrow_data';
 import AssetActions from '../actions/asset_actions';
 import AssetSource from '../sources/asset_source';
 
-
-
 class AssetStore {
     constructor() {
         this.asset = null;
@@ -18,33 +16,17 @@ class AssetStore {
             payloadToPost: null,
             idToFetch: null,
             idToTransfer: null,
-            accountToFetch: null,
+            account_: null,
             search: null
         };
         this.bindActions(AssetActions);
         this.registerAsync(AssetSource);
     }
 
-    onFetchAsset(idToFetch) {
-        this.assetMeta.idToFetch = idToFetch;
-        this.getInstance().lookupAsset();
-    }
-
-    onSuccessFetchAsset(asset) {
-        if (asset) {
-            this.asset = asset;
-            this.assetMeta.err = null;
-            this.assetMeta.idToFetch = null;
-            this.assetMeta.search = null;
-        } else {
-            this.assetMeta.err = new Error('Problem fetching the asset');
-        }
-    }
-
-    onFetchAssetList({ accountToFetch, search, blockWhenFetching }) {
+    onFetchAssetList({ account, search, blockWhenFetching }) {
         if (!blockWhenFetching ||
             (blockWhenFetching && !this.assetMeta.isFetchingList)) {
-            this.assetMeta.accountToFetch = accountToFetch;
+            this.assetMeta.account = account;
             this.assetMeta.search = search;
             this.assetMeta.isFetchingList = true;
             this.getInstance().lookupAssetList();
@@ -64,7 +46,7 @@ class AssetStore {
                 }
             }
             this.assetMeta.err = null;
-            this.assetMeta.accountToFetch = null;
+            this.assetMeta.account = null;
         } else {
             this.assetMeta.err = new Error('Problem fetching the asset list');
         }
@@ -87,19 +69,21 @@ class AssetStore {
         return asset;
     }
 
-    onFlushAssetList(accountToFetch) {
-        this.assetList[accountToFetch] = [];
-        this.assetMeta.accountToFetch = null;
+    onFlushAssetList(account) {
+        this.assetList[account] = [];
+        this.assetMeta.account = null;
         this.assetMeta.search = null;
         this.assetMeta.isFetchingList = false;
     }
 
-    onPostAsset(payloadToPost) {
+    onPostAsset({ account, payloadToPost }) {
+        this.assetMeta.account = account;
         this.assetMeta.payloadToPost = payloadToPost;
         this.getInstance().postAsset();
     }
 
-    onTransferAsset({ idToTransfer, payloadToPost }) {
+    onTransferAsset({ account, idToTransfer, payloadToPost }) {
+        this.assetMeta.account = account;
         this.assetMeta.idToTransfer = idToTransfer;
         this.assetMeta.payloadToPost = payloadToPost;
         this.getInstance().transferAsset();

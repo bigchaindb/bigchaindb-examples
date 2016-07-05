@@ -33,7 +33,7 @@ const AccountDetail = React.createClass({
             return (
                 <Col
                     className={classnames({ 'active': activeAccount === account })}
-                    md={6} lg={4} xl={3}>
+                    sm={6} md={6} lg={4} xl={3}>
                     <div className="card">
                         <div className="list-row-name">
                             {account.name}
@@ -41,9 +41,12 @@ const AccountDetail = React.createClass({
                         <div className="list-row-detail">
                             {account.vk}
                         </div>
+                        <div className={classnames('list-row-detail', `ledger-${account.ledger.id}`)}>
+                            {account.api}
+                        </div>
                         <Assets
-                            accountList={accountList}
                             account={account}
+                            accountList={accountList}
                             activeAsset={activeAsset}
                             assetList={assetListForAccount}
                             handleAccountClick={handleClick}

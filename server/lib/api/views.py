@@ -4,10 +4,12 @@ For more information please refer to the documentation in Apiary:
  - http://docs.bigchaindb.apiary.io/
 """
 
+import os
+
 import flask
 from flask import request, Blueprint
 
-from init_db import get_bigchain
+from init_accounts import get_bigchain
 
 from server.lib.models import accounts
 from server.lib.models import assets
@@ -19,7 +21,7 @@ bigchain = get_bigchain()
 
 @api_views.route('/accounts/')
 def get_accounts():
-    app = request.args.get('app')
+    app = '{}'.format(request.args.get('app'))
     result = accounts.retrieve_accounts(bigchain, app)
     return flask.jsonify({'accounts': result})
 
@@ -42,6 +44,13 @@ def get_assets_for_account(account_vk):
         'backlog': assets.get_owned_assets(bigchain, vk=account_vk, query=query, table='backlog')
     }
     return flask.jsonify({'assets': result, 'account': account_vk})
+
+
+@api_views.route('/ledgers/<ledger_id>/connectors/')
+def get_connectors_for_account(ledger_id):
+    app = '{}'.format(request.args.get('app'))
+    result = accounts.get_connectors(bigchain, ledger_id, app)
+    return flask.jsonify({'connectors': result})
 
 
 @api_views.route('/assets/')
@@ -84,6 +93,9 @@ def transfer_asset(asset_id, cid):
 def escrow_asset(asset_id, cid):
     json_payload = request.get_json(force=True)
     source = json_payload.pop('source')
+    expires_at = json_payload.pop('expiresAt')
+    ilp_header = json_payload.pop('ilpHeader', None)
+    execution_condition = json_payload.pop('executionCondition')
     to = json_payload.pop('to')
 
     tx = assets.escrow_asset(bigchain=bigchain,
@@ -93,7 +105,10 @@ def escrow_asset(asset_id, cid):
                                  'txid': asset_id,
                                  'cid': int(cid)
                              },
-                             sk=source['sk'])
+                             sk=source['sk'],
+                             expires_at=expires_at,
+                             ilp_header=ilp_header,
+                             execution_condition=execution_condition)
 
     return flask.jsonify(**tx)
 
@@ -104,6 +119,8 @@ def fulfill_escrow_asset(asset_id, cid):
     source = json_payload.pop('source')
     to = json_payload.pop('to')
 
+    execution_fulfillment = json_payload.pop('conditionFulfillment', None)
+
     tx = assets.fulfill_escrow_asset(bigchain=bigchain,
                                      source=source['vk'],
                                      to=to['vk'],
@@ -111,6 +128,7 @@ def fulfill_escrow_asset(asset_id, cid):
                                          'txid': asset_id,
                                          'cid': int(cid)
                                      },
-                                     sk=source['sk'])
+                                     sk=source['sk'],
+                                     execution_fulfillment=execution_fulfillment)
 
     return flask.jsonify(**tx)

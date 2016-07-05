@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Button, DropdownButton, MenuItem } from 'react-bootstrap/lib';
+import { safeInvoke } from 'js-utility-belt/es6';
 
 
 const AssetActionPanel = React.createClass({
@@ -10,6 +11,7 @@ const AssetActionPanel = React.createClass({
         handleActionClick: React.PropTypes.func.isRequired,
         actionMessage: React.PropTypes.string,
         actionName: React.PropTypes.string,
+        handleAccountSelection: React.PropTypes.func,
         selectAccounts: React.PropTypes.bool
     },
 
@@ -31,6 +33,8 @@ const AssetActionPanel = React.createClass({
         this.setState({
             selectedAccount: account
         });
+
+        safeInvoke(this.props.handleAccountSelection, account);
     },
 
     render() {
@@ -66,7 +70,7 @@ const AssetActionPanel = React.createClass({
                         .filter((account) => account !== activeAccount)
                         .map((account) => (
                             <MenuItem
-                                key={account.name}
+                                key={account.vk}
                                 onClick={() => this.setSelectedAccount(account)}>
                                 {account.name}
                             </MenuItem>

@@ -3,9 +3,6 @@ import moment from 'moment';
 import classnames from 'classnames';
 import { safeInvoke } from 'js-utility-belt/es6';
 
-
-import AssetActions from '../../../lib/js/react/actions/asset_actions';
-
 import AssetActionPanel from '../../../lib/js/react/components/asset_action_panel';
 import AssetDetail from '../../../lib/js/react/components/asset_detail';
 
@@ -47,6 +44,7 @@ const AssetRow = React.createClass({
 
     getInitialState() {
         return {
+            connectors: null,
             expiresIn: null
         };
     },
@@ -84,7 +82,27 @@ const AssetRow = React.createClass({
         safeInvoke(handleAccountClick, account);
     },
 
+    handleDestinationAccountSelection(destinationAccount) {
+        const {
+            account,
+            asset
+        } = this.props;
+
+        account.ledger.getConnectors().then((res) => {
+            this.setState({
+                connectors: res.connectors
+            });
+        });
+
+        // quoting should happen here
+        // const quotes = connectors.map((connector) => connector.getQuote(asset, destinationAccount));
+    },
+
     handleActionClick(selectedAccount) {
+        const {
+            connectors
+        } = this.state;
+
         const {
             account,
             asset
@@ -96,21 +114,27 @@ const AssetRow = React.createClass({
         };
 
         if (asset.type === 'single-owner') {
-            AssetActions.escrowAsset({
-                idToTransfer,
-                payloadToPost: {
-                    source: account,
-                    to: selectedAccount
-                }
-            });
+            const transfer = {
+                account: selectedAccount.ledger.id === account.ledger.id ?
+                    selectedAccount : connectors[0],
+                asset: idToTransfer,
+                destinationAccount: selectedAccount,
+                executionCondition: 'cc:0:3:47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU:0',
+                expiresAt: moment().unix() + 100
+            };
+
+            account.ledger.send(transfer);
         } else if (asset.type === 'multi-owner') {
-            AssetActions.fulfillEscrowAsset({
-                idToTransfer,
-                payloadToPost: {
-                    source: account,
-                    to: account
-                }
-            });
+            const transfer = {
+                account,
+                asset: idToTransfer
+            };
+            if (this.getOperation() === 'execute') {
+                const conditionFulfillment = 'cf:0:';
+                account.ledger.fulfillCondition(transfer, conditionFulfillment);
+            } else {
+                account.ledger.fulfillCondition(transfer);
+            }
         }
     },
 
@@ -156,6 +180,7 @@ const AssetRow = React.createClass({
                     actionMessage={actionType.actionMessage}
                     actionName={actionType.actionName}
                     activeAccount={account}
+                    handleAccountSelection={this.handleDestinationAccountSelection}
                     handleActionClick={this.handleActionClick}
                     selectAccounts={actionType.selectAccounts} />
             );
