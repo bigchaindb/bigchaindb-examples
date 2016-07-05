@@ -59,12 +59,6 @@ Make sure you have all the :ref:`dependencies`.
     $ BIGCHAINDB_DATABASE_NAME=bigchaindb_examples \
      bigchaindb -yc .bigchaindb_examples configure
     
-    # Initialize BigchainDB
-    $ bigchaindb -c .bigchaindb_examples init
-    
-    # Load initial data
-    $ python3 init_db.py
-    
     # Install client dependencies
     $ cd client && npm install && cd -
 

@@ -6,9 +6,35 @@ Details about each app is documented under:
 
 * :ref:`ontherecord`
 * :ref:`sharetrader`
+* :ref:`interledger`
 
 
-The Easy Way
+Using bigchaidb-examples command line interface
+------------
+
+Reset the database
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+    $ bigchaindb-examples reset-all
+
+
+Start all services
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Initialize the database and start all services
+
+.. code-block:: bash
+
+    $ bigchaindb-examples start --init --all
+
+
+You should be able to view the "On the record" app at
+`<http://localhost:3000/ontherecord/>`_, and the "Share Trader" app at
+`<http://localhost:3000/sharetrader/>`_.
+
+
+Using Docker
 ------------
 
 .. code-block:: bash
@@ -25,46 +51,3 @@ You should be able to view the "On the record" app at
 `<http://localhost:32800/ontherecord/>`_, and the "Share Trader" app at
 `<http://localhost:32800/sharetrader/>`_ (replace ``localhost`` with your docker-machine ip as
 necessary)
-
-
-The Hard Way
-------------
-Have four terminal shells (in ``bigchaindb-examples/``)
-
-Running the javascript client
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-In one terminal, run ``npm start`` in ``client/`` to serve the client apps
-
-.. code-block:: bash
-
-    $ cd client
-    $ npm start
-
-
-Running BigchainDB
-^^^^^^^^^^^^^^^^^^
-Launch ``BigchainDB`` with ``RethinkDB`` in a separate terminal
-
-.. code-block:: bash
-
-    $ rethinkdb &   # skip this if RethinkDB is already running
-    $ bigchaindb -c .bigchaindb_examples start
-
-
-Running the App server
-^^^^^^^^^^^^^^^^^^^^^^
-In another terminal, launch the ``flask`` server
-
-.. code-block:: bash
-
-    $ python3 -m server.app
-
-In (yet) another terminal, launch the ``tornado`` server
-
-.. code-block:: bash
-
-    $ python3 -m server.tornado_app
-
-You should be able to view the "On the record" app at
-`<http://localhost:3000/ontherecord/>`_, and the "Share Trader" app at
-`<http://localhost:3000/sharetrader/>`_.
