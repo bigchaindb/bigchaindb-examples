@@ -1,5 +1,8 @@
 all: reinit_db configure init accounts assets start
 
+config:
+	rm -rf .bigchaindb .bigchaindb-0 .bigchaindb-1
+	touch .bigchaindb .bigchaindb-0 .bigchaindb-1
 
 configure:
 	docker-compose -f ledgers.yml run --rm bdb-0 bigchaindb -y configure 
