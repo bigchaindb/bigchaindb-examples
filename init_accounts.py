@@ -1,4 +1,5 @@
 import logging
+import os
 import os.path
 
 import bigchaindb
@@ -16,6 +17,10 @@ except KeyError:
     CONFIG_FILE = os.path.join(os.path.dirname(__file__), '.bigchaindb_examples')
 
 APPS = apps_config.APPS
+
+
+LEDGER_API_BASE_PORT = int(os.environ.get('LEDGER_API_BASE_PORT', '8000'))
+LEDGER_WS_BASE_PORT = int(os.environ.get('LEDGER_WS_BASE_PORT', '8888'))
 
 
 def get_bigchain(conf=CONFIG_FILE, ledger_id=None):
@@ -46,8 +51,8 @@ def main():
                                   name='account_{}'.format(i),
                                   ledger={
                                       'id': app['ledger'],
-                                      'api': creat_uri('localhost', 8000, app['ledger']),
-                                      'ws': creat_uri('localhost', 8888, app['ledger'])
+                                      'api': creat_uri('localhost', LEDGER_API_BASE_PORT, app['ledger']),
+                                      'ws': creat_uri('localhost', LEDGER_WS_BASE_PORT, app['ledger'])
                                   },
                                   db=app_name)
                 accounts.append(account)
@@ -58,8 +63,8 @@ def main():
                                       name=account_config['name'],
                                       ledger={
                                           'id': ledger['id'],
-                                          'api': creat_uri('localhost', 8000, ledger['id']),
-                                          'ws': creat_uri('localhost', 8888, ledger['id'])
+                                          'api': creat_uri('localhost', LEDGER_API_BASE_PORT, ledger['id']),
+                                          'ws': creat_uri('localhost', LEDGER_WS_BASE_PORT, ledger['id'])
                                       },
                                       db=app_name)
                     accounts.append(account)
