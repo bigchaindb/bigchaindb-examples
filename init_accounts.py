@@ -19,7 +19,9 @@ except KeyError:
 APPS = apps_config.APPS
 
 
+LEDGER_API_BASE_HOST = os.environ.get('DOCKER_MACHINE_IP') or 'localhost'
 LEDGER_API_BASE_PORT = int(os.environ.get('LEDGER_API_BASE_PORT', '8000'))
+LEDGER_WS_BASE_HOST = os.environ.get('DOCKER_MACHINE_IP') or 'localhost'
 LEDGER_WS_BASE_PORT = int(os.environ.get('LEDGER_WS_BASE_PORT', '8888'))
 
 
@@ -51,8 +53,12 @@ def main():
                                   name='account_{}'.format(i),
                                   ledger={
                                       'id': app['ledger'],
-                                      'api': creat_uri('localhost', LEDGER_API_BASE_PORT, app['ledger']),
-                                      'ws': creat_uri('localhost', LEDGER_WS_BASE_PORT, app['ledger'])
+                                      'api': creat_uri(LEDGER_API_BASE_HOST,
+                                                       LEDGER_API_BASE_PORT,
+                                                       app['ledger']),
+                                      'ws': creat_uri(LEDGER_WS_BASE_HOST,
+                                                      LEDGER_WS_BASE_PORT,
+                                                      app['ledger'])
                                   },
                                   db=app_name)
                 accounts.append(account)
@@ -63,8 +69,16 @@ def main():
                                       name=account_config['name'],
                                       ledger={
                                           'id': ledger['id'],
-                                          'api': creat_uri('localhost', LEDGER_API_BASE_PORT, ledger['id']),
-                                          'ws': creat_uri('localhost', LEDGER_WS_BASE_PORT, ledger['id'])
+                                          'api': creat_uri(
+                                              LEDGER_API_BASE_HOST,
+                                              LEDGER_API_BASE_PORT,
+                                              ledger['id']
+                                          ),
+                                          'ws': creat_uri(
+                                              LEDGER_WS_BASE_HOST,
+                                              LEDGER_WS_BASE_PORT,
+                                              ledger['id']
+                                          )
                                       },
                                       db=app_name)
                     accounts.append(account)
