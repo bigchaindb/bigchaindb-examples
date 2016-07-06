@@ -11,12 +11,18 @@ Quickstart with Docker
 
     $ make       
 
-If you are using `docker-machine`, then:
+If you are using ``docker-machine``, then:
 
 
 .. code-block:: bash
 
     $ DOCKER_MACHINE_IP=$(docker-machine ip <machine-name>) make
+
+Where ``<machine-name>`` is the name of the machine you created, e.g.:
+
+.. code-block:: bash
+
+    $ docker-machine create --driver virtualbox <machine-name>
 
 
 Step by step with Docker
