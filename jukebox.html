@@ -1,0 +1,57 @@
+<html>
+<head>
+    <script>
+        function init() {
+            playing = false;
+            var connection = new WebSocket('ws://192.168.70.192:8888/ws'); 
+            var audio = new Audio('http://localhost:9000/music/audio.ogg');
+            var playingSlide = document.querySelector('#playing');
+            var idleSlide = document.querySelector('#idle');
+
+            connection.onopen = function () {
+                console.log('Connection was opened');
+            };
+
+            connection.onerror = function (error) {
+                console.log('WebSocket Error ' + error);
+            };
+
+            connection.onmessage = function (e) {
+                updateState(e.data);   
+            };
+
+            function updateState(newState) {
+                playing = newState.playing; 
+                reevaluateState();
+            };
+
+            updateState = updateState;
+
+            function evaluateState() {
+                if(playing) { 
+                    playingSlide.style.display = 'block';
+                    idleSlide.style.display = 'none';
+                    audio.play();
+                } else {
+                    playingSlide.style.display = 'none';
+                    idleSlide.style.display = 'block';
+                    audio.pause();
+                }
+            }
+
+            evaluateState();
+        }
+
+        window.onload = init;
+    </script>
+</head>
+<body>
+    <div id='playing'>
+        <img src='./assets/musical-notes.png' />
+    </div>
+    <div id='idle'>
+        <h1>DECENTRALIZED JUKEBOX</h1>
+        <h2>In order to play music, send X to Y</h2>
+    </div>
+</body>
+</html>
