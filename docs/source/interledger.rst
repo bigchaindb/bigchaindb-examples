@@ -4,8 +4,8 @@ Interledger Lab
 .. note:: **Work in progress**. 
 
 
-Quickstart
-----------
+Quickstart with Docker
+----------------------
 
 .. code-block:: bash
 
@@ -19,8 +19,8 @@ If you are using `docker-machine`, then:
     $ DOCKER_MACHINE_IP=$(docker-machine ip <machine-name>) make
 
 
-Step by step
-------------
+Step by step with Docker
+------------------------
 
 Build the services:
 
