@@ -4,9 +4,12 @@ clients = []
 
 class StreamHandler(websocket.WebSocketHandler):
 
+    def check_origin(self, origin):
+        return True
+
     def open(self):
         if self not in cl:
-            cl.append(self)
+            clients.append(self)
             self.write_message('Hello')
             print('Received connection from {}'.format(self))
 
