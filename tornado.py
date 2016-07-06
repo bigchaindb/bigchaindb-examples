@@ -8,7 +8,7 @@ class StreamHandler(websocket.WebSocketHandler):
         return True
 
     def open(self):
-        if self not in cl:
+        if self not in clients:
             clients.append(self)
             self.write_message('Hello')
             print('Received connection from {}'.format(self))
