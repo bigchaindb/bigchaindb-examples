@@ -9,6 +9,7 @@ import json
 clients = []
 coins_seen = []
 play_until = time.time()
+me = Bigchain().me
 r.set_loop_type('tornado')
 
 
@@ -32,7 +33,8 @@ def get_coin_from_block(block):
     coins = []
     for tx in block['block']['transactions']:
         coin_id = tx['transaction']['data']['payload']['coin_id']
-        if coin_id not in coins_seen:
+        new_owners = tx['transaction']['conditions'][0]['new_owners']
+        if coin_id not in coins_seen and new_owners == [me]:
             coins_seen.append(coin_id)
             coins.append(coin_id)
     return coins

@@ -27,7 +27,8 @@ def transfer_coin(user_vk, user_sk, coin_id):
     if coin_id in coins.keys():
         for tx in coins[coin_id]:
             tx_input = {'txid': tx['id'], 'cid': 0}
-            tx_transfer = b.create_transaction(user_vk, b.me, tx_input, 'TRANSFER')
+            tx_transfer = b.create_transaction(user_vk, b.me, tx_input, 'TRANSFER',
+                                               payload=tx['transaction']['data']['payload'])
             tx_transfer_signed = b.sign_transaction(tx_transfer, user_sk)
             b.write_transaction(tx_transfer_signed)
             print('TRANSFER {} {} {}'.format(tx_transfer_signed['id'],
