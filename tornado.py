@@ -47,10 +47,11 @@ def play():
     print(coins_seen)
     playing = False
     while True:
-        if play_until > time.time() and playing is False:
+        if play_until > time.time():
             playing = True
             for cl in clients:
-                cl.write_message(json.dumps({'playing': playing}))
+                cl.write_message(json.dumps({'playing': playing,
+                                             'duration': int(play_until - time.time())}))
                 print(playing)
         elif play_until < time.time() and playing is True:
             playing = False
