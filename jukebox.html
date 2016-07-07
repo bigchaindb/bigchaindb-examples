@@ -3,8 +3,8 @@
     <script>
         function init() {
             playing = false;
-            var connection = new WebSocket('ws://192.168.70.192:8888/ws'); 
-            var audio = new Audio('http://localhost:9000/music/audio.ogg');
+            var connection = new WebSocket('ws://localhost:8888/ws'); 
+            var audio = new Audio('http://localhost:8000/music/audio.ogg');
             var playingSlide = document.querySelector('#playing');
             var idleSlide = document.querySelector('#idle');
 
@@ -17,12 +17,13 @@
             };
 
             connection.onmessage = function (e) {
-                updateState(e.data);   
+                console.log(e.data);
+                updateState(JSON.parse(e.data));   
             };
 
             function updateState(newState) {
                 playing = newState.playing; 
-                reevaluateState();
+                evaluateState();
             };
 
             updateState = updateState;
