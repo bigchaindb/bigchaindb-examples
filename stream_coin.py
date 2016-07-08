@@ -74,21 +74,19 @@ def get_owned_coin_shares_by_id(user_vk, coin_id):
     return coins.get(coin_id, [])
 
 
-def pay_royalties(label_vk, artist_vk, coin_id, label_share=7, artist_share=3):
+def pay_royalties(label_vk, artist_vk, tx, label_share=7, artist_share=3):
     b = Bigchain()
-    coin_txs = get_owned_coin_shares_by_id(b.me, coin_id)
 
-    for tx in coin_txs:
-        payload = tx['transaction']['data']['payload']
-        tx_input = {'txid': tx['id'], 'cid': 0}
-        if int(payload['coin_share']) < artist_share:
-            new_owner = artist_vk
-        else:
-            new_owner = label_vk
+    payload = tx['transaction']['data']['payload']
+    tx_input = {'txid': tx['id'], 'cid': 0}
+    if int(payload['coin_share']) < artist_share:
+        new_owner = artist_vk
+    else:
+        new_owner = label_vk
 
-        tx_royalties = b.create_transaction(b.me, new_owner, tx_input, 'TRANSFER', payload=payload)
-        tx_royalties_signed = b.sign_transaction(tx_royalties, b.me_private)
-        b.write_transaction(tx_royalties_signed)
-        print('ROYALTIES {} {} {} {}'.format(tx_royalties['id'], payload['coin_id'],
-                                            payload['coin_share'], new_owner))
+    tx_royalties = b.create_transaction(b.me, new_owner, tx_input, 'TRANSFER', payload=payload)
+    tx_royalties_signed = b.sign_transaction(tx_royalties, b.me_private)
+    b.write_transaction(tx_royalties_signed)
+    print('ROYALTIES {} {} {} {}'.format(tx_royalties['id'], payload['coin_id'],
+                                        payload['coin_share'], new_owner))
 
