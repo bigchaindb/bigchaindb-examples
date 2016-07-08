@@ -2,6 +2,7 @@ from bigchaindb import Bigchain
 from tornado import websocket, ioloop, web
 from tornado.gen import coroutine
 from tornado import gen
+from stream_coin import get_owned_coin_by_id
 import time
 import json
 
@@ -38,11 +39,17 @@ def get_coin_from_block(block):
     return coins
 
 
+def get_coin_shares_from_block(block):
+    for tx in block['block']['transactions']:
+        coin_id = tx['transaction']['data']['payload']['coin_id']
+        coin_share = tx['transaction']['data']['payload']['coin_share']
+        new_owners = tx['transaction']['conditions'][0]['new_owners']
+        print('ROYALTIES {} {} {}'.format(tx['id'], coin_id, coin_share))
+
+
 @coroutine
 def play():
     print('Entering Play')
-    print(play_until)
-    print(coins_seen)
     playing = False
     while True:
         if play_until > time.time():
@@ -64,21 +71,22 @@ def listen_payments():
     r.set_loop_type('tornado')
     print('Entering listen_payments')
     global play_until
-    print(coins_seen)
-    print(play_until)
     b = Bigchain()
     conn = yield b.conn
     feed = yield r.table('bigchain').changes().run(conn)
 
     while (yield feed.fetch_next()):
         block = yield feed.next()
-        coins = get_coin_from_block(block['new_val'])
-        if coins:
-            print('received coins')
-        if time.time() > play_until:
-            play_until = time.time() + 10 * len(coins)
+        if not block['old_val']:
+            coins = get_coin_from_block(block['new_val'])
+            if coins:
+                print('received coins')
+            if time.time() > play_until:
+                play_until = time.time() + 10 * len(coins)
+            else:
+                play_until += 10 * len(coins)
         else:
-            play_until += 10 * len(coins)
+            get_coin_shares_from_block(block['new_val'])
 
 
 app = web.Application([

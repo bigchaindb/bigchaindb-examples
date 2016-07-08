@@ -54,14 +54,29 @@ def get_owned_coins(user_vk):
     return coins
 
 
-def get_owned_coin_by_id(user_vk, coin_id):
-    coins = get_owned_coins(user_vk)
+def get_owned_coin_shares_by_id(user_vk, coin_id):
+    b = Bigchain()
+
+    # get the coins
+    coins = r.table('bigchain')\
+             .concat_map(lambda doc: doc['block']['transactions'])\
+             .filter(lambda tx: tx['transaction']['conditions']\
+             .contains(lambda c: c['new_owners'].contains(user_vk)))\
+             .group(r.row['transaction']['data']['payload']['coin_id']).run(b.conn)
+
+    # make sure the coin was not already spent
+    tmp_coins = deepcopy(coins)
+    for coin_id, txs in tmp_coins.items():
+        for tx in txs:
+            tx_input = {'txid': txs[0]['id'], 'cid': 0}
+            if b.get_spent(tx_input):
+                coins[coin_id].remove(tx)
     return coins.get(coin_id, [])
 
 
 def pay_royalties(label_vk, artist_vk, coin_id, label_share=7, artist_share=3):
     b = Bigchain()
-    coin_txs = get_owned_coin_by_id(b.me, coin_id)
+    coin_txs = get_owned_coin_shares_by_id(b.me, coin_id)
 
     for tx in coin_txs:
         payload = tx['transaction']['data']['payload']
