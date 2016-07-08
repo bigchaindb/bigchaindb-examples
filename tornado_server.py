@@ -3,7 +3,7 @@ from bigchaindb import crypto
 from tornado import websocket, ioloop, web
 from tornado.gen import coroutine
 from tornado import gen
-from stream_coin import pay_royalties
+from .stream_coin import pay_royalties
 import time
 import json
 import multiprocessing as mp
