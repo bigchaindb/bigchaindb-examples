@@ -33,7 +33,9 @@
                 if(state && state.playing) { 
                     playingSlide.style.display = 'block';
                     idleSlide.style.display = 'none';
-                    duration.innerHTML = 'Duration: ' + state.duration
+                    duration.innerHTML = 'Duration: ' + state.duration;
+                    labelshare.innerHTML = 'Label Share: ' + state.label_share;
+                    artistshare.innerHTML = 'Artist Share: ' + state.artist_share;
                     audio.play();
                 } else {
                     playingSlide.style.display = 'none';
@@ -52,6 +54,8 @@
     <div id='playing'>
         <img src='./assets/musical-notes.png' />
         <p id='duration'></p>
+        <p id='labelshare'></p>
+        <p id='artistshare'></p>
     </div>
     <div id='idle'>
         <h1>DECENTRALIZED JUKEBOX</h1>
