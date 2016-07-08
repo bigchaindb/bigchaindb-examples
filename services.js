@@ -16,7 +16,7 @@ const currencies = [
 ];
 
 
-class Demo {
+class JukeBoxServices {
     constructor(opts) {
         const _this = this;
 
@@ -88,8 +88,8 @@ class Demo {
         const creds = {};
         const pairs = [];
         for (const edge of edges) {
-            creds[edge.source] = Demo.makeCredentials(edge.source, name);
-            creds[edge.target] = Demo.makeCredentials(edge.target, name);
+            creds[edge.source] = JukeBoxServices.makeCredentials(edge.source, name);
+            creds[edge.target] = JukeBoxServices.makeCredentials(edge.target, name);
             pairs.push([
                 `${edge.source_currency}@${edge.source}`,
                 `${edge.target_currency}@${edge.target}`
@@ -155,4 +155,4 @@ class Demo {
     }
 }
 
-export default Demo;
+export default JukeBoxServices;

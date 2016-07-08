@@ -1,6 +1,6 @@
 'use strict';
 
-const graph = {
+const config = {
     numLedgers: 2,
     numConnectors: 1,
     barabasiAlbertConnectedCore: 2,
@@ -10,21 +10,21 @@ const graph = {
 }
 
 if (process.env.DEMO_NUM_LEDGERS) {
-    graph.numLedgers = parseInt(process.env.DEMO_NUM_LEDGERS, 10)
+    config.numLedgers = parseInt(process.env.DEMO_NUM_LEDGERS, 10)
 }
 
 if (process.env.DEMO_NUM_CONNECTORS) {
-    graph.numConnectors = parseInt(process.env.DEMO_NUM_CONNECTORS, 10)
+    config.numConnectors = parseInt(process.env.DEMO_NUM_CONNECTORS, 10)
 }
 
 // A higher number here will result in more highly connected central ledgers
 if (process.env.DEMO_CONNECTED_CORE) {
-    graph.barabasiAlbertConnectedCore = parseInt(process.env.DEMO_CONNECTED_CORE, 10)
+    config.barabasiAlbertConnectedCore = parseInt(process.env.DEMO_CONNECTED_CORE, 10)
 }
 
 // A higher number here will result in more connections between all ledgers
 if (process.env.DEMO_CONNECTIONS_PER_NEW_NODE) {
-    graph.barabasiAlbertConnectionsPerNewNode = parseInt(process.env.DEMO_CONNECTIONS_PER_NEW_NODE, 10)
+    config.barabasiAlbertConnectionsPerNewNode = parseInt(process.env.DEMO_CONNECTIONS_PER_NEW_NODE, 10)
 }
 
-export default graph;
+export default config;
