@@ -2,7 +2,6 @@ from bigchaindb import Bigchain
 from tornado import websocket, ioloop, web
 from tornado.gen import coroutine
 from tornado import gen
-import rethinkdb as r
 import time
 import json
 
@@ -10,7 +9,6 @@ clients = []
 coins_seen = []
 play_until = time.time()
 me = Bigchain().me
-r.set_loop_type('tornado')
 
 
 class StreamHandler(websocket.WebSocketHandler):
@@ -62,6 +60,8 @@ def play():
 
 @coroutine
 def listen_payments():
+    import rethinkdb as r
+    r.set_loop_type('tornado')
     print('Entering listen_payments')
     global play_until
     print(coins_seen)
