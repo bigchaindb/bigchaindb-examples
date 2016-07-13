@@ -6,7 +6,7 @@ import 'isomorphic-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import BigchainDBWallet from './bigchaindb-wallet';
+import BigchainDBWallet from './components/bigchaindb-wallet';
 
 import '../scss/main.scss';
 
