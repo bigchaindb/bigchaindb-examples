@@ -41,6 +41,20 @@ const sender = new Client({
     }
 });
 
+const bdb = new Client({
+    type: 'bigchaindb',
+    auth: {
+        account: {
+            id: 'BkvBg9F7A75ydLPeYJA6P7e3mknxZ6UQZiyxkHHkgcXE',
+            key: 'BGpbAn2dDhWELT3HJa85WKs8ggFYYr8T4ZH5Hr4vNHs6',
+            uri: {
+                api: `http://localhost:8000`,
+                ws: `ws://localhost:8888/ws`
+            }
+        }
+    }
+});
+
 sender.waitForConnection().then(() => {
     sender.quote({
         destinationLedger: payment.destinationLedger,
