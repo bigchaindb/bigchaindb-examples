@@ -1,10 +1,10 @@
 import { Client } from 'ilp-core';
 
-const sendingLedger = 'http://localhost:3001';
+const sendingLedger = 'http://localhost:3002';
 const sendingAccount = `${sendingLedger}/accounts/alice`;
 const sendingPassword = 'alice';
 
-const receivingLedger = 'http://localhost:3002';
+const receivingLedger = 'http://localhost:3003';
 const receivingAccount = `${receivingLedger}/accounts/bob`;
 const receivingPassword = 'bob';
 
@@ -45,14 +45,21 @@ const bdb = new Client({
     type: 'bigchaindb',
     auth: {
         account: {
-            id: 'BkvBg9F7A75ydLPeYJA6P7e3mknxZ6UQZiyxkHHkgcXE',
-            key: 'BGpbAn2dDhWELT3HJa85WKs8ggFYYr8T4ZH5Hr4vNHs6',
+            id: 'BXeRv91xMhbv6KqC6m7LDC6Jp6WpFQTycy53piwvhjuo',
+            key: '4vCbssy4TpiQ3iJ7D6Ksq7kNwvuLZFMxAqG6NJxVfygc',
             uri: {
                 api: `http://localhost:8000`,
-                ws: `ws://localhost:8888/ws`
+                ws: `ws://localhost:8888/users/BkvBg9F7A75ydLPeYJA6P7e3mknxZ6UQZiyxkHHkgcXE`
             }
         }
     }
+});
+
+bdb.getPlugin().getBalance().then((res) => {
+    console.log(res);
+})
+.catch((err) => {
+    console.log(err);
 });
 
 sender.waitForConnection().then(() => {
