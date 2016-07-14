@@ -1,5 +1,9 @@
 # BigchainDB Examples
 
+[![Status](https://img.shields.io/badge/status-in%20flux-yellow.svg)]()
+[![Documentation Status](http://readthedocs.org/projects/bigchaindb-examples/badge/?version=latest)](http://bigchaindb-examples.readthedocs.io/en/latest/?badge=latest)
+[![Join the chat at https://gitter.im/bigchaindb/bigchaindb](https://badges.gitter.im/bigchaindb/bigchaindb.svg)](https://gitter.im/bigchaindb/bigchaindb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This repo contains examples and tutorials for BigchainDB.
 
 __Warning__: These examples are for demonstration purposes and should not be used as-is for production
