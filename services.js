@@ -15,13 +15,32 @@ const currencies = [
     { code: 'EUR', symbol: '€' }
 ];
 
+const portOffset = 1;
+
+const externalLedgers = [
+    {
+        code: 'STC',
+        symbol: 'S',
+        type: 'bigchaindb',
+        auth: {
+            account: {
+                id: 'BXeRv91xMhbv6KqC6m7LDC6Jp6WpFQTycy53piwvhjuo',
+                key: '4vCbssy4TpiQ3iJ7D6Ksq7kNwvuLZFMxAqG6NJxVfygc',
+                uri: {
+                    api: 'http://localhost:8000',
+                    ws: 'ws://localhost:8888/users/BkvBg9F7A75ydLPeYJA6P7e3mknxZ6UQZiyxkHHkgcXE'
+                }
+            }
+        }
+    }
+];
 
 class JukeBoxServices {
     constructor(opts) {
         const _this = this;
 
         this.numLedgers = 2;
-        this.numConnectors = 1;
+        this.numConnectors = 3;
 
         this.adminUser = 'admin';
         this.adminPass = 'admin';
@@ -38,7 +57,7 @@ class JukeBoxServices {
         // m0 .. size of connected core (m0 <= N)
         // M .. (M <= m0)
         this.graph = randomgraph.BarabasiAlbert(
-            this.numLedgers,
+            this.numLedgers + externalLedgers.length,
             this.barabasiAlbertConnectedCore,
             this.barabasiAlbertConnectionsPerNewNode);
         this.connectorEdges = new Array(this.numConnectors);
@@ -46,10 +65,16 @@ class JukeBoxServices {
             this.connectorEdges[i] = [];
         }
         this.graph.edges.forEach((edge, i) => {
+            if (i < externalLedgers.length) {
+                edge.target_currency = externalLedgers[i].code;
+                edge.target = externalLedgers[i].auth.account.uri.api;
+            } else {
+                edge.target_currency = currencies[edge.target % currencies.length].code;
+                edge.target = `http://localhost:${(3001 + portOffset + edge.target)}`;
+            }
+
             edge.source_currency = currencies[edge.source % currencies.length].code;
-            edge.target_currency = currencies[edge.target % currencies.length].code;
-            edge.source = `http://localhost:${(3001 + edge.source)}`;
-            edge.target = `http://localhost:${(3001 + edge.target)}`;
+            edge.source = `http://localhost:${(3001 + portOffset + edge.source)}`;
             _this.connectorEdges[i % _this.numConnectors].push(edge);
         });
     }
@@ -77,11 +102,22 @@ class JukeBoxServices {
     }
 
     static makeCredentials(ledger, name) {
-        return {
-            account_uri: `${ledger}/accounts/${encodeURIComponent(name)}`,
-            username: name,
-            password: name
-        };
+        if (ledger.indexOf('8') > -1) {
+            return Object.assign(
+                {
+                    username: name,
+                    password: name,
+                    type: externalLedgers[0].type
+                },
+                externalLedgers[0].auth
+            );
+        } else {
+            return {
+                account_uri: `${ledger}/accounts/${encodeURIComponent(name)}`,
+                username: name,
+                password: name
+            };
+        }
     }
 
     createConnector(name, port, edges) {
@@ -140,7 +176,7 @@ class JukeBoxServices {
         const connectors = [];
 
         for (let i = 1; i <= this.numLedgers; i++) {
-            const port = 3000 + i;
+            const port = 3000 + portOffset + i;
             processes.push(this.createLedger(`ledger${i}`, port));
             accounts.push(this.createAccount(`http://localhost:${port}`, 'alice'));
             accounts.push(this.createAccount(`http://localhost:${port}`, 'bob'));
