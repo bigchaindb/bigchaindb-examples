@@ -66,7 +66,7 @@
     "eslint-plugin-import": "^1.8.0",
     "eslint-plugin-jsx-a11y": "^1.2.2",
     "eslint-plugin-react": "^5.1.1",
-    "extract-text-webpack-plugin": "^1.0.1",
+    "extract-text-webpack-plugin": "=2.0.0-beta.1",
     "file-loader": "^0.8.5",
     "html-webpack-plugin": "^2.16.1",
     "node-sass": "^3.4.2",
@@ -76,8 +76,8 @@
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
-    "webpack": "^2.1.0-beta.7",
+    "webpack": "=2.1.0-beta.17",
     "webpack-combine-loaders": "^2.0.0",
-    "webpack-dev-server": "^1.14.1"
+    "webpack-dev-server": "=2.1.0-beta.0"
   }
 }
