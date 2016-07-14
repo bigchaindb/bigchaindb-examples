@@ -3,7 +3,6 @@
 The application is implemented in Flask and runs using Gunicorn.
 """
 import os
-import sys
 
 from flask import Flask
 from flask.ext.cors import CORS
@@ -20,10 +19,13 @@ def create_app(debug):
     """
 
     app = Flask(__name__)
+    hostname = os.environ.get('DOCKER_MACHINE_IP', 'localhost')
+    if not hostname:
+        hostname = 'localhost'
+    origins = ('^(https?://)?(www\.)?({}|0|0.0.0.0|dimi-bat.local|'
+               'localhost|127.0.0.1)(\.com)?:\d{{1,5}}$').format(hostname),
     CORS(app,
-         origins=("^(https?://)?(www\.)?(" +
-                  os.environ.get('DOCKER_MACHINE_IP', 'localhost') +
-                  "|0|0.0.0.0|dimi-bat.local|localhost|127.0.0.1)(\.com)?:\d{1,5}$"),
+         origins=origins,
          headers=(
             'x-requested-with',
             'content-type',

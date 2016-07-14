@@ -1,0 +1,132 @@
+version: '2'
+
+
+services:
+
+  rdb:
+    image: rethinkdb
+    ports:
+      - "58087:8080"
+      - "28015"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile-js
+    volumes:
+      - ./client/demo:/usr/src/app/client/demo
+      - ./client/lib:/usr/src/app/client/lib
+      - ./client/on_the_record:/usr/src/app/client/on_the_record
+      - ./client/share_trader:/usr/src/app/client/share_trader
+      - ./client/app_index_template.html:/usr/src/app/client/app_index_template.html
+      - ./client/browserlist:/usr/src/app/client/browserlist
+      - ./client/package.json:/usr/src/app/client/package.json
+      - ./client/server.demo.js/:/usr/src/app/client/server.demo.js
+      - ./client/webpack.config.js:/usr/src/app/client/webpack.config.js
+    environment:
+      CLIENT_HOST: 0.0.0.0
+      FLASK_HOST: "${DOCKER_MACHINE_IP}"
+      FLASK_PORT: 48000
+    ports:
+      - "33000:3000"
+    command: node server.demo.js
+  
+  bdb-0:
+    build:
+      context: .
+      dockerfile: Dockerfile-bdb
+    volumes:
+      - ./commands:/usr/src/app/commands
+      - ./setup.py:/usr/src/app/setup.py
+      - ./docs:/usr/src/app/docs
+      - ./init_accounts.py:/usr/src/app/init_accounts.py
+      - ./init_assets.py:/usr/src/app/init_assets.py
+      - ./.bigchaindb-0:/root/.bigchaindb
+      - ./apps_config.py:/usr/src/app/apps_config.py
+    environment:
+      BIGCHAINDB_CONFIG: /root/.bigchaindb
+      BIGCHAINDB_DATABASE_HOST: rdb
+      BIGCHAINDB_DATABASE_NAME: bigchaindb_examples_0
+      LEDGER_API_BASE_PORT: 48000
+      LEDGER_WS_BASE_PORT: 48888
+      DOCKER_MACHINE_IP: "${DOCKER_MACHINE_IP}"
+    command: bigchaindb start
+
+  app-0:
+    build:
+      context: .
+      dockerfile: Dockerfile-bdb
+    volumes:
+      - ./server:/usr/src/app/server
+    volumes_from:
+      - bdb-0
+    environment:
+      BIGCHAINDB_CONFIG: /root/.bigchaindb
+      BIGCHAIN_DATABASE_HOST: rdb
+      FLASK_HOST: 0.0.0.0
+      DOCKER_MACHINE_IP: "${DOCKER_MACHINE_IP}"
+    ports:
+      - "48000:8000"
+    command: python -m server.app
+
+  ws-0:
+    build:
+      context: .
+      dockerfile: Dockerfile-bdb
+    volumes_from:
+      - app-0
+    environment:
+      BIGCHAINDB_CONFIG: /root/.bigchaindb
+      BIGCHAIN_DATABASE_HOST: rdb
+      TORNADO_HOST: 0.0.0.0
+    ports:
+      - "48888:8888"
+    command: python -m server.tornado_app
+  
+  bdb-1:
+    build:
+      context: .
+      dockerfile: Dockerfile-bdb
+    volumes:
+      - ./setup.py:/usr/src/app/setup.py
+      - ./docs:/usr/src/app/docs
+      - ./init_accounts.py:/usr/src/app/init_accounts.py
+      - ./init_assets.py:/usr/src/app/init_assets.py
+      - ./.bigchaindb-1:/root/.bigchaindb
+      - ./apps_config.py:/usr/src/app/apps_config.py
+    environment:
+      BIGCHAINDB_CONFIG: /root/.bigchaindb
+      BIGCHAINDB_DATABASE_HOST: rdb
+      BIGCHAINDB_DATABASE_NAME: bigchaindb_examples_1
+    command: bigchaindb start
+
+  app-1:
+    build:
+      context: .
+      dockerfile: Dockerfile-bdb
+    volumes:
+      - ./server:/usr/src/app/server
+    volumes_from:
+      - bdb-1
+    environment:
+      BIGCHAINDB_CONFIG: /root/.bigchaindb
+      BIGCHAIN_DATABASE_HOST: rdb
+      FLASK_HOST: 0.0.0.0
+      DOCKER_MACHINE_IP: "${DOCKER_MACHINE_IP}"
+    ports:
+      - "48001:8000"
+    command: python -m server.app
+
+  ws-1:
+    build:
+      context: .
+      dockerfile: Dockerfile-bdb
+    volumes_from:
+      - app-1
+    environment:
+      BIGCHAINDB_CONFIG: /root/.bigchaindb
+      BIGCHAIN_DATABASE_HOST: rdb
+      TORNADO_HOST: 0.0.0.0
+    ports:
+      - "48889:8888"
+    command: python -m server.tornado_app
