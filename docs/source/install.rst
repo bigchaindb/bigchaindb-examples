@@ -19,6 +19,43 @@ We now document two options:
 * Installing from source and running locally
 
 
+The Docker Way
+--------------
+Just make sure you have recent versions of `docker engine`_ and
+`docker-compose`_, e.g.:
+
+.. code-block:: bash
+
+    $ docker --version
+    Docker version 1.11.1, build 5604cbe
+
+    $ docker-compose --version
+    docker-compose version 1.7.0, build 0d7bf73
+
+
+We've provided a `Makefile` to make starting the examples through Docker easy, so once you've set
+up your docker environment (e.g. starting docker-machine if necessary), simply:
+
+.. code-block:: bash
+
+    # Build the images
+    $ docker-compose build
+
+    # Make all the things! Inits, configures, and runs everything.
+    $ make
+
+
+If you're using docker-machine instances (ie. on OSX / Windows), you should run `make` with your
+docker-machine ip:
+
+.. code-block:: bash
+
+    $ DOCKER_MACHINE_IP=$(docker-machine ip) make
+
+
+The `Makefile` will automatically start the examples so just sit back and wait :)
+
+
 Install from Source
 -------------------
 
@@ -42,10 +79,6 @@ things locally, it's **recommended** to use the CLI.
 
 .. code-block:: bash
 
-    # Clone the repository and install:
-    $ git clone git@github.com:bigchaindb/bigchaindb-examples.git
-    $ cd bigchaindb-examples
-
     # (optional) Run a virtualenv (make sure you have a recent version)
     $ virtualenv venv -p python3
     $ source venv/bin/activate
@@ -67,10 +100,6 @@ Manual Setup
 Make sure you have all the :ref:`dependencies`.
 
 .. code-block:: bash
-
-    # Clone the repository and go into it:
-    $ git clone git@github.com:bigchaindb/bigchaindb-examples.git
-    $ cd bigchaindb-examples
 
     # (optional) Run a virtualenv (make sure you have a recent version)
     $ virtualenv venv -p python3
@@ -96,47 +125,6 @@ Make sure you have all the :ref:`dependencies`.
 
 
 You should now be ready to run the examples. See :ref:`run` for instructions.
-
-
-The Docker Way
---------------
-Just make sure you have recent versions of `docker engine`_ and
-`docker-compose`_, e.g.:
-
-.. code-block:: bash
-
-    $ docker --version
-    Docker version 1.11.1, build 5604cbe
-
-    $ docker-compose --version
-    docker-compose version 1.7.0, build 0d7bf73
-
-
-We've provided a `Makefile` to make starting the examples through Docker easy, so once you've set
-up your docker environment (e.g. starting docker-machine if necessary), simply:
-
-.. code-block:: bash
-
-    # Clone the repository and go into it:
-    $ git clone git@github.com:bigchaindb/bigchaindb-examples.git
-    $ cd bigchaindb-examples
-
-    # Build the images
-    $ docker-compose build
-
-    # Make all the things! Inits, configures, and runs everything.
-    $ make
-
-
-If you're using docker-machine instances (ie. on OSX / Windows), you should run `make` with your
-docker-machine ip:
-
-.. code-block:: bash
-
-    $ DOCKER_MACHINE_IP=$(docker-machine ip) make
-
-
-The `Makefile` will automatically start the examples so just sit back and wait :)
 
 
 
