@@ -6,30 +6,46 @@ Details about each app is documented under:
 
 * :ref:`ontherecord`
 * :ref:`sharetrader`
+* :ref:`interledger`
 
 
-The Easy Way
-------------
+Docker
+------
+
+Use the provided `Makefile` to configure, initialize, and start running on Docker all in one go:
 
 .. code-block:: bash
 
-    $ docker-compose up
+    $ make
 
 Or, if you're using docker-machine instances (ie. on OSX / Windows),
 
 .. code-block:: bash
 
-    $ DOCKER_MACHINE_IP=$(docker-machine ip) docker-compose up
+    $ DOCKER_MACHINE_IP=$(docker-machine ip) make
 
-You should be able to view the "On the record" app at
-`<http://localhost:32800/ontherecord/>`_, and the "Share Trader" app at
-`<http://localhost:32800/sharetrader/>`_ (replace ``localhost`` with your docker-machine ip as
-necessary)
+You should be able to view the app at `<http://localhost:33000/>`_ (replace ``localhost`` with your
+docker-machine ip as necessary).
 
 
-The Hard Way
-------------
-Have four terminal shells (in ``bigchaindb-examples/``)
+Locally
+-------
+
+Using the CLI
+^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+    $ bigchaindb-examples start --init --all
+
+Starting Everything Manually
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Not for the faint of heart; use the CLI instead!
+
+You'll need to run at least two instances of BigchainDB along with a Flask and a Tornado server for
+each instance (Flask should be run under ports 8000 and 8001; Tornado should be run under 8888 and
+8889).
 
 Running the javascript client
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -51,8 +67,8 @@ Launch ``BigchainDB`` with ``RethinkDB`` in a separate terminal
     $ bigchaindb -c .bigchaindb_examples start
 
 
-Running the App server
-^^^^^^^^^^^^^^^^^^^^^^
+Running the App servers
+^^^^^^^^^^^^^^^^^^^^^^^
 In another terminal, launch the ``flask`` server
 
 .. code-block:: bash
@@ -65,6 +81,4 @@ In (yet) another terminal, launch the ``tornado`` server
 
     $ python3 -m server.tornado_app
 
-You should be able to view the "On the record" app at
-`<http://localhost:3000/ontherecord/>`_, and the "Share Trader" app at
-`<http://localhost:3000/sharetrader/>`_.
+You should be able to view the app at `<http://localhost:3000/>`_.

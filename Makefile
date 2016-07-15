@@ -5,7 +5,7 @@ config:
 	touch .bigchaindb .bigchaindb-0 .bigchaindb-1
 
 configure:
-	docker-compose -f ledgers.yml run --rm bdb-0 bigchaindb -y configure 
+	docker-compose -f ledgers.yml run --rm bdb-0 bigchaindb -y configure
 	docker-compose -f ledgers.yml run --rm bdb-1 bigchaindb -y configure
 
 init:
@@ -20,7 +20,7 @@ assets:
 
 
 drop_db:
-	docker-compose -f ledgers.yml stop rdb 
+	docker-compose -f ledgers.yml stop rdb
 	docker-compose -f ledgers.yml rm -f rdb
 
 start_db:
