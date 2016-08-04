@@ -19,32 +19,53 @@ r.set_loop_type('tornado')
 logger = logging.getLogger('tornado')
 
 
+MSG_BACKLOG_ADD_TX = 'backlog_add_tx'
+MSG_BACKLOG_DEL_TX = 'backlog_del_tx'
+MSG_BIGCHAIN_NEW_BLOCK = 'bigchain_new_block'
+MSG_BIGCHAIN_VOTED_BLOCK = 'bigchain_voted_block'
+
+
 @coroutine
 def print_changes(db_table):
     conn = yield bigchain.conn
     feed = yield r.table(db_table).changes().run(conn)
     while (yield feed.fetch_next()):
         change = yield feed.next()
-        block = get_block_from_change(change, db_table)
+        block, msg = get_block_from_change(change, db_table)
         for client in clients:
             for tx in block:
                 # TODO: use REQL for filtering
                 if tx_contains_vk(tx['transaction'], client.username):
-                    msg = {'change': change,
-                           'client': client.username}
-                    client.write_message(msg)
+                    client.write_message(
+                        {
+                            'change': change,
+                            'transaction': tx,
+                            'client': client.username,
+                            'message': msg
+                        })
                     break
 
 
 def get_block_from_change(change, db_table):
     block = []
+    msg = None
+
     if db_table in ['backlog', 'bigchain'] and (change['old_val'] or change['new_val']):
         block_data = change['old_val'] if change['old_val'] else change['new_val']
         if db_table == 'bigchain':
             block = block_data['block']['transactions']
         else:
             block.append(block_data)
-    return block
+        if db_table == 'backlog' and change['new_val']:
+            msg = MSG_BACKLOG_ADD_TX
+        elif db_table == 'backlog' and change['old_val']:
+            msg = MSG_BACKLOG_DEL_TX
+        elif db_table == 'bigchain' and change['old_val']:
+            msg = MSG_BIGCHAIN_VOTED_BLOCK
+        elif db_table == 'bigchain' and change['old_val'] is None and change['new_val']:
+            msg = MSG_BIGCHAIN_NEW_BLOCK
+
+    return block, msg
 
 
 def tx_contains_vk(tx, vk):

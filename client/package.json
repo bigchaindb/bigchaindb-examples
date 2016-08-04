@@ -38,7 +38,7 @@
     "moment": "^2.10.6",
     "q": "^1.4.1",
     "react": "^0.14.8",
-    "react-bootstrap": "^0.28.1",
+    "react-bootstrap": "^0.30.0",
     "react-dom": "^0.14.8",
     "react-matrix": "0.0.6",
     "react-scroll": "^1.0.15",

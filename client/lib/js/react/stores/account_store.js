@@ -63,9 +63,9 @@ class AccountStore {
         // connectors
         processedAccount.ledger.getConnectors()
             .then((res) => {
-                processedAccount.connectors = res.connectors;
+                processedAccount.connectors = res;
                 processedAccount.isConnector =
-                    res.connectors.filter((connector) => connector.vk === account.vk).length > 0;
+                    res.filter((connector) => connector.vk === account.vk).length > 0;
             });
 
         // assets

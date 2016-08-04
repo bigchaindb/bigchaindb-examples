@@ -3,7 +3,7 @@
 For more information please refer to the documentation in Apiary:
  - http://docs.bigchaindb.apiary.io/
 """
-
+import json
 import os
 
 import flask
@@ -46,11 +46,12 @@ def get_assets_for_account(account_vk):
     return flask.jsonify({'assets': result, 'account': account_vk})
 
 
-@api_views.route('/ledgers/<ledger_id>/connectors/')
-def get_connectors_for_account(ledger_id):
+@api_views.route('/connectors/')
+def get_connectors_for_account():
     app = '{}'.format(request.args.get('app'))
-    result = accounts.get_connectors(bigchain, ledger_id, app)
-    return flask.jsonify({'connectors': result})
+    # result = accounts.get_connectors(bigchain, ledger_id, app)
+    # return json.dumps(result)
+    return json.dumps(["http://localhost:4002", "http://localhost:4001"])
 
 
 @api_views.route('/assets/')
@@ -58,6 +59,12 @@ def get_assets():
     search = request.args.get('search')
     result = assets.get_assets(bigchain, search)
     return flask.jsonify({'assets': result})
+
+
+@api_views.route('/assets/<txid>/')
+def get_asset(txid):
+    result = assets.get_asset(bigchain, txid)
+    return flask.jsonify(result[0])
 
 
 @api_views.route('/assets/', methods=['POST'])

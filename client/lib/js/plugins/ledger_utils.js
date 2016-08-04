@@ -10,9 +10,10 @@ const connectToBigchainDBLedger = (account) => {
                     api: `http://${account.ledger.api}`,
                     ws: `ws://${account.ledger.ws}/users/${account.vk}`
                 }
-            }
+            },
+            ledgerId: account.ledger.id
         },
-        ledgerId: account.ledger.id
+
     });
 
     ledgerPlugin.connect().catch(console.error);

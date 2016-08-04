@@ -90,7 +90,7 @@ const AssetRow = React.createClass({
 
         account.ledger.getConnectors().then((res) => {
             this.setState({
-                connectors: res.connectors
+                connectors: res
             });
         });
 

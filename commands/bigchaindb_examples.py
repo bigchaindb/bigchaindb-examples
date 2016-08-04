@@ -88,12 +88,12 @@ def start_services(ledger_num):
     procs.append(p_npm)
 
     # start flask
-    p_flask = subprocess.Popen(['python', '-m', 'server.app'], env=my_env)
-    procs.append(p_flask)
+    # p_flask = subprocess.Popen(['python', '-m', 'server.app'], env=my_env)
+    # procs.append(p_flask)
 
     # start tornado
-    p_tornado = subprocess.Popen(['python', '-m', 'server.tornado_app'], env=my_env)
-    procs.append(p_tornado)
+    # p_tornado = subprocess.Popen(['python', '-m', 'server.tornado_app'], env=my_env)
+    # procs.append(p_tornado)
 
     # start bigchaindb
     p_bigchaindb = subprocess.Popen(['bigchaindb', '-c', '.bigchaindb_examples', 'start'], env=my_env)
@@ -111,7 +111,7 @@ def get_ledger_ids_from_config(config):
     # read the config file and return all ledger ids
     ledger_ids = []
     for app in config:
-        if app['name'] != 'interledger':
+        if 'accounts' not in app:
             ledger_ids.append(app['ledger'])
         else:
             for account in app['accounts']:
