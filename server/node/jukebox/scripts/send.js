@@ -11,12 +11,12 @@ const receivingPassword = 'bob';
 const payment = {
     destinationAccount: receivingAccount,
     destinationLedger: receivingLedger,
-    destinationAmount: '1.2345',
+    destinationAmount: '1',
     destinationMemo: {
         myKey: 'myValue'
     },
     executionCondition: 'cc:0:3:47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU:0',
-    expiresAt: (new Date(Date.now() + 10000)).toISOString()
+    expiresAt: (new Date(Date.now() + 100000)).toISOString()
 };
 
 
@@ -45,11 +45,11 @@ const bdb = new Client({
     type: 'bigchaindb',
     auth: {
         account: {
-            id: 'BXeRv91xMhbv6KqC6m7LDC6Jp6WpFQTycy53piwvhjuo',
-            key: '4vCbssy4TpiQ3iJ7D6Ksq7kNwvuLZFMxAqG6NJxVfygc',
+            id: 'EauDkGwEyZ2YjzjVMdfS5AFcFAcQoT89CVjxQUXdRTeY',
+            key: '6nGH7ZuWmyAKnjVNE77KyjJS6sRJ11Z8tiYQ6TztGUHy',
             uri: {
-                api: `http://localhost:8000`,
-                ws: `ws://localhost:8888/users/BkvBg9F7A75ydLPeYJA6P7e3mknxZ6UQZiyxkHHkgcXE`
+                api: 'http://localhost:8000',
+                ws: 'ws://localhost:8888'
             }
         }
     }

@@ -12,44 +12,49 @@ const connectorNames = [
 
 const currencies = [
     { code: 'USD', symbol: '$' },
-    { code: 'EUR', symbol: '€' }
+    { code: 'EUR', symbol: '€' },
+    { code: 'CAD', symbol: 'C' }
 ];
-
-const portOffset = 1;
 
 const externalLedgers = [
     {
         code: 'STC',
         symbol: 'S',
         type: 'bigchaindb',
-        auth: {
-            account: {
-                id: 'BXeRv91xMhbv6KqC6m7LDC6Jp6WpFQTycy53piwvhjuo',
-                key: '4vCbssy4TpiQ3iJ7D6Ksq7kNwvuLZFMxAqG6NJxVfygc',
-                uri: {
-                    api: 'http://localhost:8000',
-                    ws: 'ws://localhost:8888/users/BkvBg9F7A75ydLPeYJA6P7e3mknxZ6UQZiyxkHHkgcXE'
-                }
+        api: 'http://localhost:8000',
+        ws: 'ws://localhost:8888',
+        connectors: {
+            mark: {
+                id: 'HyGLhUNpqZXNWhbbgwrmgsFazoFftSka9EEiSVfb6oBb',
+                key: 'AgVGBc2vQxUuySjs21doweyNCip5REW5hquHnuBPJzLF'
+            },
+            martin: {
+                id: 'HXNXJXtso12LpYiECMFv6wS9P6gZurx56c7gCarDqmTa',
+                key: '2b8NJhirTk4bhHWMusHf2RjEs98KPu7b4mZ7i84Uvto1'
+            },
+            mary: {
+                id: '6LkSZMyjUiPyqsajnNJEsvj6RWRcio6r3keaZfKPhdSH',
+                key: 'FySyJ2HUm5gPcprJMh3ZWMXFG25fiAFdELppLV3ABgLQ'
             }
         }
     }
 ];
 
+const portOffset = externalLedgers.length;
+
 class JukeBoxServices {
     constructor(opts) {
         const _this = this;
 
-        this.numLedgers = 2;
-        this.numConnectors = 3;
-
         this.adminUser = 'admin';
         this.adminPass = 'admin';
 
+        this.numLedgers = 3 - externalLedgers.length;
+        this.numConnectors = 3;
         this.barabasiAlbertConnectedCore = opts.barabasiAlbertConnectedCore || 2;
         this.barabasiAlbertConnectionsPerNewNode = opts.barabasiAlbertConnectionsPerNewNode || 2;
 
         this.npmPrefix = 'npm';
-
         // Connector graph
         // Barabási–Albert (N, m0, M)
         //
@@ -65,16 +70,21 @@ class JukeBoxServices {
             this.connectorEdges[i] = [];
         }
         this.graph.edges.forEach((edge, i) => {
-            if (i < externalLedgers.length) {
-                edge.target_currency = externalLedgers[i].code;
-                edge.target = externalLedgers[i].auth.account.uri.api;
+            if (edge.target < externalLedgers.length) {
+                edge.target_currency = externalLedgers[edge.target].code;
+                edge.target = externalLedgers[edge.target].api;
             } else {
                 edge.target_currency = currencies[edge.target % currencies.length].code;
-                edge.target = `http://localhost:${(3001 + portOffset + edge.target)}`;
+                edge.target = `http://localhost:${(3001 + edge.target)}`;
             }
 
-            edge.source_currency = currencies[edge.source % currencies.length].code;
-            edge.source = `http://localhost:${(3001 + portOffset + edge.source)}`;
+            if (edge.source < externalLedgers.length) {
+                edge.source_currency = externalLedgers[edge.source].code;
+                edge.source = externalLedgers[edge.source].api;
+            } else {
+                edge.source_currency = currencies[edge.source % currencies.length].code;
+                edge.source = `http://localhost:${(3001 + edge.source)}`;
+            }
             _this.connectorEdges[i % _this.numConnectors].push(edge);
         });
     }
@@ -103,13 +113,27 @@ class JukeBoxServices {
 
     static makeCredentials(ledger, name) {
         if (ledger.indexOf('8') > -1) {
+            const connector = externalLedgers[0].connectors[name];
             return Object.assign(
                 {
                     username: name,
-                    password: name,
-                    type: externalLedgers[0].type
+                    password: name
                 },
-                externalLedgers[0].auth
+                {
+                    type: externalLedgers[0].type,
+                    auth: {
+                        account: {
+                            id: connector.id,
+                            key: connector.key,
+                            uri: {
+                                api: externalLedgers[0].api,
+                                ws: externalLedgers[0].ws
+                            }
+                        },
+                        ledgerId: externalLedgers[0].api
+                    },
+                    account_uri: `${externalLedgers[0].api}/accounts/${connector.id}`
+                }
             );
         } else {
             return {
@@ -151,6 +175,7 @@ class JukeBoxServices {
             },
             cwd: './node_modules/five-bells-connector',
             cmd: `${this.npmPrefix} start -- --color`,
+            // cmd: `babel-node-debug --web-port ${port + 4082} --debug-port ${port + 1858} src/index.js`,
             alias: `connector-${name}`
         };
     }
@@ -165,7 +190,7 @@ class JukeBoxServices {
                 ADMIN_PASS: this.adminPass
             },
             cwd: './',
-            cmd: './scripts/create-account.js',
+            cmd: './jukebox/scripts/create-account.js',
             alias: `create-account-${name}`
         };
     }
@@ -180,15 +205,20 @@ class JukeBoxServices {
             processes.push(this.createLedger(`ledger${i}`, port));
             accounts.push(this.createAccount(`http://localhost:${port}`, 'alice'));
             accounts.push(this.createAccount(`http://localhost:${port}`, 'bob'));
+            for (let j = 0; j < this.numConnectors; j++) {
+                accounts.push(this.createAccount(`http://localhost:${port}`, connectorNames[j]));
+            }
         }
 
         for (let i = 0; i < this.numConnectors; i++) {
             connectors.push(this.createConnector(connectorNames[i] || `connector${i}`,
                 4001 + i, this.connectorEdges[i]));
         }
-        
+        console.log(processes)
+        console.log(accounts)
+        console.log(connectors)
         multiplexer(processes.concat(connectors, accounts));
     }
 }
 
-export default JukeBoxServices;
+export default JukeBoxServices

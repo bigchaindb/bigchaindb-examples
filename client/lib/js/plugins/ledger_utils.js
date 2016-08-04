@@ -8,7 +8,7 @@ const connectToBigchainDBLedger = (account) => {
                 key: account.sk,
                 uri: {
                     api: `http://${account.ledger.api}`,
-                    ws: `ws://${account.ledger.ws}/users/${account.vk}`
+                    ws: `ws://${account.ledger.ws}`
                 }
             },
             ledgerId: account.ledger.id

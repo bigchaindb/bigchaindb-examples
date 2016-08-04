@@ -1,0 +1,54 @@
+{
+  "name": "bigchaindb-jukebox",
+  "version": "0.0.1",
+  "description": "An BigchainDB/Interledger music streaming example",
+  "main": "index.js",
+  "keywords": [
+    "interledger",
+    "bigchaindb",
+    "music",
+    "streaming"
+  ],
+  "author": "BigchainDB Team",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint ./",
+    "clean": "rimraf ./build ./dist",
+    "start": "rm -f ./jukebox/data/*.sqlite ; ./node_modules/.bin/babel-node ./jukebox/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babel-version": "babel --version"
+  },
+  "dependencies": {
+    "five-bells-connector": "^8.0.3",
+    "five-bells-ledger": "~14.0.3",
+    "ilp": "^1.0.0",
+    "ilp-core": "^3.0.0",
+    "ilp-plugin-bells": "^2.1.0",
+    "ilp-plugin-bigchaindb": "0.0.7",
+    "multiplexer": "^1.4.1",
+    "randomgraph": "^0.1.3",
+    "sqlite3": "^3.1.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.3.6",
+    "babel-cli": "^6.10.1",
+    "babel-eslint": "^6.0.4",
+    "babel-loader": "^6.0.1",
+    "babel-plugin-react-transform": "^2.0.2",
+    "babel-plugin-transform-object-assign": "^6.8.0",
+    "babel-plugin-transform-react-display-name": "^6.8.0",
+    "babel-plugin-transform-runtime": "^6.8.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.1.2",
+    "babel-runtime": "^6.9.2",
+    "cross-env": "^1.0.8",
+    "dotenv": "^2.0.0",
+    "eslint": "^2.10.2",
+    "eslint-config-ascribe-react": "^1.0.1",
+    "eslint-plugin-import": "^1.8.0",
+    "eslint-plugin-jsx-a11y": "^1.2.2",
+    "eslint-plugin-react": "^5.1.1",
+    "file-loader": "^0.8.5",
+    "rimraf": "^2.5.2"
+  }
+}
