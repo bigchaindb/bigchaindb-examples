@@ -167,6 +167,7 @@ class JukeBoxServices {
                 CONNECTOR_PAIRS: JSON.stringify(pairs),
                 CONNECTOR_MAX_HOLD_TIME: 600,
                 CONNECTOR_SPREAD: 0,
+                CONNECTOR_BACKEND: 'one-to-one',
                 PATH: process.env.PATH,
                 CONNECTOR_HOSTNAME: 'localhost',
                 CONNECTOR_PORT: port,
@@ -175,7 +176,6 @@ class JukeBoxServices {
             },
             cwd: './node_modules/five-bells-connector',
             cmd: `${this.npmPrefix} start -- --color`,
-            // cmd: `babel-node-debug --web-port ${port + 4082} --debug-port ${port + 1858} src/index.js`,
             alias: `connector-${name}`
         };
     }
@@ -214,11 +214,8 @@ class JukeBoxServices {
             connectors.push(this.createConnector(connectorNames[i] || `connector${i}`,
                 4001 + i, this.connectorEdges[i]));
         }
-        console.log(processes)
-        console.log(accounts)
-        console.log(connectors)
         multiplexer(processes.concat(connectors, accounts));
     }
 }
 
-export default JukeBoxServices
+export default JukeBoxServices;

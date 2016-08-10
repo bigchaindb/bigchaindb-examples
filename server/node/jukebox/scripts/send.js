@@ -28,11 +28,6 @@ const receiver = new Client({
     }
 });
 
-receiver.on('receive', (transfer) => {
-    console.log(transfer);
-    receiver.fulfillCondition(transfer.id, 'cf:0:');
-});
-
 const sender = new Client({
     type: 'bells',
     auth: {
@@ -63,6 +58,13 @@ bdb.getPlugin().getBalance().then((res) => {
 });
 
 sender.waitForConnection().then(() => {
+    sender.getPlugin().getBalance().then((res) => {
+        console.log(`Balance sender: ${res}`);
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+
     sender.quote({
         destinationLedger: payment.destinationLedger,
         destinationAmount: payment.destinationAmount
@@ -79,6 +81,24 @@ sender.waitForConnection().then(() => {
 
     sender.on('fulfill_execution_condition', (transfer, fulfillment) => {
         console.log('transfer fulfilled', fulfillment);
+        sender.getPlugin().getBalance().then((res) => {
+            console.log(`Balance sender: ${res}`);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
         sender.disconnect();
+    });
+});
+
+receiver.on('receive', (transfer) => {
+    console.log(transfer);
+    receiver.fulfillCondition(transfer.id, 'cf:0:');
+    console.log(receiver.getPlugin())
+    receiver.getPlugin().getBalance().then((res) => {
+        console.log(`Balance receiver: ${res}`);
+    })
+    .catch((err) => {
+        console.log(err);
     });
 });
