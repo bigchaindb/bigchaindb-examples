@@ -47,8 +47,6 @@ const DEFINITIONS = {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
         FLASK_BASE_URL: JSON.stringify(`http://${process.env.FLASK_HOST || 'localhost'}:` +
                                        `${process.env.FLASK_PORT || '8000'}`),
-        TORNADO_BASE_URL: JSON.stringify(`ws://${process.env.TORNADO_HOST || 'localhost'}:` +
-                                         `${process.env.TORNADO_PORT || '8888'}`),
     },
 };
 
