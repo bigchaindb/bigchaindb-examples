@@ -16,8 +16,8 @@ Go into it!
 We now document three options:
 
 * Installing via Docker (**recommended**); supports OSX
-* Installing via the CLI and running locally
-* Installing from source and running locally
+* Installing from source via the CLI
+* Installing from source Manually
 
 
 The Docker Way
@@ -39,10 +39,7 @@ up your docker environment (e.g. starting docker-machine if necessary), simply:
 
 .. code-block:: bash
 
-    # Build the images
-    $ docker-compose build
-
-    # Make all the things! Inits, configures, and runs everything.
+    # Make all the things! Build, inits, configures, and runs everything.
     $ make
 
 
@@ -56,6 +53,7 @@ docker-machine ip:
 
 The `Makefile` will automatically start the examples so just sit back and wait :)
 
+Note: we've renamed the `docker-compose.yml` to `ledgers.yml`, so if you want to do Docker builds manually, use `-f ledgers.yml`.
 
 Install from Source
 -------------------
