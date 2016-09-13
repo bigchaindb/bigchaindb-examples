@@ -13,9 +13,10 @@ Go into it!
 
     $ cd bigchaindb-examples
 
-We now document two options:
+We now document three options:
 
 * Installing via Docker (**recommended**); supports OSX
+* Installing via the CLI and running locally
 * Installing from source and running locally
 
 
@@ -86,8 +87,14 @@ things locally, it's **recommended** to use the CLI.
     # Install server
     $ pip install -e .[dev]
 
-    # Check out the CLI
+    # (optional) Check out the CLI
     $ bigchaindb-examples --help
+
+    # Initialize BigchainDB and load initial data
+    $ bigchaindb-examples init --all
+
+    # Install client dependencies
+    $ cd client && npm install && cd -
 
 
 The CLI will handle any initialization that's necessary for the client and servers so you can skip
