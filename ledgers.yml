@@ -41,16 +41,15 @@ services:
       - ./docs:/usr/src/app/docs
       - ./init_accounts.py:/usr/src/app/init_accounts.py
       - ./init_assets.py:/usr/src/app/init_assets.py
-      - ./.bigchaindb-0:/root/.bigchaindb
       - ./apps_config.py:/usr/src/app/apps_config.py
     environment:
-      BIGCHAINDB_CONFIG: /root/.bigchaindb
+      BIGCHAINDB_CONFIG: .bigchaindb_examples
       BIGCHAINDB_DATABASE_HOST: rdb
       BIGCHAINDB_DATABASE_NAME: bigchaindb_examples_0
       LEDGER_API_BASE_PORT: 48000
       LEDGER_WS_BASE_PORT: 48888
       DOCKER_MACHINE_IP: "${DOCKER_MACHINE_IP}"
-    command: bigchaindb start
+    command: bigchaindb -c .bigchaindb_examples start
 
   app-0:
     build:
@@ -61,8 +60,9 @@ services:
     volumes_from:
       - bdb-0
     environment:
-      BIGCHAINDB_CONFIG: /root/.bigchaindb
-      BIGCHAIN_DATABASE_HOST: rdb
+      BIGCHAINDB_CONFIG: .bigchaindb_examples
+      BIGCHAINDB_DATABASE_HOST: rdb
+      BIGCHAINDB_LEDGER_NUMBER: 0
       FLASK_HOST: 0.0.0.0
       DOCKER_MACHINE_IP: "${DOCKER_MACHINE_IP}"
     ports:
@@ -76,8 +76,9 @@ services:
     volumes_from:
       - app-0
     environment:
-      BIGCHAINDB_CONFIG: /root/.bigchaindb
-      BIGCHAIN_DATABASE_HOST: rdb
+      BIGCHAINDB_CONFIG: .bigchaindb_examples
+      BIGCHAINDB_DATABASE_HOST: rdb
+      BIGCHAINDB_LEDGER_NUMBER: 0
       TORNADO_HOST: 0.0.0.0
     ports:
       - "48888:8888"
@@ -92,13 +93,12 @@ services:
       - ./docs:/usr/src/app/docs
       - ./init_accounts.py:/usr/src/app/init_accounts.py
       - ./init_assets.py:/usr/src/app/init_assets.py
-      - ./.bigchaindb-1:/root/.bigchaindb
       - ./apps_config.py:/usr/src/app/apps_config.py
     environment:
-      BIGCHAINDB_CONFIG: /root/.bigchaindb
+      BIGCHAINDB_CONFIG: .bigchaindb_examples
       BIGCHAINDB_DATABASE_HOST: rdb
       BIGCHAINDB_DATABASE_NAME: bigchaindb_examples_1
-    command: bigchaindb start
+    command: bigchaindb -c .bigchaindb_examples start
 
   app-1:
     build:
@@ -109,8 +109,9 @@ services:
     volumes_from:
       - bdb-1
     environment:
-      BIGCHAINDB_CONFIG: /root/.bigchaindb
-      BIGCHAIN_DATABASE_HOST: rdb
+      BIGCHAINDB_CONFIG: .bigchaindb_examples
+      BIGCHAINDB_DATABASE_HOST: rdb
+      BIGCHAINDB_LEDGER_NUMBER: 1
       FLASK_HOST: 0.0.0.0
       DOCKER_MACHINE_IP: "${DOCKER_MACHINE_IP}"
     ports:
@@ -124,8 +125,9 @@ services:
     volumes_from:
       - app-1
     environment:
-      BIGCHAINDB_CONFIG: /root/.bigchaindb
-      BIGCHAIN_DATABASE_HOST: rdb
+      BIGCHAINDB_CONFIG: .bigchaindb_examples
+      BIGCHAINDB_DATABASE_HOST: rdb
+      BIGCHAINDB_LEDGER_NUMBER: 1
       TORNADO_HOST: 0.0.0.0
     ports:
       - "48889:8888"

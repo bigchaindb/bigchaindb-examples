@@ -8,3 +8,4 @@ COPY server /usr/src/app/server
 
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -e .[dev]
+RUN bigchaindb -yc .bigchaindb_examples configure

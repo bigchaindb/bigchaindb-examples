@@ -7,6 +7,7 @@ import bigchaindb.config_utils
 import apps_config
 from server.lib.models.accounts import retrieve_accounts
 from server.lib.models.assets import create_asset
+from server.config_bigchaindb import get_bigchain
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -24,7 +25,7 @@ def main():
         app_name = '{}'.format(app['name'])
         if 'num_accounts' in app:
             ledger_name = 'bigchaindb_examples_{}'.format(app['ledger'])
-            bigchain = bigchaindb.Bigchain(dbname=ledger_name)
+            bigchain = get_bigchain(ledger_id=app['ledger'])
             accounts = retrieve_accounts(bigchain, app_name)
             assets = []
             for i in range(app['num_assets']):

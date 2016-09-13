@@ -1,19 +1,13 @@
-all: build reinit_db configure init accounts assets start
+all: build init start
 
 build:
 	docker-compose -f ledgers.yml build
 
-config:
-	rm -rf .bigchaindb .bigchaindb-0 .bigchaindb-1
-	touch .bigchaindb .bigchaindb-0 .bigchaindb-1
+init: reinit_db initialize accounts assets
 
-configure:
-	docker-compose -f ledgers.yml run --rm bdb-0 bigchaindb -y configure
-	docker-compose -f ledgers.yml run --rm bdb-1 bigchaindb -y configure
-
-init:
-	docker-compose -f ledgers.yml run --rm bdb-0 bigchaindb init
-	docker-compose -f ledgers.yml run --rm bdb-1 bigchaindb init
+initialize:
+	docker-compose -f ledgers.yml run --rm bdb-0 bigchaindb -c .bigchaindb_examples init
+	docker-compose -f ledgers.yml run --rm bdb-1 bigchaindb -c .bigchaindb_examples init
 
 accounts:
 	docker-compose -f ledgers.yml run --rm bdb-0 python init_accounts.py

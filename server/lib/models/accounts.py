@@ -40,7 +40,6 @@ class Account:
                            .filter(lambda user: (user['name'] == self.name)
                                                 & (user['ledger']['id'] == self.ledger['id']))
                            .run(self.bigchain.conn))
-
         if not len(user_exists):
             r.db(self.db)\
                 .table('accounts')\
