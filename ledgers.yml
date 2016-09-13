@@ -31,6 +31,18 @@ services:
       - "33000:3000"
     command: node server.demo.js
 
+  connector:
+    build:
+      context: .
+      dockerfile: ./compose/server/Dockerfile
+    volumes:
+      - ./server:/usr/src/app/server
+      - ./.bigchaindb_examples_connector:/usr/src/app/.bigchaindb_examples
+    environment:
+      BIGCHAINDB_CONFIG: .bigchaindb_examples
+      BIGCHAINDB_DATABASE_HOST: rdb
+    command: python -m server.lib.models.connector
+
   bdb-0:
     build:
       context: .
