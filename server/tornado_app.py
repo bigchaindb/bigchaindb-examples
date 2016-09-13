@@ -7,7 +7,7 @@ from tornado.gen import coroutine
 
 import rethinkdb as r
 
-from server.config_bigchaindb import get_bigchain, CONFIG_FILE
+from server.config_bigchaindb import get_bigchain
 
 clients = []
 bigchain = get_bigchain(ledger_id=os.environ.get('BIGCHAINDB_LEDGER_NUMBER'))

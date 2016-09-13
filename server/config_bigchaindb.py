@@ -11,10 +11,7 @@ except KeyError:
 
 
 def get_bigchain(conf=CONFIG_FILE, ledger_id=None):
-    print('config file is {}'.format(conf))
-    # import ipdb; ipdb.set_trace()
     if os.path.isfile(conf):
-        print('do autoconfig')
         bigchaindb.config_utils.autoconfigure(filename=conf, force=True)
 
     if ledger_id is not None:
