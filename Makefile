@@ -3,7 +3,14 @@ all: build init start
 build:
 	docker-compose -f ledgers.yml build
 
-init: reinit_db initialize accounts assets
+init: reinit_db config initialize accounts assets
+
+config:
+	rm -rf .bigchaindb_examples_0 .bigchaindb_examples_1 .bigchaindb_examples_connector
+	touch .bigchaindb_examples_0 .bigchaindb_examples_1 .bigchaindb_examples_connector
+	docker-compose -f ledgers.yml run --rm bdb-0 bigchaindb -yc .bigchaindb_examples configure
+	docker-compose -f ledgers.yml run --rm bdb-1 bigchaindb -yc .bigchaindb_examples configure
+	docker-compose -f ledgers.yml run --rm connector bigchaindb -yc .bigchaindb_examples configure
 
 initialize:
 	docker-compose -f ledgers.yml run --rm bdb-0 bigchaindb -c .bigchaindb_examples init
