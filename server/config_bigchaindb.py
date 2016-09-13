@@ -7,7 +7,7 @@ import bigchaindb.config_utils
 try:
     CONFIG_FILE = os.environ['BIGCHAINDB_CONFIG']
 except KeyError:
-    CONFIG_FILE = os.path.join(os.path.dirname(__file__), '.bigchaindb_examples')
+    CONFIG_FILE = '.bigchaindb_examples'
 
 
 def get_bigchain(conf=CONFIG_FILE, ledger_id=None):
