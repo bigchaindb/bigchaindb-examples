@@ -1,0 +1,45 @@
+<html>
+<head>
+  <script src="./assets/binary.min.js"></script>
+  <script>
+    var context = new (window.AudioContext || window.webkitAudioContext)();
+    var delayTime = 0;
+    var init = 0;
+    var audioStack = [];
+    var nextTime = 0;
+
+    // Connect to Binary.js server
+    var client = new BinaryClient('ws://localhost:9000');
+
+    client.on('stream', function(stream) {    
+        stream.on('data', function(data) {
+            console.log(data)
+            context.decodeAudioData(data, function(buffer) {
+                audioStack.push(buffer);
+                if ((init!=0) || (audioStack.length > 10)) { // make sure we put at least 10 chunks in the buffer before starting
+                    init++;
+                    scheduleBuffers();
+                }
+            }, function(err) {
+                console.log(err); 
+            });
+        });
+    });
+
+    function scheduleBuffers() {
+        while (audioStack.length) {
+            var buffer = audioStack.shift();
+            var source = context.createBufferSource();
+            source.buffer = buffer;
+            source.connect(context.destination);
+            if (nextTime == 0)
+            nextTime = context.currentTime + 0.05;  /// add 50ms latency to work well across systems - tune this if you like
+            source.start(nextTime);
+            nextTime+=source.buffer.duration; // Make the next buffer wait the length of the last buffer before being played
+        };
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>

@@ -111,7 +111,7 @@ def get_ledger_ids_from_config(config):
     # read the config file and return all ledger ids
     ledger_ids = []
     for app in config:
-        if app['name'] != 'interledger':
+        if 'accounts' not in app:
             ledger_ids.append(app['ledger'])
         else:
             for account in app['accounts']:

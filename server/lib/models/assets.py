@@ -79,6 +79,14 @@ def get_assets(bigchain, search):
     return list(cursor)
 
 
+def get_asset(bigchain, txid):
+    cursor = r.table('bigchain')\
+        .concat_map(lambda doc: doc["block"]["transactions"]
+                    .filter(lambda transaction: transaction["id"] == txid))\
+        .run(bigchain.conn)
+    return list(cursor)
+
+
 def create_asset(bigchain, to, payload):
     # a create transaction uses the operation `CREATE` and has no inputs
     tx = bigchain.create_transaction(bigchain.me, to, None, 'CREATE', payload=payload)
