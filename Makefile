@@ -3,7 +3,10 @@ all: build init start
 build:
 	docker-compose -f ledgers.yml build
 
-init: reinit_db config initialize accounts assets
+init: config
+
+start: reinit_db initialize accounts assets
+	docker-compose -f ledgers.yml up
 
 config:
 	rm -rf .bigchaindb_examples_0 .bigchaindb_examples_1 .bigchaindb_examples_connector
@@ -31,6 +34,7 @@ start_db:
 	docker-compose -f ledgers.yml up -d rdb
 
 reinit_db: drop_db start_db
+	sleep 10
 
-start:
-	docker-compose -f ledgers.yml up
+stop:
+	docker-compose -f ledgers.yml down
