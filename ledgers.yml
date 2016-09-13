@@ -12,7 +12,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile-js
+      dockerfile: ./compose/frontend/Dockerfile
     volumes:
       - ./client/demo:/usr/src/app/client/demo
       - ./client/lib:/usr/src/app/client/lib
@@ -30,11 +30,11 @@ services:
     ports:
       - "33000:3000"
     command: node server.demo.js
-  
+
   bdb-0:
     build:
       context: .
-      dockerfile: Dockerfile-bdb
+      dockerfile: ./compose/server/Dockerfile
     volumes:
       - ./commands:/usr/src/app/commands
       - ./setup.py:/usr/src/app/setup.py
@@ -54,7 +54,7 @@ services:
   app-0:
     build:
       context: .
-      dockerfile: Dockerfile-bdb
+      dockerfile: ./compose/server/Dockerfile
     volumes:
       - ./server:/usr/src/app/server
     volumes_from:
@@ -72,7 +72,7 @@ services:
   ws-0:
     build:
       context: .
-      dockerfile: Dockerfile-bdb
+      dockerfile: ./compose/server/Dockerfile
     volumes_from:
       - app-0
     environment:
@@ -83,11 +83,11 @@ services:
     ports:
       - "48888:8888"
     command: python -m server.tornado_app
-  
+
   bdb-1:
     build:
       context: .
-      dockerfile: Dockerfile-bdb
+      dockerfile: ./compose/server/Dockerfile
     volumes:
       - ./setup.py:/usr/src/app/setup.py
       - ./docs:/usr/src/app/docs
@@ -103,7 +103,7 @@ services:
   app-1:
     build:
       context: .
-      dockerfile: Dockerfile-bdb
+      dockerfile: ./compose/server/Dockerfile
     volumes:
       - ./server:/usr/src/app/server
     volumes_from:
@@ -121,7 +121,7 @@ services:
   ws-1:
     build:
       context: .
-      dockerfile: Dockerfile-bdb
+      dockerfile: ./compose/server/Dockerfile
     volumes_from:
       - app-1
     environment:
