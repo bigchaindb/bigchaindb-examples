@@ -16,11 +16,12 @@ See the [documentation](http://bigchaindb-examples.readthedocs.io/en/latest/inde
 Examples:
 * [On the Record](#example-on-the-record)
 * [Share Trader](#example-share-trader)
+* [Interledger](#example-interledger)
 
 ### Dependencies
 
 The examples can be [run via Docker](http://bigchaindb-examples.readthedocs.io/en/latest/install.html#the-docker-way)
-(**recommended**), but, if you'd like, you can [run them locally](http://bigchaindb-examples.readthedocs.io/en/latest/install.html#install-from-source)
+(**recommended**), but, if you'd like, you can also [run them locally](http://bigchaindb-examples.readthedocs.io/en/latest/install.html#install-from-source)
 with the following system dependencies:
 
  - OS dependencies: see [setup BigchainDB & RethinkDB](https://bigchaindb.readthedocs.io/en/latest/installing-server.html#install-and-run-rethinkdb-server)
@@ -28,14 +29,47 @@ with the following system dependencies:
  - node>=5.3 using [nvm](https://github.com/creationix/nvm#installation) (**recommended**), or [manually](https://nodejs.org/en/download/)
  - [npm>=3.3](https://docs.npmjs.com/getting-started/installing-node) (should be installed with node)
 
+## Quick start
+
+
+### Docker
+
+To run via Docker, set up your docker environment as necessary and:
+
+```bash
+$ docker-compose build
+$ make
+```
+
+**Note**: If using docker-machine, you'll have to run `make` with your docker-machine ip:
+
+```bash
+$ DOCKER_MACHINE_IP=$(docker-machine ip) make
+```
+
+The app will be available at <http://localhost:33000> (replace ``localhost`` with your
+docker-machine ip as necessary).
+
+### Locally
+
+If you'd like to run these examples locally (preferably in a virtualenv), you can do so using
+the handy CLI:
+
+```bash
+$ bigchaindb-examples --help
+
+# Start everything
+$ bigchaindb-examples start --init --all
+
+# Reset everything
+$ bigchaindb-examples reset-all
+```
+
+The app will be available at <http://localhost:3000>.
 
 ## Example: "On the Record"
 
 "On the Record" is a simple logging app, wrapped as a messaging board.
-
-You should see the app running on [http://localhost:3000/ontherecord/](http://localhost:3000/ontherecord/),
-or if running docker, `http://docker-machine:32800/ontherecord/` (replace `docker-machine` as
-necessary with `localhost` or your docker-machine ip).
 
 <p align="center">
   <img width="70%" height="70%" src ="./docs/img/on_the_record_v0.0.1.png" />
@@ -65,10 +99,6 @@ necessary with `localhost` or your docker-machine ip).
 ## Example: Share Trader
 
 Share Trader is a simple share allocation and trade app. Each square represents an asset that can be traded amongst accounts.
-
-You should see the app running on [http://localhost:3000/sharetrader/](http://localhost:3000/sharetrader/),
-or if running on docker, `http://docker-machine:32800/sharetrader/` (replace `docker-machine` as
-necessary with `localhost` or your docker-machine ip).
 
 <p align="center">
   <img width="70%" height="70%" src ="./docs/img/share_trader_v0.0.1.png" />
@@ -100,6 +130,10 @@ necessary with `localhost` or your docker-machine ip).
 - Proper user and key management
 - Proper signing of transfers
 - Proper search by payload
+
+## Example: Interledger
+
+TODO
 
 ## Acknowledgements:
 
