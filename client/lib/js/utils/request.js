@@ -12,20 +12,22 @@ const DEFAULT_REQUEST_CONFIG = {
 };
 
 /**
- * Small wrapper around js-utility-belt's request that provides default settings and response
- * handling
+ * Small wrapper around js-utility-belt's request that provides url resolving, default settings, and
+ * response handling.
  */
-export default function request(url, config) {
-    // Load default fetch configuration and remove any falsey query parameters
+export default function request(url, config = {}) {
+    // Load default fetch configuration and remove any falsy query parameters
     const requestConfig = Object.assign({}, DEFAULT_REQUEST_CONFIG, config, {
         query: config.query && sanitize(config.query)
     });
     let apiUrl = url;
 
-    if (!apiUrl.match(/^http/)) {
+    if (!url) {
+        return Promise.reject(new Error('Request was not given a url.'));
+    } else if (!url.match(/^http/)) {
         apiUrl = ApiUrls[url];
-        if (!url) {
-            throw new Error(`Cannot find a url mapping for "${name}"`);
+        if (!apiUrl) {
+            return Promise.reject(new Error(`Request could not find a url mapping for "${url}"`));
         }
     }
 

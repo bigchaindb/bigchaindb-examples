@@ -4,7 +4,6 @@ import AssetActions from '../actions/asset_actions';
 
 
 const AssetSource = {
-
     lookupAssetList: {
         remote(state) {
             const { account, search } = state.assetMeta;
@@ -77,7 +76,6 @@ const AssetSource = {
         success: AssetActions.successPostAsset,
         error: AssetActions.errorAsset
     }
-
 };
 
 export default AssetSource;
