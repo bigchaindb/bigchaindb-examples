@@ -98,6 +98,7 @@ things locally, it's **recommended** to use the CLI.
 The CLI will handle any initialization that's necessary for the client and servers so you can skip
 to :ref:`run` to begin running the examples.
 
+.. _manual-setup:
 
 Manual Setup
 ^^^^^^^^^^^^
