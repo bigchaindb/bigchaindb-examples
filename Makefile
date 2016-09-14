@@ -3,9 +3,9 @@ all: build init start
 build:
 	docker-compose -f ledgers.yml build
 
-init: reinit_db config
+init: reinit_db config accounts assets
 
-start: accounts assets
+start:
 	docker-compose -f ledgers.yml up
 
 restart: init start
