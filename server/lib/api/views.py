@@ -3,20 +3,18 @@
 For more information please refer to the documentation in Apiary:
  - http://docs.bigchaindb.apiary.io/
 """
-
 import os
 
 import flask
 from flask import request, Blueprint
 
-from init_accounts import get_bigchain
-
+from server.config_bigchaindb import get_bigchain
 from server.lib.models import accounts
 from server.lib.models import assets
 
 api_views = Blueprint('api_views', __name__)
 
-bigchain = get_bigchain()
+bigchain = get_bigchain(ledger_id=os.environ.get('BIGCHAINDB_LEDGER_NUMBER'))
 
 
 @api_views.route('/accounts/')

@@ -7,10 +7,10 @@ from tornado.gen import coroutine
 
 import rethinkdb as r
 
-from init_accounts import get_bigchain
+from server.config_bigchaindb import get_bigchain
 
 clients = []
-bigchain = get_bigchain()
+bigchain = get_bigchain(ledger_id=os.environ.get('BIGCHAINDB_LEDGER_NUMBER'))
 
 # from http://blog.hiphipjorge.com/django-and-realtime-using-django-with-tornado-and-rethinkdb/
 r.set_loop_type('tornado')

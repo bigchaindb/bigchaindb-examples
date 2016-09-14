@@ -17,16 +17,38 @@ OMG: I've messed up my database
 -------------------------------
 
 * **Solution**: reset your bigchaindb_examples database
-* **Warning**: the following resets your bigchaindb database as specified in the config file!
+* **Warning**: the following resets your bigchaindb database to its default initialized state!
+
+Via Docker
+^^^^^^^^^^
 
 .. code-block:: bash
-    
-    # Drop database
-    $ bigchaindb -c .bigchaindb_examples drop
-    
-    # Restart BigchainDB
-    $ bigchaindb -c .bigchaindb_examples init
-    $ bigchaindb -c .bigchaindb_examples start
-    
-    # Load initial data (app accounts will remain the same if not deleted)
-    $ python3 init_db.py
+
+    $ make init
+
+Or, to reinitialize and restart:
+
+.. code-block:: bash
+
+    $ make restart
+
+
+Via the CLI
+^^^^^^^^^^^
+
+.. code-block:: bash
+
+    $ bigchaindb-examples init --all
+
+Or, to reinitialize and restart:
+
+.. code-block:: bash
+
+    $ bigchaindb-examples start --init --all
+
+
+Manually
+^^^^^^^^
+
+Restart your RethinkDB instance and follow the initialization steps in
+:ref:`manual-setup`.

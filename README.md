@@ -37,7 +37,6 @@ with the following system dependencies:
 To run via Docker, set up your docker environment as necessary and:
 
 ```bash
-$ docker-compose build
 $ make
 ```
 

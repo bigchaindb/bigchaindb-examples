@@ -13,10 +13,11 @@ Go into it!
 
     $ cd bigchaindb-examples
 
-We now document two options:
+We now document three options:
 
 * Installing via Docker (**recommended**); supports OSX
-* Installing from source and running locally
+* Installing from source via the CLI
+* Installing from source Manually
 
 
 The Docker Way
@@ -38,10 +39,7 @@ up your docker environment (e.g. starting docker-machine if necessary), simply:
 
 .. code-block:: bash
 
-    # Build the images
-    $ docker-compose build
-
-    # Make all the things! Inits, configures, and runs everything.
+    # Make all the things! Build, inits, configures, and runs everything.
     $ make
 
 
@@ -55,6 +53,7 @@ docker-machine ip:
 
 The `Makefile` will automatically start the examples so just sit back and wait :)
 
+Note: we've renamed the `docker-compose.yml` to `ledgers.yml`, so if you want to do Docker builds manually, use `-f ledgers.yml`.
 
 Install from Source
 -------------------
@@ -86,13 +85,20 @@ things locally, it's **recommended** to use the CLI.
     # Install server
     $ pip install -e .[dev]
 
-    # Check out the CLI
+    # (optional) Check out the CLI
     $ bigchaindb-examples --help
+
+    # Initialize BigchainDB and load initial data
+    $ bigchaindb-examples init --all
+
+    # Install client dependencies
+    $ cd client && npm install && cd -
 
 
 The CLI will handle any initialization that's necessary for the client and servers so you can skip
 to :ref:`run` to begin running the examples.
 
+.. _manual-setup:
 
 Manual Setup
 ^^^^^^^^^^^^
@@ -109,11 +115,13 @@ Make sure you have all the :ref:`dependencies`.
     $ pip install -e .[dev]
 
     # Make sure RethinkDB is running!
-    # Configure BigchainDB with a different BIGCHAINDB_DATABASE_NAME
-    $ BIGCHAINDB_DATABASE_NAME=bigchaindb_examples \
-     bigchaindb -yc .bigchaindb_examples configure
+    # Configure and initialize BigchainDB with a different BIGCHAINDB_DATABASE_NAME for each ledger
+    $ BIGCHAINDB_DATABASE_NAME=bigchaindb_examples_0 \
+      bigchaindb -yc .bigchaindb_examples configure
+    $ bigchaindb -c .bigchaindb_examples init
 
-    # Initialize BigchainDB
+    $ BIGCHAINDB_DATABASE_NAME=bigchaindb_examples_1 \
+      bigchaindb -yc .bigchaindb_examples configure
     $ bigchaindb -c .bigchaindb_examples init
 
     # Load initial data

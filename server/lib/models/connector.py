@@ -9,7 +9,7 @@ import cryptoconditions as cc
 
 from server.lib.models.accounts import retrieve_accounts
 from server.lib.models.assets import escrow_asset, get_subcondition_indices_from_type, fulfill_escrow_asset
-from init_accounts import get_bigchain
+from server.config_bigchaindb import get_bigchain
 
 
 class Connector(object):
@@ -140,7 +140,7 @@ class Connector(object):
 
 
 def get_connector_accounts(db='interledger'):
-    b = Bigchain()
+    b = get_bigchain()
     connector_accounts = []
     accounts_db = retrieve_accounts(b, db)
 

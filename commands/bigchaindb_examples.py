@@ -62,6 +62,7 @@ def init_ledgers(ledger_ids=[]):
         bigchaindb_db_name = 'bigchaindb_examples_{}'.format(ledger_id)
         logger.info('Initializing ledger {}'.format(bigchaindb_db_name))
         my_env['BIGCHAINDB_DATABASE_NAME'] = bigchaindb_db_name
+        subprocess.Popen(['bigchaindb', '-yc', '.bigchaindb_examples', 'configure'], env=my_env).wait()
         subprocess.Popen(['bigchaindb', '-c', '.bigchaindb_examples', 'init'], env=my_env).wait()
 
 
@@ -82,10 +83,6 @@ def start_services(ledger_num):
     my_env['BIGCHAINDB_DATABASE_NAME'] = bigchaindb_db_name
     my_env['BIGCHAINDB_SERVER_BIND'] = bigchaindb_server_bind
     my_env['BIGCHAINDB_LEDGER_NUMBER'] = str(ledger_num)
-
-    # start npm
-    p_npm = subprocess.Popen(['/bin/sh', 'start.sh'], cwd='./client/', env=my_env)
-    procs.append(p_npm)
 
     # start flask
     p_flask = subprocess.Popen(['python', '-m', 'server.app'], env=my_env)
@@ -176,6 +173,10 @@ def run_start(args):
     procs = []
     for ledger in ledger_ids:
         procs += start_services(ledger)
+
+    # start npm
+    p_npm = subprocess.Popen(['npm', 'start'], cwd='./client/')
+    procs.append(p_npm)
 
     procs += start_connectors()
 
