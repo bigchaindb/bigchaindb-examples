@@ -114,11 +114,13 @@ Make sure you have all the :ref:`dependencies`.
     $ pip install -e .[dev]
 
     # Make sure RethinkDB is running!
-    # Configure BigchainDB with a different BIGCHAINDB_DATABASE_NAME
-    $ BIGCHAINDB_DATABASE_NAME=bigchaindb_examples \
-     bigchaindb -yc .bigchaindb_examples configure
+    # Configure and initialize BigchainDB with a different BIGCHAINDB_DATABASE_NAME for each ledger
+    $ BIGCHAINDB_DATABASE_NAME=bigchaindb_examples_0 \
+      bigchaindb -yc .bigchaindb_examples configure
+    $ bigchaindb -c .bigchaindb_examples init
 
-    # Initialize BigchainDB
+    $ BIGCHAINDB_DATABASE_NAME=bigchaindb_examples_1 \
+      bigchaindb -yc .bigchaindb_examples configure
     $ bigchaindb -c .bigchaindb_examples init
 
     # Load initial data
