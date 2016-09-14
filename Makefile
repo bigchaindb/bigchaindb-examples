@@ -3,21 +3,21 @@ all: build init start
 build:
 	docker-compose -f ledgers.yml build
 
-init: config
+init: reinit_db config
 
-start: reinit_db initialize accounts assets
+start: accounts assets
 	docker-compose -f ledgers.yml up
 
-config:
-	rm -rf .bigchaindb_examples_0 .bigchaindb_examples_1 .bigchaindb_examples_connector
-	touch .bigchaindb_examples_0 .bigchaindb_examples_1 .bigchaindb_examples_connector
-	docker-compose -f ledgers.yml run --rm bdb-0 bigchaindb -yc .bigchaindb_examples configure
-	docker-compose -f ledgers.yml run --rm bdb-1 bigchaindb -yc .bigchaindb_examples configure
-	docker-compose -f ledgers.yml run --rm connector bigchaindb -yc .bigchaindb_examples configure
+restart: init start
 
-initialize:
+config:
+	rm -rf .bigchaindb_examples_docker .bigchaindb_examples_docker_connector
+	touch .bigchaindb_examples_docker .bigchaindb_examples_docker_connector
+	docker-compose -f ledgers.yml run --rm bdb-0 bigchaindb -yc .bigchaindb_examples configure
 	docker-compose -f ledgers.yml run --rm bdb-0 bigchaindb -c .bigchaindb_examples init
+	docker-compose -f ledgers.yml run --rm bdb-1 bigchaindb -yc .bigchaindb_examples configure
 	docker-compose -f ledgers.yml run --rm bdb-1 bigchaindb -c .bigchaindb_examples init
+	docker-compose -f ledgers.yml run --rm connector bigchaindb -yc .bigchaindb_examples configure
 
 accounts:
 	docker-compose -f ledgers.yml run --rm bdb-0 python init_accounts.py

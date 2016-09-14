@@ -37,7 +37,7 @@ services:
       dockerfile: ./compose/server/Dockerfile
     volumes:
       - ./server:/usr/src/app/server
-      - ./.bigchaindb_examples_connector:/usr/src/app/.bigchaindb_examples
+      - ./.bigchaindb_examples_docker_connector:/usr/src/app/.bigchaindb_examples
     environment:
       BIGCHAINDB_CONFIG: .bigchaindb_examples
       BIGCHAINDB_DATABASE_HOST: rdb
@@ -54,7 +54,7 @@ services:
       - ./init_accounts.py:/usr/src/app/init_accounts.py
       - ./init_assets.py:/usr/src/app/init_assets.py
       - ./apps_config.py:/usr/src/app/apps_config.py
-      - ./.bigchaindb_examples_0:/usr/src/app/.bigchaindb_examples
+      - ./.bigchaindb_examples_docker:/usr/src/app/.bigchaindb_examples
     environment:
       BIGCHAINDB_CONFIG: .bigchaindb_examples
       BIGCHAINDB_DATABASE_HOST: rdb
@@ -107,7 +107,7 @@ services:
       - ./init_accounts.py:/usr/src/app/init_accounts.py
       - ./init_assets.py:/usr/src/app/init_assets.py
       - ./apps_config.py:/usr/src/app/apps_config.py
-      - ./.bigchaindb_examples_1:/usr/src/app/.bigchaindb_examples
+      - ./.bigchaindb_examples_docker:/usr/src/app/.bigchaindb_examples
     environment:
       BIGCHAINDB_CONFIG: .bigchaindb_examples
       BIGCHAINDB_DATABASE_HOST: rdb
