@@ -17,27 +17,27 @@ const currencies = [
 ];
 
 const externalLedgers = [
-    {
-        code: 'STC',
-        symbol: 'S',
-        type: 'bigchaindb',
-        api: 'http://localhost:8000',
-        ws: 'ws://localhost:8888',
-        connectors: {
-            mark: {
-                id: 'HyGLhUNpqZXNWhbbgwrmgsFazoFftSka9EEiSVfb6oBb',
-                key: 'AgVGBc2vQxUuySjs21doweyNCip5REW5hquHnuBPJzLF'
-            },
-            martin: {
-                id: 'HXNXJXtso12LpYiECMFv6wS9P6gZurx56c7gCarDqmTa',
-                key: '2b8NJhirTk4bhHWMusHf2RjEs98KPu7b4mZ7i84Uvto1'
-            },
-            mary: {
-                id: '6LkSZMyjUiPyqsajnNJEsvj6RWRcio6r3keaZfKPhdSH',
-                key: 'FySyJ2HUm5gPcprJMh3ZWMXFG25fiAFdELppLV3ABgLQ'
-            }
-        }
-    }
+    // {
+    //     code: 'STC',
+    //     symbol: 'S',
+    //     type: 'bigchaindb',
+    //     api: 'http://localhost:8000',
+    //     ws: 'ws://localhost:8888',
+    //     connectors: {
+    //         mark: {
+    //             id: 'HyGLhUNpqZXNWhbbgwrmgsFazoFftSka9EEiSVfb6oBb',
+    //             key: 'AgVGBc2vQxUuySjs21doweyNCip5REW5hquHnuBPJzLF'
+    //         },
+    //         martin: {
+    //             id: 'HXNXJXtso12LpYiECMFv6wS9P6gZurx56c7gCarDqmTa',
+    //             key: '2b8NJhirTk4bhHWMusHf2RjEs98KPu7b4mZ7i84Uvto1'
+    //         },
+    //         mary: {
+    //             id: '6LkSZMyjUiPyqsajnNJEsvj6RWRcio6r3keaZfKPhdSH',
+    //             key: 'FySyJ2HUm5gPcprJMh3ZWMXFG25fiAFdELppLV3ABgLQ'
+    //         }
+    //     }
+    // }
 ];
 
 const portOffset = externalLedgers.length;
@@ -49,8 +49,8 @@ class JukeBoxServices {
         this.adminUser = 'admin';
         this.adminPass = 'admin';
 
-        this.numLedgers = 3 - externalLedgers.length;
-        this.numConnectors = 3;
+        this.numLedgers = 2 - externalLedgers.length;
+        this.numConnectors = 2;
         this.barabasiAlbertConnectedCore = opts.barabasiAlbertConnectedCore || 2;
         this.barabasiAlbertConnectionsPerNewNode = opts.barabasiAlbertConnectionsPerNewNode || 2;
 
@@ -75,7 +75,7 @@ class JukeBoxServices {
                 edge.target = externalLedgers[edge.target].api;
             } else {
                 edge.target_currency = currencies[edge.target % currencies.length].code;
-                edge.target = `http://localhost:${(3001 + edge.target)}`;
+                edge.target = `${(3001 + edge.target)}.`;
             }
 
             if (edge.source < externalLedgers.length) {
@@ -83,7 +83,7 @@ class JukeBoxServices {
                 edge.source = externalLedgers[edge.source].api;
             } else {
                 edge.source_currency = currencies[edge.source % currencies.length].code;
-                edge.source = `http://localhost:${(3001 + edge.source)}`;
+                edge.source = `${(3001 + edge.source)}.`;
             }
             _this.connectorEdges[i % _this.numConnectors].push(edge);
         });
@@ -102,7 +102,8 @@ class JukeBoxServices {
                 LEDGER_ADMIN_USER: this.adminUser,
                 LEDGER_ADMIN_PASS: this.adminPass,
                 LEDGER_CURRENCY_CODE: currency.code,
-                LEDGER_CURRENCY_SYMBOL: currency.symbol
+                LEDGER_CURRENCY_SYMBOL: currency.symbol,
+                LEDGER_ILP_PREFIX: `${name}.`
             },
             cwd: './node_modules/five-bells-ledger',
             cmd: `${this.npmPrefix} start -- --color`,
@@ -172,9 +173,10 @@ class JukeBoxServices {
                 CONNECTOR_HOSTNAME: 'localhost',
                 CONNECTOR_PORT: port,
                 CONNECTOR_ADMIN_USER: this.adminUser,
-                CONNECTOR_ADMIN_PASS: this.adminPass
+                CONNECTOR_ADMIN_PASS: this.adminPass,
+
             },
-            cwd: './node_modules/five-bells-connector',
+            cwd: './node_modules/ilp-connector',
             cmd: `${this.npmPrefix} start -- --color`,
             alias: `connector-${name}`
         };
@@ -209,11 +211,12 @@ class JukeBoxServices {
                 accounts.push(this.createAccount(`http://localhost:${port}`, connectorNames[j]));
             }
         }
-
-        for (let i = 0; i < this.numConnectors; i++) {
+        // for (let i = 0; i < this.numConnectors; i++) {
+        for (let i = 0; i < 1; i++) {
             connectors.push(this.createConnector(connectorNames[i] || `connector${i}`,
                 4001 + i, this.connectorEdges[i]));
         }
+        console.log(connectors)
         multiplexer(processes.concat(connectors, accounts));
     }
 }

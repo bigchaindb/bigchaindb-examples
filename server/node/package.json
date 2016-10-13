@@ -19,11 +19,11 @@
     "babel-version": "babel --version"
   },
   "dependencies": {
-    "five-bells-connector": "^8.0.3",
-    "five-bells-ledger": "~14.0.3",
-    "ilp": "^1.0.0",
-    "ilp-core": "^3.0.0",
-    "ilp-plugin-bells": "^2.1.0",
+    "five-bells-ledger": "~16.1.0",
+    "ilp": "^6.2.0",
+    "ilp-connector": "^10.0.2",
+    "ilp-core": "^8.0.1",
+    "ilp-plugin-bells": "^6.1.0",
     "ilp-plugin-bigchaindb": "0.0.7",
     "multiplexer": "^1.4.1",
     "randomgraph": "^0.1.3",

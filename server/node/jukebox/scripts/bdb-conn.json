@@ -1,0 +1,17 @@
+{
+    "asset": "BDB",
+    "id": "8000.",
+    "ledger": "8000.",
+    "type": "bigchaindb",
+    "auth": {
+        "account": {
+            "id": "CYg8FutgXTzzam9ypTxFiUn8X6wdJKoLqRWgdPtQkQN4",
+            "key": "7XzANuRzzb8kQouX1WVQyxjbJC7BTitAYkrQHZhnzjTq",
+            "uri": {
+                "api": "http://localhost:8000",
+                "ws": "ws://localhost:8888"
+            }
+        },
+        "ledgerId": "8000"
+    }
+}

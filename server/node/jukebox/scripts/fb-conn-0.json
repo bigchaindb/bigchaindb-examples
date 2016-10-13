@@ -1,0 +1,9 @@
+{
+  "asset": "USD",
+  "id": "3001.",
+  "username": "connie",
+  "password": "connie",
+  "account": "http://localhost:3001/accounts/connie",
+  "ledger": "3001.",
+  "type": "bells"
+}
