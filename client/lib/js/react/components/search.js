@@ -1,6 +1,6 @@
 import React from 'react/';
 
-import { Input, Glyphicon } from 'react-bootstrap/lib/';
+import { FormGroup, InputGroup, FormControl, Glyphicon } from 'react-bootstrap/lib/';
 
 
 const Search = React.createClass({
@@ -57,12 +57,17 @@ const Search = React.createClass({
         const { searchQuery } = this.state;
         return (
             <div className="search-wrapper">
-                <Input
-                    addonAfter={<Glyphicon glyph="search" />}
-                    onChange={this.handleSearchThrottled}
-                    placeholder={'Search...'}
-                    type="text"
-                    value={searchQuery} />
+                <FormGroup>
+                    <InputGroup>
+                        <InputGroup.Addon><Glyphicon glyph="search" /></InputGroup.Addon>
+                        <FormControl
+                        onChange={this.handleSearchThrottled}
+                        placeholder={'Search...'}
+                        type="text"
+                        value={searchQuery || ""}
+                        />
+                    </InputGroup>
+                </FormGroup>
             </div>
         );
     }

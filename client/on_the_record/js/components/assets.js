@@ -15,7 +15,7 @@ const Assets = React.createClass({
     },
 
     getInitialState() {
-        return { value: null };
+        return { value: "" };
     },
 
     handleInputSubmit(event) {
@@ -32,7 +32,7 @@ const Assets = React.createClass({
             account: activeAccount
         });
 
-        this.setState({ value: null });
+        this.setState({ value: "" });
 
         Scroll.animateScroll.scrollToBottom();
     },
