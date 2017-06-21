@@ -1,5 +1,9 @@
 # BigchainDB Examples
 
+<h3>🔥 This project won't be updated anymore and has been succeeded by <a href="https://github.com/bigchaindb/kyber">Kyber, a full suite of BigchainDB components with examples, tutorials & burning experiments</a>. Head on over for more up-to-date examples, more fun and way more midi-chlorians.</h3>
+
+---
+
 [![Status](https://img.shields.io/badge/status-in%20flux-yellow.svg)]()
 [![Documentation Status](http://readthedocs.org/projects/bigchaindb-examples/badge/?version=latest)](http://bigchaindb-examples.readthedocs.io/en/latest/?badge=latest)
 [![Join the chat at https://gitter.im/bigchaindb/bigchaindb](https://badges.gitter.im/bigchaindb/bigchaindb.svg)](https://gitter.im/bigchaindb/bigchaindb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
